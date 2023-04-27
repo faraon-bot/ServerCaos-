@@ -10,69 +10,55 @@ import json
 import os
 import urllib2
 import bs
+import logger
 # where our stats file and pretty html output will go
-statsfile = bs.getEnvironment()['systemScriptsDirectory'] + "/stats.json"
-htmlfile = 'index.html'
+statsfile = logger.stats
+pStatsfile = logger.pStats
+
+
+def commit_stats(data, f=1):
+    if f == 1:
+        file = statsfile
+    else:
+        file = pStatsfile
+    if os.path.exists(file):
+        with open(file, 'w') as f:
+            f.write(json.dumps(data, indent=4))
+            f.close()
+    else:
+        return 'File stats is not exists!'
 
 
 def refreshStats():
-        # lastly, write a pretty html version.
-        # our stats url could point at something like this...
-        with open(statsfile) as f:
-            stats = json.loads(f.read())
+    # lastly, write a pretty html version.
+    # our stats url could point at something like this...
+    with open(statsfile) as f:
+        stats = json.loads(f.read())
 
-        f=open(htmlfile, 'w')       
-	f.write('<head><meta charset="UTF-8"><title>Stats for BROTHERS IN ARMS </title></head><body>\n<table style="width:80%"><tr><td><b>Name</b></td><td><b>Score</b></td><td><b>Kills</b></td><td><b>Deaths</b></td></tr><br>')
-        json_data = {}
-        entries = [(a['scores'], a['kills'], a['deaths'], a['name_html'],
-                     a['games'], a['aid']) for a in stats.values()]
-        # this gives us a list of kills/names sorted high-to-low
-        entries.sort(reverse=True)
-        rank = 0
-        toppers = {}
-        pStats = {}
-	toppersIDs=[]
-        for entry in entries:
-            rank += 1
-            scores = str(entry[0])            
-            kills = str(entry[1])
-            deaths = str(entry[2])
-            name = entry[3].encode('utf-8')            
-            games = str(entry[4])
-            aid = str(entry[5])            
-            if rank < 6:
-		toppersIDs.append(aid)
-            pStats[str(aid)] = {"rank": str(rank),
-                                "scores": str(scores),
-                                "games": str(games),
-                                "deaths": str(deaths),
-                                "kills": str(kills)}
-            """try:
-                kd = str(float(kills) / float(deaths))[:3]
-            except Exception:
-                kd = "0.0"
-            try:
-                average_score = str(float(scores) / float(games))[:3]
-            except Exception:
-                average_score = "0"  """
-	    f.write('\n<tr><td>'+name+'</td><td>'+scores+'</td><td>'+kills+'</td><td>'+deaths+'</td></tr>')
-	f.write('</body>')
-	f.close()
-        f2 = open(bs.getEnvironment()['systemScriptsDirectory'] + "/pStats.json", "w")
-        f2.write(json.dumps(pStats))
-        f2.close()
-	import settings
-	if settings.enableTop5commands:
-		import getPermissionsHashes as gph
-		gph.topperslist = toppersIDs
-		"""
-		with open(bs.getEnvironment()['systemScriptsDirectory'] + "/getPermissionsHashes.py") as file:
-			s = [row for row in file]
-			s[3] = 'topperslist = ' + str(toppersIDs) + '\n'
-			f = open(bs.getEnvironment()['systemScriptsDirectory'] + "/getPermissionsHashes.py",'w')
-			for i in s:
-				f.write(i)
-			f.close()"""
+    entries = [(a['scores'], a['kills'], a['deaths'], a['name_html'],
+                a['games'], a['aid']) for a in stats.values()]
+    # this gives us a list of kills/names sorted high-to-low
+    entries.sort(reverse=True)
+    rank = 0
+    toppers = {}
+    pStats = {}
+    toppersIDs = []
+    for entry in entries:
+        rank += 1
+        scores = str(entry[0])
+        kills = str(entry[1])
+        deaths = str(entry[2])
+        name = entry[3].encode('utf-8')
+        games = str(entry[4])
+        aid = str(entry[5])
+        if rank < 6:
+            toppersIDs.append(aid)
+        pStats[str(aid)] = {"rank": str(rank),
+                            "scores": str(scores),
+                            "games": str(games),
+                            "deaths": str(deaths),
+                            "kills": str(kills)}
+    commit_stats(pStats, 2)
 
 
 def update(score_set):
@@ -80,7 +66,7 @@ def update(score_set):
     Given a Session's ScoreSet, tallies per-account kills
     and passes them to a background thread to process and
     store.
-    """ 
+    """
     # look at score-set entries to tally per-account kills for this round
 
     account_kills = {}
@@ -103,12 +89,14 @@ def update(score_set):
     # We use a background thread so our server doesn't hitch while doing this.
     UpdateThread(account_kills, account_deaths, account_scores).start()
 
+
 class UpdateThread(threading.Thread):
     def __init__(self, account_kills, account_deaths, account_scores):
         threading.Thread.__init__(self)
         self._account_kills = account_kills
         self.account_deaths = account_deaths
         self.account_scores = account_scores
+
     def run(self):
         # pull our existing stats from disk
         if os.path.exists(statsfile):
@@ -116,7 +104,7 @@ class UpdateThread(threading.Thread):
                 stats = json.loads(f.read())
         else:
             stats = {}
-            
+
         # now add this batch of kills to our persistant stats
         for account_id, kill_count in self._account_kills.items():
             # add a new entry for any accounts that dont have one
@@ -138,13 +126,9 @@ class UpdateThread(threading.Thread):
             # also incrementing the games played and adding the id
             stats[account_id]['games'] += 1
             stats[account_id]['aid'] = str(account_id)
-	# dump our stats back to disk
-	with open(statsfile, 'w') as f:
-	    f.write(json.dumps(stats))
-	# aaand that's it!  There IS no step 27!
+        # dump our stats back to disk
+        commit_stats(stats)
+        # aaand that's it!  There IS no step 27!
         print 'Added', len(self._account_kills), ' account\'s stats entries.'
- 
-	refreshStats()
 
-
- 
+        refreshStats()
