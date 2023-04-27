@@ -1,4 +1,7 @@
-import bs, bsUI, os
+import settings
+import bs
+import bsUI
+import os
 import bsInternal
 import json
 import getPermissionsHashes as gph
@@ -6,13 +9,31 @@ from threading import Timer
 from random import randrange
 from datetime import datetime
 from settings import *
+import logger
 correctAnswer = None
 answeredBy = None
-bankfile = bs.getEnvironment()['systemScriptsDirectory'] + '/bank.json'
+bankfile = logger.bank
+customer = logger.customers
+
+
+def _customer():
+    if os.path.exists(customer):
+        with open(customer) as f:
+            custom = json.loads(f.read())
+            return custom
+    else:
+        return
+
+
+def commit_custom(e):
+    if os.path.exists(customer):
+        with open(customer, 'w') as f:
+            f.write(json.dumps(e, indent=4))
+            f.close()
 
 
 def checkExpiredItems():
-    customers = gph.effectCustomers
+    customers = _customer()
     flag = 0
     for x in customers:
         y = customers[x]['expiry']
@@ -23,16 +44,8 @@ def checkExpiredItems():
             flag = 1
             customers.pop(x)
             break
-
     if flag == 1:
-        with open(bs.getEnvironment()['systemScriptsDirectory'] + '/getPermissionsHashes.py') as (file):
-            s = [ row for row in file ]
-            s[4] = 'effectCustomers = ' + str(customers) + '\n'
-            f = open(bs.getEnvironment()['systemScriptsDirectory'] + '/getPermissionsHashes.py', 'w')
-            for i in s:
-                f.write(i)
-
-            f.close()
+        commit_custom(customers)
 
 
 def askQuestion():
@@ -63,7 +76,7 @@ def askQuestion():
 
 def checkAnswer(msg, clientID):
     global answeredBy
-    if True:#msg.lower() == correctAnswer:
+    if True:  # msg.lower() == correctAnswer:
         if answeredBy is not None:
             bsInternal._chatMessage('Already awarded to ' + answeredBy)
         else:
@@ -71,9 +84,11 @@ def checkAnswer(msg, clientID):
                 if i.getInputDevice().getClientID() == clientID:
                     answeredBy = i.getName()
                     accountID = i.get_account_id()
-		    bs.screenMessage(answeredBy + ': ' + msg,color = (0,0.6,0.2),transient=True)
+                    bs.screenMessage(answeredBy + ': ' + msg,
+                                     color=(0, 0.6, 0.2), transient=True)
             try:
-                bsInternal._chatMessage('Congratulations ' + answeredBy + '! You won ' + bs.getSpecialChar('ticket') + '10.')
+                bsInternal._chatMessage(
+                    'Congratulations ' + answeredBy + '! You won ' + bs.getSpecialChar('ticket') + '10.')
                 addCoins(accountID, 10)
             except:
                 pass
@@ -100,16 +115,15 @@ def addCoins(accountID, amount):
 
 
 def getCoins(accountID):
-  if os.path.exists(bankfile):
-    with open(bankfile, 'r') as f:
-        coins = json.loads(f.read())
-        if accountID in coins:
-            return coins[accountID]
-  return 0
-
-import settings
-if settings.enableCoinSystem: 
-	timer = bs.Timer(questionDelay * 1000, askQuestion, timeType='real', repeat=True)
-	print 'Coin system loaded...'
+    if os.path.exists(bankfile):
+        with open(bankfile, 'r') as f:
+            coins = json.loads(f.read())
+            if accountID in coins:
+                return coins[accountID]
+    return 0
 
 
+if settings.enableCoinSystem:
+    timer = bs.Timer(questionDelay * 1000, askQuestion,
+                     timeType='real', repeat=True)
+    print 'Coin system loaded...'

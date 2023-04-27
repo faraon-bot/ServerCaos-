@@ -14,6 +14,13 @@ import logger
 # where our stats file and pretty html output will go
 statsfile = logger.stats
 pStatsfile = logger.pStats
+roles = logger.roles
+
+
+def update_top(data):
+    if os.path.exists(roles):
+        with open(roles, 'w') as f:
+            f.write(json.dumps(data, indent=4))
 
 
 def commit_stats(data, f=1):
@@ -59,6 +66,13 @@ def refreshStats():
                             "deaths": str(deaths),
                             "kills": str(kills)}
     commit_stats(pStats, 2)
+    import settings
+    if settings.enableTop5commands:
+        if os.path.exists(roles):
+            with open(roles) as f:
+                rol = json.loads(f.read())
+                rol['toppers'] = toppersIDs
+                update_top(rol)
 
 
 def update(score_set):
