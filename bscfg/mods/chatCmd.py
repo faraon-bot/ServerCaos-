@@ -449,7 +449,7 @@ class chatOptions(object):
                     for player in activity.players:
                         if player.getInputDevice().getClientID() == clientID:
                             f = open(stats, 'r')
-                            _stats = json.loads(f.read())
+                            __stats = json.loads(f.read())
                             accountID = player.get_account_id()
                             haveScore = _stats[accountID]['scores']
                             f.close()
@@ -1517,16 +1517,9 @@ class chatOptions(object):
                                                         name = i.getName()
 
                                         if aid is not None:
-                                            gph.banlist[bannedID] = aid
-                                            with open(bs.getEnvironment()['systemScriptsDirectory'] + '/getPermissionsHashes.py') as (file):
-                                                s = [row for row in file]
-                                                s[2] = 'banlist = ' + \
-                                                    str(gph.banlist) + '\n'
-                                                f = open(bs.getEnvironment()[
-                                                         'systemScriptsDirectory'] + '/getPermissionsHashes.py', 'w')
-                                                for i in s:
-                                                    f.write(i)
-                                                f.close()
+                                            hasBan = handleRol.ver_roles()
+                                            hasBan['banned'][bannedID] = aid
+                                            handleRol.commit_roles(hasBan)
                                             bsInternal._chatMessage(
                                                 'banned ' + name)
                                             bsInternal._disconnectClient(clID)

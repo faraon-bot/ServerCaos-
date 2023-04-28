@@ -21,6 +21,3 @@ def commit_roles(d):
             f.close()
     return
 
-
-def hasBanned():
-    return ver_roles()["banned"]
