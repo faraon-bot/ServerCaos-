@@ -20,3 +20,7 @@ def commit_roles(d):
             f.write(json.dumps(d, indent=4))
             f.close()
     return
+
+
+def hasBanned():
+    return ver_roles()["banned"]

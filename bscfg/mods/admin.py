@@ -18,11 +18,11 @@ from bsSpaz import _BombDiedMessage, _CurseExplodeMessage, _PickupMessage, _Punc
 import settings
 import coinSystem
 import logger
-from roles import role_tools
+from roles import handleRol
 
 effectCustomers = coinSystem._customer()
 stats = logger.pStats
-rol = role_tools.ver_roles()
+rol = handleRol.ver_roles()
 
 
 class PermissionEffect(object):
@@ -263,36 +263,36 @@ class Enhancement(bs.Actor):
 
         try:
             if cl_str in effectCustomers:
-                effect = effectCustomers[cl_str]["effect"]
-                if effect == 'ice':
+                effect = effectCustomers[cl_str]
+                if 'ice' in effect:
                     self.snowTimer = bs.Timer(
                         500, bs.WeakCall(self.emitIce), repeat=True)
-                if effect == 'sweat':
+                if 'sweat' in effect:
                     self.smokeTimer = bs.Timer(
                         40, bs.WeakCall(self.emitSmoke), repeat=True)
-                if effect == 'scorch':
+                if 'scorch' in effect:
                     self.scorchTimer = bs.Timer(
                         500, bs.WeakCall(self.update_Scorch), repeat=True)
-                if effect == 'glow':
+                if 'glow' in effect:
                     self.addLightColor((1, 0.6, 0.4))
                     self.checkDeadTimer = bs.Timer(
                         150, bs.WeakCall(self.checkPlayerifDead), repeat=True)
-                if effect == 'distortion':
+                if 'distortion' in effect:
                     self.DistortionTimer = bs.Timer(
                         1000, bs.WeakCall(self.emitDistortion), repeat=True)
-                if effect == 'slime':
+                if effect == 'slime' in effect:
                     self.slimeTimer = bs.Timer(
                         250, bs.WeakCall(self.emitSlime), repeat=True)
-                if effect == 'metal':
+                if 'metal' in effect:
                     self.metalTimer = bs.Timer(
                         500, bs.WeakCall(self.emitMetal), repeat=True)
-                if effect == 'surrounder':
+                if 'surrounder' in effect:
                     self.surround = SurroundBall(spaz, shape="bones")
 
             # if cl_str in gph.customlist:
             #     PermissionEffect(owner=spaz.node, prefix=gph.customlist[cl_str], prefixAnim={
             #                      0: (1, 0, 0), 250: (0, 1, 0), 250*2: (0, 0, 1), 250*3: (1, 0, 0)})
-            elif cl_str in rol['toppers']:
+            if cl_str in rol['toppers']:
                 tag = getTag(1)
                 if tag == '0':
                     tag = u'\ue046TOP-RANK\ue046'

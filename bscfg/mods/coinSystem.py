@@ -4,7 +4,6 @@ import bsUI
 import os
 import bsInternal
 import json
-import getPermissionsHashes as gph
 from threading import Timer
 from random import randrange
 from datetime import datetime
@@ -35,15 +34,20 @@ def commit_custom(e):
 def checkExpiredItems():
     customers = _customer()
     flag = 0
-    for x in customers:
-        y = customers[x]['expiry']
-        now = datetime.now()
-        expiry = datetime.strptime(y, '%d-%m-%Y %H:%M:%S')
-        if expiry < now:
-            print 'expired item found'
-            flag = 1
-            customers.pop(x)
-            break
+    for i in bsInternal._getForegroundHostActivity().players:
+        accountID = i.get_account_id()
+        if accountID is None and i is None:
+            pass
+
+        custom = customers[accountID]
+        for k, v in customers["effects"].items():
+            now = datetime.now()
+            expiry = datetime.strptime(v, '%d-%m-%Y %H:%M:%S')
+            if expiry < now:
+                print 'expired item found'
+                flag = 1
+                customers.pop(k)
+                break
     if flag == 1:
         commit_custom(customers)
 

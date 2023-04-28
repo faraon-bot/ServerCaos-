@@ -14,14 +14,14 @@ import re
 import datetime
 import logger
 import os
-from roles import role_tools
+from roles import handleRol
 
 
 reply = None
 
 stats = logger.stats
 pStats = logger.pStats
-roles = role_tools.ver_roles()
+roles = handleRol.ver_roles()
 
 
 def accountIDFromClientID(n):
@@ -357,14 +357,14 @@ class chatOptions(object):
 
                             if client_str not in customers:
                                 customers[client_str] = {
-                                    'effect': effect, 'expiry': expiry.strftime('%d-%m-%Y %H:%M:%S')}
+                                    'effects': {effect: expiry.strftime('%d-%m-%Y %H:%M:%S')}}
                                 coinSystem.addCoins(
                                     client_str, costOfEffect * -1)
                                 bsInternal._chatMessage(
                                     'Success! That cost you ' + bs.getSpecialChar('ticket') + str(costOfEffect))
                             else:
-                                customers[client_str].update({
-                                    'effect': effect, 'expiry': expiry.strftime('%d-%m-%Y %H:%M:%S')})
+                                customers[client_str]['effects'].update({
+                                    effect: expiry.strftime('%d-%m-%Y %H:%M:%S')})
                         else:
                             bsInternal._chatMessage('You need ' + bs.getSpecialChar('ticket') + str(
                                 costOfEffect) + ' for that. You have ' + bs.getSpecialChar('ticket') + str(haveCoins) + ' only.')
@@ -882,12 +882,12 @@ class chatOptions(object):
                                 if n not in roles['admins']:
                                     roles['admins'].append(n)
                                     commandSuccess = True
-                                    role_tools.commit_roles(roles)
+                                    handleRol.commit_roles(roles)
                             elif a[1] == 'remove':
                                 if n in roles['admin']:
                                     roles['admins'].remove(n)
                                     commandSuccess = True
-                                    role_tools.commit_roles(roles)
+                                    handleRol.commit_roles(roles)
 
                         elif m == '/vip' and level > 2:
                             if a == []:
@@ -901,12 +901,12 @@ class chatOptions(object):
                                 if n not in roles['vips']:
                                     roles['vips'].append(n)
                                     commandSuccess = True
-                                    role_tools.commit_roles(roles)
+                                    handleRol.commit_roles(roles)
                             elif a[1] == 'remove':
                                 if n in roles['vips']:
                                     roles['vips'].remove(n)
                                     commandSuccess = True
-                                    role_tools.commit_roles(roles)
+                                    handleRol.commit_roles(roles)
 
                         elif m == '/remove':
                             if a == []:
