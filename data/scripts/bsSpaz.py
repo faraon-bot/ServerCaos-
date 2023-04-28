@@ -4,7 +4,6 @@ import settings
 import bs
 import bsUtils
 import bsInternal
-import botMod
 import bsMap
 # list of defined spazzes
 appearances = {}
@@ -1051,19 +1050,19 @@ class Spaz(bs.Actor):
                     self.node.miniBillboard2StartTime = t
                     self.node.miniBillboard2EndTime = t+gPowerupWearOffTime
                     self._speedWearOffTimer = bs.Timer(gPowerupWearOffTime,bs.Call(setSpeed,False))
-            elif msg.powerupType == 'Bot':
-                bsUtils.PopupText(u"\ue00c By PcModder \ue00c", color = self.node.color,scale = 1.7, position = self.node.position).autoRetain()
-                p = self.node.position
-                pos = (p[0], p[1] + 2, p[2])
-                botMod.Bot(pos = pos, sourcePlayer = self.sourcePlayer).autoRetain() 
-                bs.getSharedObject('globals').tint = (0.6,0.6,0.9)
-                light = bs.newNode('light',
-                               attrs={'position':self.node.position,
-                                      'radius':0.5,
-                                      'heightAttenuated':False,
-                                      'color': (0,1,6)})
-                bs.animate(light,'radius',{0:3.0,300:5,600:0})  
-                bs.emitBGDynamics(position=self.node.position,velocity=(0,0,0),count=600,spread=0.7,chunkType='spark')
+            # elif msg.powerupType == 'Bot':
+            #     bsUtils.PopupText(u"\ue00c By PcModder \ue00c", color = self.node.color,scale = 1.7, position = self.node.position).autoRetain()
+            #     p = self.node.position
+            #     pos = (p[0], p[1] + 2, p[2])
+            #     botMod.Bot(pos = pos, sourcePlayer = self.sourcePlayer).autoRetain() 
+            #     bs.getSharedObject('globals').tint = (0.6,0.6,0.9)
+            #     light = bs.newNode('light',
+            #                    attrs={'position':self.node.position,
+            #                           'radius':0.5,
+            #                           'heightAttenuated':False,
+            #                           'color': (0,1,6)})
+            #     bs.animate(light,'radius',{0:3.0,300:5,600:0})  
+            #     bs.emitBGDynamics(position=self.node.position,velocity=(0,0,0),count=600,spread=0.7,chunkType='spark')
                     
             elif msg.powerupType == 'impactBombs':
                 bsUtils.PopupText(u"\ue00c Impact \ue00c", color = self.node.color,scale = 1.7, position = self.node.position).autoRetain()
