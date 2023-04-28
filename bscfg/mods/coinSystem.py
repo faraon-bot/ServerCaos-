@@ -37,7 +37,7 @@ def checkExpiredItems():
     for i in bsInternal._getForegroundHostActivity().players:
         accountID = i.get_account_id()
         custom = customers[accountID]
-        if (accountID is None) and (not accountID in customers):
+        if (accountID is None) and (accountID not in customers):
             pass
 
         for k, v in custom["effects"].items():

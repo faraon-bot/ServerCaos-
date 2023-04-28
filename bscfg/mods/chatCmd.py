@@ -25,7 +25,7 @@ roles = handleRol.ver_roles()
 
 
 def accountIDFromClientID(n):
-    for i in bsInternal._getForegroundHostSession().players:
+    for i in bsInternal._getForegroundHostActivity().players:
         if i.getInputDevice().getClientID() == n:
             return i.get_account_id()
     else:
@@ -62,10 +62,14 @@ class chatOptions(object):
         commandSuccess = None
         reply = None
         client_str = ''
-        for i in bsInternal._getForegroundHostSession().players:
+        for i in bsInternal._getForegroundHostActivity().players:
             if i.getInputDevice().getClientID() == clientID:
-                client_str = i.get_account_id()
+                player = i
+                break
+        else:
+            return None
 
+        client_str = player.get_account_id()
         try:
             if client_str in roles['owner']:
                 reply = u'\ue043|\ue00cCOMMAND ACCEPTED MY LORD\ue00c|\ue043'
@@ -117,18 +121,12 @@ class chatOptions(object):
         a = msg.split(' ')[1:]
         activity = bsInternal._getForegroundHostActivity()
         with bs.Context(activity):
-            '''sender = None
-            for i in activity.players:
-                if i.getInputDevice().getClientID() == clientID:
-                    sender = i.getName()
-
-            try:
-                #bs.screenMessage(sender + ':' + msg, color=(0, 0.4, 0.8))
-                pass
-            except:
-                pass'''
 
             level = self.checkDevice(clientID, m)
+            if level != True:
+                bs.screenMessage("No posees permismos para esta accion", clients=[
+                                 clientID], transient=True)
+                return
             if m in ('/stats', '/rank', '/myself', '/me'):
                 for player in activity.players:
                     if player.getInputDevice().getClientID() == clientID:
