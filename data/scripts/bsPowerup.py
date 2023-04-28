@@ -1,9 +1,5 @@
 import bs
 import random
-import bsUtils
-import settings
-import BuddyBunny
-import bsSpaz
 
 defaultPowerupInterval = 8000
 
@@ -122,13 +118,6 @@ class PowerupFactory(object):
 
         self.texBomb = bs.getTexture("powerupBomb")
         self.texPunch = bs.getTexture("powerupPunch")
-        self.texSpeed = bs.getTexture("achievementGotTheMoves")
-        self.texRchar = bs.getTexture("achievementEmpty")
-        self.texInv = bs.getTexture("achievementMedalSmall")
-        self.texTroll = bs.getTexture("achievementOffYouGo")
-        self.texParty = bs.getTexture("eggTex1")
-        self.texBunny = bs.getTexture('achievementFreeLoader')
-        self.texBot = bs.getTexture('star')
         self.texIceBombs = bs.getTexture("powerupIceBombs")
         self.texStickyBombs = bs.getTexture("powerupStickyBombs")
         self.texShield = bs.getTexture("powerupShield")
@@ -136,8 +125,6 @@ class PowerupFactory(object):
         self.texHealth = bs.getTexture("powerupHealth")
         self.texLandMines = bs.getTexture("powerupLandMines")
         self.texCurse = bs.getTexture("powerupCurse")
-        self.texiceMine = bs.getTexture("gameCircleIcon")
-        self.textrioBomb = bs.getTexture("crossOutMask")
 
         self.healthPowerupSound = bs.getSound("healthPowerup")
         self.powerupSound = bs.getSound("powerup01")
@@ -204,22 +191,13 @@ class PowerupFactory(object):
 
 def getDefaultPowerupDistribution():
     return (('tripleBombs',3),
-            ('iceBombs',2),
+            ('iceBombs',3),
             ('punch',3),
-            ('impactBombs',2),
+            ('impactBombs',3),
             ('landMines',2),
             ('stickyBombs',3),
             ('shield',2),
             ('health',1),
-            ('Speed',2),
-            ('Bot',2),
-            ('iceMine',2),
-            ('trioBomb',2),
-            ('Bunny',2),
-            ('Rchar',2),
-            ('Inv',2),
-            ('Party',2),
-            ('Troll',2),
             ('curse',1))
 
 class Powerup(bs.Actor):
@@ -253,62 +231,16 @@ class Powerup(bs.Actor):
         factory = self.getFactory()
         self.powerupType = powerupType;
         self._powersGiven = False
-        name = 'none'
 
-        if powerupType == 'tripleBombs':
-            tex = factory.texBomb
-            name = "| |Trio| |"
-        elif powerupType == 'Party':
-            tex = factory.texParty
-            name = "| |Party| |"
-        elif powerupType == 'Troll':
-            tex = factory.texTroll
-            name = "| |Troll| |"
-        elif powerupType == 'Rchar':
-            tex = factory.texRchar
-            name = "| |Rchar| |"
-        elif powerupType == 'Speed':
-            tex = factory.texSpeed
-            name = "| |Boots| |"
-        elif powerupType == 'Inv':
-            tex = factory.texInv
-            name = "| |Invisible| |"
-        elif powerupType == 'punch':
-            tex = factory.texPunch
-            name = "| |Gloves| |"
-        elif powerupType == 'Bunny':
-            tex = factory.texBunny
-            name = "| |Bunny| |"
-        elif powerupType == 'Bot':
-            tex = factory.texBot
-            name = "| |Bot 2.0| |"
-        elif powerupType == 'iceBombs':
-            tex = factory.texIceBombs
-            name = "| |Icy| |"
-        elif powerupType == 'impactBombs':
-            tex = factory.texImpactBombs
-            name = "| |Impacta| |"
-        elif powerupType == 'landMines':
-            tex = factory.texLandMines
-            name = "| |LandMines| |"
-        elif powerupType == 'stickyBombs':
-            tex = factory.texStickyBombs
-            name = "| |Sticky| |"
-        elif powerupType == 'shield':
-            tex = factory.texShield
-            name = "| |Shield| |"
-        elif powerupType == 'health':
-            tex = factory.texHealth
-            name = "| |Med Pack| |"
-        elif powerupType == 'curse':
-            tex = factory.texCurse
-            name = "| |Curse| |"
-        elif powerupType == 'iceMine':
-            tex = factory.texiceMine
-            name = "| |Ice Mine| |"
-        elif powerupType == 'trioBomb':
-            tex = factory.textrioBomb
-            name = "| |Trio Bomb| |"
+        if powerupType == 'tripleBombs': tex = factory.texBomb
+        elif powerupType == 'punch': tex = factory.texPunch
+        elif powerupType == 'iceBombs': tex = factory.texIceBombs
+        elif powerupType == 'impactBombs': tex = factory.texImpactBombs
+        elif powerupType == 'landMines': tex = factory.texLandMines
+        elif powerupType == 'stickyBombs': tex = factory.texStickyBombs
+        elif powerupType == 'shield': tex = factory.texShield
+        elif powerupType == 'health': tex = factory.texHealth
+        elif powerupType == 'curse': tex = factory.texCurse
         else: raise Exception("invalid powerupType: "+str(powerupType))
 
         if len(position) != 3: raise Exception("expected 3 floats for position")
@@ -326,45 +258,6 @@ class Powerup(bs.Actor):
                    'reflectionScale':[1.0],
                    'materials':(factory.powerupMaterial,
                                 bs.getSharedObject('objectMaterial'))})
-        prefixAnim = {0: (1, 0, 0), 250: (1, 1, 0), 250 * 2: (0, 1, 0), 250 * 3: (0, 1, 1), 250 * 4: (1, 0, 1),
-                      250 * 5: (0, 0, 1), 250 * 6: (1, 0, 0)}
-        color = (random.random(), random.random(), random.random())
-        if settings.nameOnPowerUps:
-            m = bs.newNode('math', owner=self.node, attrs={'input1': (0, 0.7, 0), 'operation': 'add'})
-            self.node.connectAttr('position', m, 'input2')
-            self.nodeText = bs.newNode('text',
-                                       owner=self.node,
-                                       attrs={'text': str(name),
-                                              'inWorld': True,
-                                              'shadow': 1.0,
-                                              'flatness': 1.0,
-                                              'color': color,
-                                              'scale': 0.0,
-                                              'hAlign': 'center'})
-            m.connectAttr('output', self.nodeText, 'position')
-            bs.animate(self.nodeText, 'scale', {0: 0, 140: 0.016, 200: 0.01})
-            bsUtils.animateArray(self.nodeText, 'color', 3, prefixAnim, True)
-            bs.emitBGDynamics(position=self.nodeText.position, velocity=self.node.position, count=10, scale=0.4,
-                              spread=0.01, chunkType='sweat')
-
-        if settings.discoLightsOnPowerUps:
-            self.nodeLight = bs.newNode('light',
-                                        attrs={'position': self.node.position,
-                                               'color': color,
-                                               'radius': 0.05,
-                                               'volumeIntensityScale': 0.03})
-            self.node.connectAttr('position', self.nodeLight, 'position')
-            bsUtils.animateArray(self.nodeLight, 'color', 3, prefixAnim, True)
-
-        if settings.shieldOnPowerUps:
-            self.nodeShield = bs.newNode('shield', owner=self.node, attrs={'color': color,
-                                                                           'position': (
-                                                                               self.node.position[0],
-                                                                               self.node.position[1],
-                                                                               self.node.position[2] + 0.5),
-                                                                           'radius': 1.2})
-            self.node.connectAttr('position', self.nodeShield, 'position')
-            bsUtils.animateArray(self.nodeShield, 'color', 3, prefixAnim, True)
 
         # animate in..
         curve = bs.animate(self.node,"modelScale",{0:0,140:1.6,200:1})
@@ -408,15 +301,8 @@ class Powerup(bs.Actor):
             if not self._powersGiven:
                 node = bs.getCollisionInfo("opposingNode")
                 if node is not None and node.exists():
-                    if self.powerupType == 'Bunny':
-                        p = node.getDelegate().getPlayer()
-                        if 'bunnies' not in p.gameData:
-                            p.gameData['bunnies'] = BuddyBunny.BunnyBotSet(p)
-                        p.gameData['bunnies'].doBunny()
-                        self._powersGiven = True
-                        self.handleMessage(bs.DieMessage())
-                    else:
-                        node.handleMessage(PowerupMessage(self.powerupType, sourceNode=self.node))
+                    node.handleMessage(PowerupMessage(self.powerupType,
+                                                      sourceNode=self.node))
 
         elif isinstance(msg, bs.DieMessage):
             if self.node.exists():
@@ -425,8 +311,6 @@ class Powerup(bs.Actor):
                 else:
                     curve = bs.animate(self.node, "modelScale", {0:1,100:0})
                     bs.gameTimer(100, self.node.delete)
-            if self.nodeLight.exists():
-                self.nodeLight.delete()
 
         elif isinstance(msg ,bs.OutOfBoundsMessage):
             self.handleMessage(bs.DieMessage())

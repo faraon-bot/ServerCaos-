@@ -23825,30 +23825,7 @@ class StoreWindow(Window):
 # Should filter and return the string to be displayed,
 # or return None to ignore the message.
 def _filterChatMessage(msg, clientID):
-    import settings
-
-    if clientID != -1:
-      if settings.spamProtection:
-	import spamProtection
-	if spamProtection.checkSpam(clientID) == False: return None
-    if msg.startswith('/'):
-	import chatCmd
-	chatCmd.cmd(msg,clientID)
-	return msg
-    import filter
-    for word in filter.f_words:
-        if word in msg.lower():
-            filter.k(clientID)
-            filter.warn(clientID)
-            filter.check(clientID)
-            msg = "**Restricted Words**"
-    if settings.enableCoinSystem:
-	import coinSystem
-	if msg.lower() == coinSystem.correctAnswer:
-		coinSystem.checkAnswer(msg,clientID)
-		return None
     return msg
-    
 
 
 # Called for local chat messages when the party window is up.

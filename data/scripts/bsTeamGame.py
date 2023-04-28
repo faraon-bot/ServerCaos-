@@ -8,7 +8,7 @@ import bsTutorial
 import bsInternal
 
 gDefaultTeamColors = ((0.1, 0.25, 1.0), (1.0, 0.25, 0.2))
-gDefaultTeamNames = (u'Fire',u'Green\ue00c')
+gDefaultTeamNames = ("Blue", "Red")
 
 gTeamSeriesLength = 7
 gFFASeriesLength = 24

@@ -29,17 +29,18 @@ _gServerConfig = {}
 
 # NOTE: player color options are enforced server-side for non-pro accounts
 # so don't change these or they won't stick...
-_gPlayerColors = [
-    (1, 0.15, 0.15), (0.2, 1, 0.2), (0.1, 0.1, 1), (0.2, 1, 1),
-    (0.5, 0.25, 1.0), (1, 1, 0), (1, 0.5, 0), (1, 0.3, 0.5),
-    (0.1, 0.1, 0.5), (0.4, 0.2, 0.1), (0.1, 0.35, 0.1), (1, 0.8, 0.5),
-    (0.4, 0.05, 0.05), (0.13, 0.13, 0.13), (0.5, 0.5, 0.5), (1, 1, 1)]
+_gPlayerColors = [(1, 0.15, 0.15), (0.2, 1, 0.2), (0.1, 0.1, 1), (0.2, 1, 1),
+                  (0.5, 0.25, 1.0), (1, 1, 0), (1, 0.5, 0), (1, 0.3, 0.5),
+                  (0.1, 0.1, 0.5), (0.4, 0.2, 0.1), (0.1, 0.35, 0.1),
+                  (1, 0.8, 0.5), (0.4, 0.05, 0.05), (0.13, 0.13, 0.13),
+                  (0.5, 0.5, 0.5), (1, 1, 1)]
 gMusic = None
 _gConfig = None
 
 gNodeOwnerWeakRefs = []
 gNodeOwnerWeakRefsCleanCounter = 0
 gPrintOnceErrors = set()
+
 
 class Lstr(object):
     """
@@ -155,10 +156,10 @@ class Lstr(object):
             return u'JSON_ERR'
 
     def __str__(self):
-        return '<bs.Lstr: '+self._getJson()+'>'
+        return '<bs.Lstr: ' + self._getJson() + '>'
 
     def __repr__(self):
-        return '<bs.Lstr: '+self._getJson()+'>'
+        return '<bs.Lstr: ' + self._getJson() + '>'
 
 
 def printException(*args, **keywds):
@@ -182,6 +183,7 @@ def printException(*args, **keywds):
         print 'ERROR: exception in bs.printException():'
         traceback.print_exc()
 
+
 def printError(*args, **keywds):
     """
     category: General Utility Functions
@@ -202,7 +204,9 @@ def printError(*args, **keywds):
         print 'ERROR: exception in bs.printError():'
         traceback.print_exc()
 
+
 gErrorsPrinted = set()
+
 
 def printErrorOnce(*args, **keywds):
     """
@@ -217,6 +221,7 @@ def printErrorOnce(*args, **keywds):
         gErrorsPrinted.add(errStr)
         printError(*args, **keywds)
 
+
 def getConfig():
     """
     category: General Utility Functions
@@ -227,6 +232,7 @@ def getConfig():
     This data gets committed to disk/cloud/etc when you call bs.writeConfig().
     """
     return _gConfig
+
 
 def getSharedObject(name):
     """
@@ -283,23 +289,29 @@ def getSharedObject(name):
     if activity is not None:
 
         # grab shared-objs dict (creating if necessary)
-        try: sharedObjs = activity._sharedObjects
-        except Exception: sharedObjs = activity._sharedObjects = {}
+        try:
+            sharedObjs = activity._sharedObjects
+        except Exception:
+            sharedObjs = activity._sharedObjects = {}
 
         # grab item out of it
-        try: return sharedObjs[name]
-        except Exception: pass
+        try:
+            return sharedObjs[name]
+        except Exception:
+            pass
 
         # hmm looks like it doesn't yet exist; create it if its a valid value
         if name == 'globals':
             obj = bs.newNode('globals')
-        elif name in ['objectMaterial', 'playerMaterial', 'pickupMaterial',
-                      'footingMaterial', 'attackMaterial']:
+        elif name in [
+                'objectMaterial', 'playerMaterial', 'pickupMaterial',
+                'footingMaterial', 'attackMaterial'
+        ]:
             obj = bs.Material()
         elif name == 'deathMaterial':
             obj = bs.Material()
-            obj.addActions(('message', 'theirNode',
-                            'atConnect', bs.DieMessage()))
+            obj.addActions(
+                ('message', 'theirNode', 'atConnect', bs.DieMessage()))
         elif name == 'regionMaterial':
             obj = bs.Material()
         elif name == 'railingMaterial':
@@ -312,18 +324,23 @@ def getSharedObject(name):
                            actions=(('modifyPartCollision', 'collide', True),
                                     ('modifyPartCollision', 'friction', 0.0)))
         else:
-            raise Exception("unrecognized shared object (activity context): '"
-                            +name+"'")
+            raise Exception(
+                "unrecognized shared object (activity context): '" + name +
+                "'")
     else:
         session = bs.getSession(exceptionOnNone=False)
         if session is not None:
             # grab shared-objs dict (creating if necessary)
-            try: sharedObjs = session._sharedObjects
-            except Exception: sharedObjs = session._sharedObjects = {}
+            try:
+                sharedObjs = session._sharedObjects
+            except Exception:
+                sharedObjs = session._sharedObjects = {}
 
             # grab item out of it
-            try: return sharedObjs[name]
-            except Exception: pass
+            try:
+                return sharedObjs[name]
+            except Exception:
+                pass
 
             # hmm looks like it doesn't yet exist; create if its a valid value
             if name == 'globals':
@@ -338,6 +355,7 @@ def getSharedObject(name):
     sharedObjs[name] = obj
     return obj
 
+
 def getHumanReadableUserScriptsPath():
     "Return a human readable path to user-scripts (NOT a valid filesystem path)"
     env = bs.getEnvironment()
@@ -350,9 +368,10 @@ def getHumanReadableUserScriptsPath():
         extStoragePath = bsInternal._androidGetExternalStoragePath()
         if (extStoragePath is not None
                 and env['userScriptsDirectory'].startswith(extStoragePath)):
-            path = ('<'+bs.Lstr(resource='externalStorageText').evaluate()
-                    +'>'+env['userScriptsDirectory'][len(extStoragePath):])
+            path = ('<' + bs.Lstr(resource='externalStorageText').evaluate() +
+                    '>' + env['userScriptsDirectory'][len(extStoragePath):])
     return path
+
 
 def showUserScripts():
     "Open or at least nicely print the location of the user-scripts directory"
@@ -380,7 +399,7 @@ def showUserScripts():
         try:
             usd = env['userScriptsDirectory']
             if usd is not None and os.path.isdir(usd):
-                fileName = usd+'/aboutThisFolder.txt'
+                fileName = usd + '/aboutThisFolder.txt'
                 f = open(fileName, 'wb')
                 f.write('You can drop files in here to mod BombSquad.  '
                         'See settings/advanced in the game for more info.')
@@ -397,36 +416,39 @@ def showUserScripts():
     else:
         bs.screenMessage(getHumanReadableUserScriptsPath())
 
+
 def createUserSystemScripts():
     """Sets up a copy of BombSquad system scripts under your user scripts dir
     that you can edit and experiment with."""
     import shutil
-    path = (bs.getEnvironment()['userScriptsDirectory']
-            + '/sys/'+bs.getEnvironment()['version'])
+    path = (bs.getEnvironment()['userScriptsDirectory'] + '/sys/' +
+            bs.getEnvironment()['version'])
     if os.path.exists(path): shutil.rmtree(path)
-    if os.path.exists(path+"_tmp"): shutil.rmtree(path+"_tmp")
+    if os.path.exists(path + "_tmp"): shutil.rmtree(path + "_tmp")
     try:
-        os.makedirs(path+'_tmp')
+        os.makedirs(path + '_tmp')
     except OSError as exc:
-        if exc.errno == errno.EEXIST and os.path.isdir(path+"_tmp"): pass
+        if exc.errno == errno.EEXIST and os.path.isdir(path + "_tmp"): pass
         else: raise
 
     # shutil.copytree doesn't seem to work nicely on android,
     # so lets do it manually
     srcDir = bs.getEnvironment()['systemScriptsDirectory']
-    dstDir = path+"_tmp"
+    dstDir = path + "_tmp"
     files = os.listdir(bs.getEnvironment()['systemScriptsDirectory'])
     for f in files:
-        print 'COPYING', srcDir+'/'+f, '->', dstDir
-        shutil.copyfile(srcDir+'/'+f, dstDir+'/'+f)
+        print 'COPYING', srcDir + '/' + f, '->', dstDir
+        shutil.copyfile(srcDir + '/' + f, dstDir + '/' + f)
 
-    print 'MOVING', path+"_tmp", path
-    shutil.move(path+"_tmp", path)
+    print 'MOVING', path + "_tmp", path
+    shutil.move(path + "_tmp", path)
     print 'Created system scripts at :\'' + path + \
         '\'\nRestart BombSquad to use them. (use bs.quit() to exit the game)'
     if bs.getEnvironment()['platform'] == 'android':
-        print ('Note: the new files may not be visible via '
-               'android-file-transfer until you restart your device.')
+        print(
+            'Note: the new files may not be visible via '
+            'android-file-transfer until you restart your device.')
+
 
 def deleteUserSystemScripts():
     'Cleans out the scripts created by createUserSystemScripts()'
@@ -435,16 +457,18 @@ def deleteUserSystemScripts():
         '/sys/' + bs.getEnvironment()['version']
     if os.path.exists(path):
         shutil.rmtree(path)
-        print ('User system scripts deleted.\nRestart BombSquad to use internal'
-               ' scripts. (use bs.quit() to exit the game)')
+        print(
+            'User system scripts deleted.\nRestart BombSquad to use internal'
+            ' scripts. (use bs.quit() to exit the game)')
     else:
         print 'User system scripts not found.'
     # if the sys path is empty, kill it
-    d = bs.getEnvironment()['userScriptsDirectory']+'/sys'
+    d = bs.getEnvironment()['userScriptsDirectory'] + '/sys'
     if os.path.isdir(d) and len(os.listdir(d)) == 0:
         os.rmdir(d)
     if 'android' in bs.getEnvironment()['userAgentString']:
-        bs.androidRefreshFiles() # get android file transfer to reflect this
+        bs.androidRefreshFiles()  # get android file transfer to reflect this
+
 
 class WeakCall(object):
     """
@@ -493,25 +517,30 @@ class WeakCall(object):
         if hasattr(args[0], 'im_func'): self._call = WeakMethod(args[0])
         else:
             global _gDidWeakCallWarning
-            try: did = _gDidWeakCallWarning
-            except Exception: did = False
+            try:
+                did = _gDidWeakCallWarning
+            except Exception:
+                did = False
             if not did:
-                print ('Warning: callable passed to bs.WeakCall() is not'
-                       ' weak-referencable (' + str(args[0]) +
-                       '); use bs.Call() instead to avoid this '
-                       'warning. Stack-trace:')
+                print(
+                    'Warning: callable passed to bs.WeakCall() is not'
+                    ' weak-referencable (' + str(args[0]) +
+                    '); use bs.Call() instead to avoid this '
+                    'warning. Stack-trace:')
                 import traceback
                 traceback.print_stack()
                 _gDidWeakCallWarning = True
             self._call = args[0]
         self._args = args[1:]
         self._keywds = keywds
+
     def __call__(self, *argsExtra):
         return self._call(*self._args + argsExtra, **self._keywds)
+
     def __str__(self):
-        return ('<bs.WeakCall object; _call='+str(self._call)
-                + ' _args=' + str(self._args) +' _keywds='
-                + str(self._keywds)+'>')
+        return ('<bs.WeakCall object; _call=' + str(self._call) + ' _args=' +
+                str(self._args) + ' _keywds=' + str(self._keywds) + '>')
+
 
 class Call(object):
     """
@@ -539,35 +568,44 @@ class Call(object):
         self._call = args[0]
         self._args = args[1:]
         self._keywds = keywds
-    def __call__(self, *argsExtra):
-        return self._call(*self._args+argsExtra, **self._keywds)
-    def __str__(self):
-        return ('<bs.Call object; _call=' + str(self._call) + ' _args='
-                + str(self._args) + ' _keywds=' + str(self._keywds) +'>')
 
-class WeakMethod :
+    def __call__(self, *argsExtra):
+        return self._call(*self._args + argsExtra, **self._keywds)
+
+    def __str__(self):
+        return ('<bs.Call object; _call=' + str(self._call) + ' _args=' +
+                str(self._args) + ' _keywds=' + str(self._keywds) + '>')
+
+
+class WeakMethod:
     """ wraps a bound method using weak references so that the original is
     free to die. If called with a dead target, is simply a no-op """
-    def __init__( self , f ) :
+    def __init__(self, f):
         self.f = f.im_func
-        self.c = weakref.ref( f.im_self )
-    def __call__( self , *args, **keywds ) :
+        self.c = weakref.ref(f.im_self)
+
+    def __call__(self, *args, **keywds):
         c = self.c()
-        if c is None : return
-        return self.f(*((c,)+args), **keywds)
+        if c is None: return
+        return self.f(*((c, ) + args), **keywds)
+
     def __str__(self):
-        return '<bs.WeakMethod object; call='+str(self.f)+'>'
+        return '<bs.WeakMethod object; call=' + str(self.f) + '>'
+
 
 _gLanguageTarget = None
 _gLanguageMerged = None
 
+
 def _getLanguages():
     langs = set()
     env = bs.getEnvironment()
-    for i, d in enumerate([env['systemScriptsDirectory'],
-                          env['userScriptsDirectory']]):
-        try: names = os.listdir(d)
-        except Exception: names = []
+    for i, d in enumerate(
+        [env['systemScriptsDirectory'], env['userScriptsDirectory']]):
+        try:
+            names = os.listdir(d)
+        except Exception:
+            names = []
         for name in names:
             if name.startswith('bsLanguage') and name.endswith('.py'):
                 langName = name[10:-3]
@@ -576,6 +614,7 @@ def _getLanguages():
     vals = list(langs)
     vals.sort()
     return vals
+
 
 def _ensureHaveAccountPlayerProfile():
 
@@ -586,24 +625,31 @@ def _ensureHaveAccountPlayerProfile():
     # if the short version of our account name currently cant be
     # displayed by the game, cancel..
     if not bsInternal._haveChars(
-            bsInternal._getAccountDisplayString(full=False)): return
+            bsInternal._getAccountDisplayString(full=False)):
+        return
 
     config = bs.getConfig()
 
     if ('Player Profiles' not in config
-        or '__account__' not in config['Player Profiles']):
+            or '__account__' not in config['Player Profiles']):
         # create a spaz with a nice default purply color
-        bsInternal._addTransaction({'type':'ADD_PLAYER_PROFILE',
-                                    'name':'__account__',
-                                    'profile':{'character':'Spaz',
-                                               'color':(0.5, 0.25, 1.0),
-                                               'highlight':(0.5, 0.25, 1.0)}})
+        bsInternal._addTransaction({
+            'type': 'ADD_PLAYER_PROFILE',
+            'name': '__account__',
+            'profile': {
+                'character': 'Spaz',
+                'color': (0.5, 0.25, 1.0),
+                'highlight': (0.5, 0.25, 1.0)
+            }
+        })
         bsInternal._runTransactions()
+
 
 # used internally
 def _handleRemoteAchievementList(completedAchievements):
     import bsAchievement
     bsAchievement.setCompletedAchievements(completedAchievements)
+
 
 def _getRemoteAppName():
     env = bs.getEnvironment()
@@ -613,12 +659,17 @@ def _getRemoteAppName():
     else:
         return bs.Lstr(resource='remote_app.app_name')
 
+
 def _shouldSubmitDebugInfo():
-    try: return bs.getConfig()['Submit Debug Info']
-    except Exception: return True
+    try:
+        return bs.getConfig()['Submit Debug Info']
+    except Exception:
+        return True
+
 
 def _handleAppPause():
     pass
+
 
 def _handleAppResume():
     # if there's music playing externally, make sure we aren't playing ours
@@ -633,6 +684,7 @@ def _handleAppResume():
     # they might be out of date
     for entry in bsUI.gTournamentInfo.values():
         entry['valid'] = False
+
 
 # high level way to launch a challenge game locally
 def _handleRunChallengeGame(game, force=False, args={}):
@@ -657,13 +709,14 @@ def _handleRunChallengeGame(game, force=False, args={}):
                 return False
 
     # ok we're good to go..
-    bsUI.gCoopSessionArgs = {'campaign':campaignName, 'level':levelName}
+    bsUI.gCoopSessionArgs = {'campaign': campaignName, 'level': levelName}
     for argName, argVal in args.items():
         bsUI.gCoopSessionArgs[argName] = argVal
 
     def _fadeEnd():
         import bsCoopGame
-        try: bsInternal._newHostSession(bsCoopGame.CoopSession)
+        try:
+            bsInternal._newHostSession(bsCoopGame.CoopSession)
         except Exception:
             bs.printException()
             import bsMainMenu
@@ -671,6 +724,7 @@ def _handleRunChallengeGame(game, force=False, args={}):
 
     bsInternal._fadeScreen(False, time=250, endCall=_fadeEnd)
     return True
+
 
 def openURL(address, *args, **keywds):
     """
@@ -680,6 +734,7 @@ def openURL(address, *args, **keywds):
     string in a window if that isn't possible.
     """
     bsInternal._openURL(address, *args, **keywds)
+
 
 def isBrowserLikelyAvailable():
     """
@@ -696,7 +751,8 @@ def isBrowserLikelyAvailable():
     env = bs.getEnvironment()
     platform = env['platform']
     subplatform = env['subplatform']
-    touchscreen = bsInternal._getInputDevice('TouchScreen', '#1',
+    touchscreen = bsInternal._getInputDevice('TouchScreen',
+                                             '#1',
                                              exceptionOnNone=False)
 
     # ouya has a browser... but its sucks so lets say no.
@@ -710,378 +766,343 @@ def isBrowserLikelyAvailable():
     # anywhere else assume we've got one
     return True
 
+
 def _getDefaultFreeForAllPlaylist():
-    return [
-         {
-            'settings':{
-               'Epic Mode':False,
-               'Kills to Win Per Player':10,
-               'Respawn Times':1.0,
-               'Time Limit':300,
-               'map':'Doom Shroom'
-            },
-            'type':'bsDeathMatch.DeathMatchGame'
-         },
-         {
-            'settings':{
-               'Chosen One Gets Gloves':True,
-               'Chosen One Gets Shield':False,
-               'Chosen One Time':30,
-               'Epic Mode':0,
-               'Respawn Times':1.0,
-               'Time Limit':300,
-               'map':'Monkey Face'
-            },
-            'type':'bsChosenOne.ChosenOneGame'
-         },
-         {
-            'settings':{
-               'Hold Time':30,
-               'Respawn Times':1.0,
-               'Time Limit':300,
-               'map':'Zigzag'
-            },
-            'type':'bsKingOfTheHill.KingOfTheHillGame'
-         },
-         {
-            'settings':{
-               'Epic Mode':False,
-               'map':'Rampage'
-            },
-            'type':'bsMeteorShower.MeteorShowerGame'
-         },
-         {
-            'settings':{
-               'Epic Mode':1,
-               'Lives Per Player':1,
-               'Respawn Times':1.0,
-               'Time Limit':120,
-               'map':'Tip Top'
-            },
-            'type':'bsElimination.EliminationGame'
-         },
-         {
-            'settings':{
-               'Hold Time':30,
-               'Respawn Times':1.0,
-               'Time Limit':300,
-               'map':'The Pad'
-            },
-            'type':'bsKeepAway.KeepAwayGame'
-         },
-         {
-            'settings':{
-               'Epic Mode':True,
-               'Kills to Win Per Player':10,
-               'Respawn Times':0.25,
-               'Time Limit':120,
-               'map':'Rampage'
-            },
-            'type':'bsDeathMatch.DeathMatchGame'
-         },
-         {
-            'settings':{
-               'Bomb Spawning':1000,
-               'Epic Mode':False,
-               'Laps':3,
-               'Mine Spawn Interval':4000,
-               'Mine Spawning':4000,
-               'Time Limit':300,
-               'map':'Big G'
-            },
-            'type':'bsRace.RaceGame'
-         },
-         {
-            'settings':{
-               'Hold Time':30,
-               'Respawn Times':1.0,
-               'Time Limit':300,
-               'map':'Happy Thoughts'
-            },
-            'type':'bsKingOfTheHill.KingOfTheHillGame'
-         },
-         {
-            'settings':{
-               'Enable Impact Bombs':1,
-               'Enable Triple Bombs':False,
-               'Target Count':2,
-               'map':'Doom Shroom'
-            },
-            'type':'bsTargetPractice.TargetPracticeGame'
-         },
-         {
-            'settings':{
-               'Epic Mode':False,
-               'Lives Per Player':5,
-               'Respawn Times':1.0,
-               'Time Limit':300,
-               'map':'Step Right Up'
-            },
-            'type':'bsElimination.EliminationGame'
-         },
-         {
-            'settings':{
-               'Epic Mode':False,
-               'Kills to Win Per Player':10,
-               'Respawn Times':1.0,
-               'Time Limit':300,
-               'map':'Crag Castle'
-            },
-            'type':'bsDeathMatch.DeathMatchGame'
-         },
-         {
-            'map':'Lake Frigid',
-            'settings':{
-               'Bomb Spawning':0,
-               'Epic Mode':False,
-               'Laps':6,
-               'Mine Spawning':2000,
-               'Time Limit':300,
-               'map':'Lake Frigid'
-            },
-            'type':'bsRace.RaceGame'
-         }
-      ]
+    return [{
+        'settings': {
+            'Epic Mode': False,
+            'Kills to Win Per Player': 10,
+            'Respawn Times': 1.0,
+            'Time Limit': 300,
+            'map': 'Doom Shroom'
+        },
+        'type': 'bsDeathMatch.DeathMatchGame'
+    }, {
+        'settings': {
+            'Chosen One Gets Gloves': True,
+            'Chosen One Gets Shield': False,
+            'Chosen One Time': 30,
+            'Epic Mode': 0,
+            'Respawn Times': 1.0,
+            'Time Limit': 300,
+            'map': 'Monkey Face'
+        },
+        'type': 'bsChosenOne.ChosenOneGame'
+    }, {
+        'settings': {
+            'Hold Time': 30,
+            'Respawn Times': 1.0,
+            'Time Limit': 300,
+            'map': 'Zigzag'
+        },
+        'type': 'bsKingOfTheHill.KingOfTheHillGame'
+    }, {
+        'settings': {
+            'Epic Mode': False,
+            'map': 'Rampage'
+        },
+        'type': 'bsMeteorShower.MeteorShowerGame'
+    }, {
+        'settings': {
+            'Epic Mode': 1,
+            'Lives Per Player': 1,
+            'Respawn Times': 1.0,
+            'Time Limit': 120,
+            'map': 'Tip Top'
+        },
+        'type': 'bsElimination.EliminationGame'
+    }, {
+        'settings': {
+            'Hold Time': 30,
+            'Respawn Times': 1.0,
+            'Time Limit': 300,
+            'map': 'The Pad'
+        },
+        'type': 'bsKeepAway.KeepAwayGame'
+    }, {
+        'settings': {
+            'Epic Mode': True,
+            'Kills to Win Per Player': 10,
+            'Respawn Times': 0.25,
+            'Time Limit': 120,
+            'map': 'Rampage'
+        },
+        'type': 'bsDeathMatch.DeathMatchGame'
+    }, {
+        'settings': {
+            'Bomb Spawning': 1000,
+            'Epic Mode': False,
+            'Laps': 3,
+            'Mine Spawn Interval': 4000,
+            'Mine Spawning': 4000,
+            'Time Limit': 300,
+            'map': 'Big G'
+        },
+        'type': 'bsRace.RaceGame'
+    }, {
+        'settings': {
+            'Hold Time': 30,
+            'Respawn Times': 1.0,
+            'Time Limit': 300,
+            'map': 'Happy Thoughts'
+        },
+        'type': 'bsKingOfTheHill.KingOfTheHillGame'
+    }, {
+        'settings': {
+            'Enable Impact Bombs': 1,
+            'Enable Triple Bombs': False,
+            'Target Count': 2,
+            'map': 'Doom Shroom'
+        },
+        'type': 'bsTargetPractice.TargetPracticeGame'
+    }, {
+        'settings': {
+            'Epic Mode': False,
+            'Lives Per Player': 5,
+            'Respawn Times': 1.0,
+            'Time Limit': 300,
+            'map': 'Step Right Up'
+        },
+        'type': 'bsElimination.EliminationGame'
+    }, {
+        'settings': {
+            'Epic Mode': False,
+            'Kills to Win Per Player': 10,
+            'Respawn Times': 1.0,
+            'Time Limit': 300,
+            'map': 'Crag Castle'
+        },
+        'type': 'bsDeathMatch.DeathMatchGame'
+    }, {
+        'map': 'Lake Frigid',
+        'settings': {
+            'Bomb Spawning': 0,
+            'Epic Mode': False,
+            'Laps': 6,
+            'Mine Spawning': 2000,
+            'Time Limit': 300,
+            'map': 'Lake Frigid'
+        },
+        'type': 'bsRace.RaceGame'
+    }]
+
 
 def _getDefaultTeamsPlaylist():
-    return [
-         {
-            'settings':{
-               'Epic Mode':False,
-               'Flag Idle Return Time':30,
-               'Flag Touch Return Time':0,
-               'Respawn Times':1.0,
-               'Score to Win':3,
-               'Time Limit':600,
-               'map':'Bridgit'
-            },
-            'type':'bsCaptureTheFlag.CTFGame'
-         },
-         {
-            'settings':{
-               'Epic Mode':False,
-               'Respawn Times':1.0,
-               'Score to Win':3,
-               'Time Limit':600,
-               'map':'Step Right Up'
-            },
-            'type':'bsAssault.AssaultGame'
-         },
-         {
-            'settings':{
-               'Balance Total Lives':False,
-               'Epic Mode':False,
-               'Lives Per Player':3,
-               'Respawn Times':1.0,
-               'Solo Mode':True,
-               'Time Limit':600,
-               'map':'Rampage'
-            },
-            'type':'bsElimination.EliminationGame'
-         },
-         {
-            'settings':{
-               'Epic Mode':False,
-               'Kills to Win Per Player':5,
-               'Respawn Times':1.0,
-               'Time Limit':300,
-               'map':'Roundabout'
-            },
-            'type':'bsDeathMatch.DeathMatchGame'
-         },
-         {
-            'settings':{
-               'Respawn Times':1.0,
-               'Score to Win':1,
-               'Time Limit':600,
-               'map':'Hockey Stadium'
-            },
-            'type':'bsHockey.HockeyGame'
-         },
-         {
-            'settings':{
-               'Hold Time':30,
-               'Respawn Times':1.0,
-               'Time Limit':300,
-               'map':'Monkey Face'
-            },
-            'type':'bsKeepAway.KeepAwayGame'
-         },
-         {
-            'settings':{
-               'Balance Total Lives':False,
-               'Epic Mode':True,
-               'Lives Per Player':1,
-               'Respawn Times':1.0,
-               'Solo Mode':False,
-               'Time Limit':120,
-               'map':'Tip Top'
-            },
-            'type':'bsElimination.EliminationGame'
-         },
-         {
-            'settings':{
-               'Epic Mode':False,
-               'Respawn Times':1.0,
-               'Score to Win':3,
-               'Time Limit':300,
-               'map':'Crag Castle'
-            },
-            'type':'bsAssault.AssaultGame'
-         },
-         {
-            'settings':{
-               'Epic Mode':False,
-               'Kills to Win Per Player':5,
-               'Respawn Times':1.0,
-               'Time Limit':300,
-               'map':'Doom Shroom'
-            },
-            'type':'bsDeathMatch.DeathMatchGame'
-         },
-         {
-            'settings':{
-               'Epic Mode':False,
-               'map':'Rampage'
-            },
-            'type':'bsMeteorShower.MeteorShowerGame'
-         },
-         {
-            'settings':{
-               'Epic Mode':False,
-               'Flag Idle Return Time':30,
-               'Flag Touch Return Time':0,
-               'Respawn Times':1.0,
-               'Score to Win':2,
-               'Time Limit':600,
-               'map':'Roundabout'
-            },
-            'type':'bsCaptureTheFlag.CTFGame'
-         },
-         {
-            'settings':{
-               'Respawn Times':1.0,
-               'Score to Win':21,
-               'Time Limit':600,
-               'map':'Football Stadium'
-            },
-            'type':'bsFootball.FootballTeamGame'
-         },
-         {
-            'settings':{
-               'Epic Mode':True,
-               'Respawn Times':0.25,
-               'Score to Win':3,
-               'Time Limit':120,
-               'map':'Bridgit'
-            },
-            'type':'bsAssault.AssaultGame'
-         },
-         {
-            'map':'Doom Shroom',
-            'settings':{
-               'Enable Impact Bombs':1,
-               'Enable Triple Bombs':False,
-               'Target Count':2,
-               'map':'Doom Shroom'
-            },
-            'type':'bsTargetPractice.TargetPracticeGame'
-         },
-         {
-            'settings':{
-               'Hold Time':30,
-               'Respawn Times':1.0,
-               'Time Limit':300,
-               'map':'Tip Top'
-            },
-            'type':'bsKingOfTheHill.KingOfTheHillGame'
-         },
-         {
-            'settings':{
-               'Epic Mode':False,
-               'Respawn Times':1.0,
-               'Score to Win':2,
-               'Time Limit':300,
-               'map':'Zigzag'
-            },
-            'type':'bsAssault.AssaultGame'
-         },
-         {
-            'settings':{
-               'Epic Mode':False,
-               'Flag Idle Return Time':30,
-               'Flag Touch Return Time':0,
-               'Respawn Times':1.0,
-               'Score to Win':3,
-               'Time Limit':300,
-               'map':'Happy Thoughts'
-            },
-            'type':'bsCaptureTheFlag.CTFGame'
-         },
-         {
-            'settings':{
-               'Bomb Spawning':1000,
-               'Epic Mode':True,
-               'Laps':1,
-               'Mine Spawning':2000,
-               'Time Limit':300,
-               'map':'Big G'
-            },
-            'type':'bsRace.RaceGame'
-         },
-         {
-            'settings':{
-               'Epic Mode':False,
-               'Kills to Win Per Player':5,
-               'Respawn Times':1.0,
-               'Time Limit':300,
-               'map':'Monkey Face'
-            },
-            'type':'bsDeathMatch.DeathMatchGame'
-         },
-         {
-            'settings':{
-               'Hold Time':30,
-               'Respawn Times':1.0,
-               'Time Limit':300,
-               'map':'Lake Frigid'
-            },
-            'type':'bsKeepAway.KeepAwayGame'
-         },
-         {
-            'settings':{
-               'Epic Mode':False,
-               'Flag Idle Return Time':30,
-               'Flag Touch Return Time':3,
-               'Respawn Times':1.0,
-               'Score to Win':2,
-               'Time Limit':300,
-               'map':'Tip Top'
-            },
-            'type':'bsCaptureTheFlag.CTFGame'
-         },
-         {
-            'settings':{
-               'Balance Total Lives':False,
-               'Epic Mode':False,
-               'Lives Per Player':3,
-               'Respawn Times':1.0,
-               'Solo Mode':False,
-               'Time Limit':300,
-               'map':'Crag Castle'
-            },
-            'type':'bsElimination.EliminationGame'
-         },
-         {
-            'settings':{
-               'Epic Mode':True,
-               'Respawn Times':0.25,
-               'Time Limit':120,
-               'map':'Zigzag'
-            },
-            'type':'bsConquest.ConquestGame'
-         }
-      ]
+    return [{
+        'settings': {
+            'Epic Mode': False,
+            'Flag Idle Return Time': 30,
+            'Flag Touch Return Time': 0,
+            'Respawn Times': 1.0,
+            'Score to Win': 3,
+            'Time Limit': 600,
+            'map': 'Bridgit'
+        },
+        'type': 'bsCaptureTheFlag.CTFGame'
+    }, {
+        'settings': {
+            'Epic Mode': False,
+            'Respawn Times': 1.0,
+            'Score to Win': 3,
+            'Time Limit': 600,
+            'map': 'Step Right Up'
+        },
+        'type': 'bsAssault.AssaultGame'
+    }, {
+        'settings': {
+            'Balance Total Lives': False,
+            'Epic Mode': False,
+            'Lives Per Player': 3,
+            'Respawn Times': 1.0,
+            'Solo Mode': True,
+            'Time Limit': 600,
+            'map': 'Rampage'
+        },
+        'type': 'bsElimination.EliminationGame'
+    }, {
+        'settings': {
+            'Epic Mode': False,
+            'Kills to Win Per Player': 5,
+            'Respawn Times': 1.0,
+            'Time Limit': 300,
+            'map': 'Roundabout'
+        },
+        'type': 'bsDeathMatch.DeathMatchGame'
+    }, {
+        'settings': {
+            'Respawn Times': 1.0,
+            'Score to Win': 1,
+            'Time Limit': 600,
+            'map': 'Hockey Stadium'
+        },
+        'type': 'bsHockey.HockeyGame'
+    }, {
+        'settings': {
+            'Hold Time': 30,
+            'Respawn Times': 1.0,
+            'Time Limit': 300,
+            'map': 'Monkey Face'
+        },
+        'type': 'bsKeepAway.KeepAwayGame'
+    }, {
+        'settings': {
+            'Balance Total Lives': False,
+            'Epic Mode': True,
+            'Lives Per Player': 1,
+            'Respawn Times': 1.0,
+            'Solo Mode': False,
+            'Time Limit': 120,
+            'map': 'Tip Top'
+        },
+        'type': 'bsElimination.EliminationGame'
+    }, {
+        'settings': {
+            'Epic Mode': False,
+            'Respawn Times': 1.0,
+            'Score to Win': 3,
+            'Time Limit': 300,
+            'map': 'Crag Castle'
+        },
+        'type': 'bsAssault.AssaultGame'
+    }, {
+        'settings': {
+            'Epic Mode': False,
+            'Kills to Win Per Player': 5,
+            'Respawn Times': 1.0,
+            'Time Limit': 300,
+            'map': 'Doom Shroom'
+        },
+        'type': 'bsDeathMatch.DeathMatchGame'
+    }, {
+        'settings': {
+            'Epic Mode': False,
+            'map': 'Rampage'
+        },
+        'type': 'bsMeteorShower.MeteorShowerGame'
+    }, {
+        'settings': {
+            'Epic Mode': False,
+            'Flag Idle Return Time': 30,
+            'Flag Touch Return Time': 0,
+            'Respawn Times': 1.0,
+            'Score to Win': 2,
+            'Time Limit': 600,
+            'map': 'Roundabout'
+        },
+        'type': 'bsCaptureTheFlag.CTFGame'
+    }, {
+        'settings': {
+            'Respawn Times': 1.0,
+            'Score to Win': 21,
+            'Time Limit': 600,
+            'map': 'Football Stadium'
+        },
+        'type': 'bsFootball.FootballTeamGame'
+    }, {
+        'settings': {
+            'Epic Mode': True,
+            'Respawn Times': 0.25,
+            'Score to Win': 3,
+            'Time Limit': 120,
+            'map': 'Bridgit'
+        },
+        'type': 'bsAssault.AssaultGame'
+    }, {
+        'map': 'Doom Shroom',
+        'settings': {
+            'Enable Impact Bombs': 1,
+            'Enable Triple Bombs': False,
+            'Target Count': 2,
+            'map': 'Doom Shroom'
+        },
+        'type': 'bsTargetPractice.TargetPracticeGame'
+    }, {
+        'settings': {
+            'Hold Time': 30,
+            'Respawn Times': 1.0,
+            'Time Limit': 300,
+            'map': 'Tip Top'
+        },
+        'type': 'bsKingOfTheHill.KingOfTheHillGame'
+    }, {
+        'settings': {
+            'Epic Mode': False,
+            'Respawn Times': 1.0,
+            'Score to Win': 2,
+            'Time Limit': 300,
+            'map': 'Zigzag'
+        },
+        'type': 'bsAssault.AssaultGame'
+    }, {
+        'settings': {
+            'Epic Mode': False,
+            'Flag Idle Return Time': 30,
+            'Flag Touch Return Time': 0,
+            'Respawn Times': 1.0,
+            'Score to Win': 3,
+            'Time Limit': 300,
+            'map': 'Happy Thoughts'
+        },
+        'type': 'bsCaptureTheFlag.CTFGame'
+    }, {
+        'settings': {
+            'Bomb Spawning': 1000,
+            'Epic Mode': True,
+            'Laps': 1,
+            'Mine Spawning': 2000,
+            'Time Limit': 300,
+            'map': 'Big G'
+        },
+        'type': 'bsRace.RaceGame'
+    }, {
+        'settings': {
+            'Epic Mode': False,
+            'Kills to Win Per Player': 5,
+            'Respawn Times': 1.0,
+            'Time Limit': 300,
+            'map': 'Monkey Face'
+        },
+        'type': 'bsDeathMatch.DeathMatchGame'
+    }, {
+        'settings': {
+            'Hold Time': 30,
+            'Respawn Times': 1.0,
+            'Time Limit': 300,
+            'map': 'Lake Frigid'
+        },
+        'type': 'bsKeepAway.KeepAwayGame'
+    }, {
+        'settings': {
+            'Epic Mode': False,
+            'Flag Idle Return Time': 30,
+            'Flag Touch Return Time': 3,
+            'Respawn Times': 1.0,
+            'Score to Win': 2,
+            'Time Limit': 300,
+            'map': 'Tip Top'
+        },
+        'type': 'bsCaptureTheFlag.CTFGame'
+    }, {
+        'settings': {
+            'Balance Total Lives': False,
+            'Epic Mode': False,
+            'Lives Per Player': 3,
+            'Respawn Times': 1.0,
+            'Solo Mode': False,
+            'Time Limit': 300,
+            'map': 'Crag Castle'
+        },
+        'type': 'bsElimination.EliminationGame'
+    }, {
+        'settings': {
+            'Epic Mode': True,
+            'Respawn Times': 0.25,
+            'Time Limit': 120,
+            'map': 'Zigzag'
+        },
+        'type': 'bsConquest.ConquestGame'
+    }]
+
 
 def _readConfig():
     global gConfigFileIsHealthy
@@ -1095,13 +1116,14 @@ def _readConfig():
             configContents = f.read()
             f.close()
             # supply unicode input to force unicode output
-            _gConfig = json.loads(configContents.decode(
-                'utf-8', errors='ignore'))
+            _gConfig = json.loads(
+                configContents.decode('utf-8', errors='ignore'))
             # while we're here, if they have an old-style config,
             # rename it so they know its old
             if (os.path.exists(oldConfigPath)
-                    and not os.path.exists(oldConfigPath+'.old')):
-                try: os.rename(oldConfigPath, oldConfigPath+'.old')
+                    and not os.path.exists(oldConfigPath + '.old')):
+                try:
+                    os.rename(oldConfigPath, oldConfigPath + '.old')
                 except Exception as e:
                     print 'unable to rename old non-json config:', e
         else:
@@ -1122,18 +1144,20 @@ def _readConfig():
 
     except Exception as e:
 
-        print ('error reading config file at time '+str(bs.getRealTime())
-               +': \''+configFilePath+'\':\n'), e
+        print('error reading config file at time ' + str(bs.getRealTime()) +
+              ': \'' + configFilePath + '\':\n'), e
         # whenever this happens lets back up the broken one just in case it
         # gets overwritten accidentally
-        print 'backing up current config file to \''+configFilePath+".broken\'"
+        print 'backing up current config file to \'' + configFilePath + ".broken\'"
         try:
             import shutil
-            shutil.copyfile(configFilePath, configFilePath+'.broken')
-        except Exception as e: print 'EXC copying broken config:', e
+            shutil.copyfile(configFilePath, configFilePath + '.broken')
+        except Exception as e:
+            print 'EXC copying broken config:', e
         try:
-            bsInternal._log('broken config contents:\n'+configContents.replace(
-                '\000', '<NULL_BYTE>'), toConsole=False)
+            bsInternal._log('broken config contents:\n' +
+                            configContents.replace('\000', '<NULL_BYTE>'),
+                            toConsole=False)
         except Exception as e:
             print 'EXC logging broken config contents:', e
         _gConfig = {}
@@ -1146,11 +1170,13 @@ def _readConfig():
                 configContents = f.read()
                 f.close()
                 _gConfig = json.loads(configContents)
-            else: _gConfig = {}
+            else:
+                _gConfig = {}
             gConfigFileIsHealthy = True
             print 'successfully read backup config.'
         except Exception as e:
             print 'EXC reading prev backup config:', e
+
 
 def _prettifyList(l, indent=0, multiLine=True):
     bits = []
@@ -1158,16 +1184,17 @@ def _prettifyList(l, indent=0, multiLine=True):
     for i in range(len(l)):
         a = l[i]
         if isinstance(a, dict):
-            if multiLine: bits.append(' '*(indent+3))
-            bits += _prettifyDict(a, indent+3, multiLine, returnBits=True)
+            if multiLine: bits.append(' ' * (indent + 3))
+            bits += _prettifyDict(a, indent + 3, multiLine, returnBits=True)
         else:
-            if multiLine: bits.append(' '*(indent+3) + repr(a))
+            if multiLine: bits.append(' ' * (indent + 3) + repr(a))
             else: bits.append(repr(a))
-        if (i < (len(l)-1)):
+        if (i < (len(l) - 1)):
             bits.append(',')
         if multiLine: bits.append("\n")
-    bits.append((' '*indent + ']') if multiLine else ']')
+    bits.append((' ' * indent + ']') if multiLine else ']')
     return bits
+
 
 def _prettifyDict(d, indent=0, multiLine=True, returnBits=False):
     bits = []
@@ -1179,39 +1206,45 @@ def _prettifyDict(d, indent=0, multiLine=True, returnBits=False):
         b = items[i][1]
         maxStrLineLen = 100
         if isinstance(b, dict):
-            if multiLine: bits.append(' '*(indent+3) + repr(a) + ':')
+            if multiLine: bits.append(' ' * (indent + 3) + repr(a) + ':')
             else: bits.append(repr(a) + ':')
-            bits += _prettifyDict(b, indent+3, multiLine, returnBits=True)
+            bits += _prettifyDict(b, indent + 3, multiLine, returnBits=True)
         elif isinstance(b, list):
-            if multiLine: bits.append(' '*(indent+3) + repr(a) + ':')
+            if multiLine: bits.append(' ' * (indent + 3) + repr(a) + ':')
             else: bits.append(repr(a) + ':')
-            bits += _prettifyList(b, indent+3, multiLine)
+            bits += _prettifyList(b, indent + 3, multiLine)
         # special case - break really long strings into multiple lines
         elif multiLine and isinstance(b, str) and len(b) > maxStrLineLen:
             bCopy = b
             bLines = []
-            indentStr = ' '*(indent+3+len(a)+4)
+            indentStr = ' ' * (indent + 3 + len(a) + 4)
             while len(bCopy) > 0:
                 if len(bLines) > 0:
-                    bLines.append(indentStr+repr(bCopy[:maxStrLineLen]))
-                else: bLines.append('('+repr(bCopy[:maxStrLineLen]))
+                    bLines.append(indentStr + repr(bCopy[:maxStrLineLen]))
+                else:
+                    bLines.append('(' + repr(bCopy[:maxStrLineLen]))
                 bCopy = bCopy[maxStrLineLen:]
-            bits.append(' '*(indent+3) + repr(a) + ':' + '\n'.join(bLines)+')')
+            bits.append(' ' * (indent + 3) + repr(a) + ':' +
+                        '\n'.join(bLines) + ')')
         else:
-            if multiLine: bits.append(' '*(indent+3) + repr(a) + ':' + repr(b))
-            else: bits.append(repr(a) + ':' + repr(b))
-        if (i < (len(items)-1)):
+            if multiLine:
+                bits.append(' ' * (indent + 3) + repr(a) + ':' + repr(b))
+            else:
+                bits.append(repr(a) + ':' + repr(b))
+        if (i < (len(items) - 1)):
             bits.append(',')
         if multiLine: bits.append("\n")
-    bits.append((' '*indent + '}') if multiLine else '}')
+    bits.append((' ' * indent + '}') if multiLine else '}')
 
     if returnBits:
         return bits
-    else: return ''.join(bits)
+    else:
+        return ''.join(bits)
 
 
 gAllowingPackageMods = None
 gPackageModsAdded = set()
+
 
 def _getModulesWithCall(callName, whiteList=None, blackList=None):
 
@@ -1236,20 +1269,21 @@ def _getModulesWithCall(callName, whiteList=None, blackList=None):
                 dirlist = os.listdir(d)
             except Exception:
                 bs.printException('error listing dir during'
-                                  ' _getModulesWithCall(): \''+d+'\'')
+                                  ' _getModulesWithCall(): \'' + d + '\'')
                 dirlist = []
-        else: dirlist = []
+        else:
+            dirlist = []
 
         for name in dirlist:
-            packageDir = d+'/'+name
+            packageDir = d + '/' + name
             if os.path.isdir(packageDir) and name != 'sys':
                 # for each valid package we find, add it to the python
                 # path and media lookup path if we havn't yet..
                 if name not in gPackageModsAdded:
                     gPackageModsAdded.add(name)
-                    sys.path.append(packageDir+'/scripts')
+                    sys.path.append(packageDir + '/scripts')
                     bsInternal._addPackage(name, packageDir)
-                scriptDirs.append(packageDir+'/scripts')
+                scriptDirs.append(packageDir + '/scripts')
 
     # lets warn if have duplicate scripts..
     namesImported = set()
@@ -1258,17 +1292,19 @@ def _getModulesWithCall(callName, whiteList=None, blackList=None):
     for i, d in enumerate(scriptDirs):
 
         if os.path.isdir(d):
-            try: dirlist = os.listdir(d)
+            try:
+                dirlist = os.listdir(d)
             except Exception as e:
                 import errno
                 if (type(e) == OSError
                         and e.errno in (errno.EACCES, errno.ENOENT)):
-                    pass # we expect these sometimes..
+                    pass  # we expect these sometimes..
                 else:
                     bs.printException('error listing dir during '
-                                      '_getModulesWithCall(): \''+d+'\'')
+                                      '_getModulesWithCall(): \'' + d + '\'')
                 dirlist = []
-        else: dirlist = []
+        else:
+            dirlist = []
 
         for name in dirlist:
             try:
@@ -1290,10 +1326,10 @@ def _getModulesWithCall(callName, whiteList=None, blackList=None):
                         # avoid importing language modules here to save
                         # a bit of time/memory..
                         if (name.endswith('.py')
-                            and not name.startswith('bsLanguage')):
+                                and not name.startswith('bsLanguage')):
                             if name in namesImported:
                                 errMsg = ("Warning: duplicate mod script "
-                                          "found: '"+name+"'; ignoring.")
+                                          "found: '" + name + "'; ignoring.")
                                 print errMsg
                                 bs.screenMessage(errMsg, color=(1, 0, 0))
                             else:
@@ -1308,14 +1344,17 @@ def _getModulesWithCall(callName, whiteList=None, blackList=None):
                                     # if this module's API-version doesn't match
                                     # ours, ignore it (and complain about it)
                                     ourAPIVersion = 4
-                                    try: moduleAPIVersion = \
-                                       module.bsGetAPIVersion()
-                                    except Exception: moduleAPIVersion = None
+                                    try:                                        moduleAPIVersion = \
+                                      module.bsGetAPIVersion()
+                                    except Exception:
+                                        moduleAPIVersion = None
                                     if moduleAPIVersion == ourAPIVersion:
                                         modules.append(module)
                                     else:
-                                        try: name = module.__name__
-                                        except Exception: name = str(module)
+                                        try:
+                                            name = module.__name__
+                                        except Exception:
+                                            name = str(module)
                                         txt = bs.Lstr(
                                             resource='apiVersionErrorText',
                                             subs=[('${NAME}', name),
@@ -1323,12 +1362,15 @@ def _getModulesWithCall(callName, whiteList=None, blackList=None):
                                                    str(moduleAPIVersion)),
                                                   ('${VERSION_REQUIRED}',
                                                    str(ourAPIVersion))])
-                                        bs.screenMessage(txt, color=(1, 0.5, 0))
+                                        bs.screenMessage(txt,
+                                                         color=(1, 0.5, 0))
             except Exception:
-                bs.printException('Error importing game module \''+name+'\'')
+                bs.printException('Error importing game module \'' + name +
+                                  '\'')
 
     bsInternal._setHaveMods(haveMods)
     return modules
+
 
 def getGameTypes():
     allGames = []
@@ -1336,16 +1378,18 @@ def getGameTypes():
     for module in modules:
         if ((module.__name__ != 'bsMeteorShower'
              or bsInternal._getPurchased('games.meteor_shower'))
-            and (module.__name__ != 'bsTargetPractice'
-                 or bsInternal._getPurchased('games.target_practice'))
-            and (module.__name__ != 'bsNinjaFight'
-                 or bsInternal._getPurchased('games.ninja_fight'))
-            and (module.__name__ != 'bsEasterEggHunt'
-                 or bsInternal._getPurchased('games.easter_egg_hunt'))):
+                and (module.__name__ != 'bsTargetPractice'
+                     or bsInternal._getPurchased('games.target_practice'))
+                and (module.__name__ != 'bsNinjaFight'
+                     or bsInternal._getPurchased('games.ninja_fight'))
+                and (module.__name__ != 'bsEasterEggHunt'
+                     or bsInternal._getPurchased('games.easter_egg_hunt'))):
             allGames += module.bsGetGames()
     return allGames
 
-gTips = ["Made By Blitz","Blitz Server Script"]
+
+gTips = []
+
 
 def _getNextTip():
     """ returns the next tip to be displayed """
@@ -1356,16 +1400,17 @@ def _getNextTip():
     t = gTips.pop()
     return t
 
+
 def _getAllTips():
-    tips =  [
+    tips = [
         ('If you are short on controllers, install the \'${REMOTE_APP_NAME}\' '
-        'app\non your mobile devices to use them as controllers.'),
+         'app\non your mobile devices to use them as controllers.'),
         ('Create player profiles for yourself and your friends with\nyour '
-        'preferred names and appearances instead of using random ones.'),
+         'preferred names and appearances instead of using random ones.'),
         ('You can \'aim\' your punches by spinning left or right.\nThis is '
-        'useful for knocking bad guys off edges or scoring in hockey.'),
+         'useful for knocking bad guys off edges or scoring in hockey.'),
         ('If you pick up a curse, your only hope for survival is to\nfind a '
-        'health powerup in the next few seconds.'),
+         'health powerup in the next few seconds.'),
         ('A perfectly timed running-jumping-spin-punch can kill in a single '
          'hit\nand earn you lifelong respect from your friends.'),
         'Always remember to floss.',
@@ -1405,17 +1450,23 @@ def _getAllTips():
          'won\'t turn very well, so watch out for cliffs.'),
         ('You can judge when a bomb is going to explode based on the\n'
          'color of sparks from its fuse:  yellow..orange..red..BOOM.'),
-        ]
+    ]
     ua = bs.getEnvironment()['userAgentString']
-    tips += ['If your framerate is choppy, try turning down resolution\nor '
-             'visuals in the game\'s graphics settings.']
+    tips += [
+        'If your framerate is choppy, try turning down resolution\nor '
+        'visuals in the game\'s graphics settings.'
+    ]
     if bs.getEnvironment()['platform'] in ('android', 'ios'):
-        tips += [('If your device gets too warm or you\'d like to conserve '
-                  'battery power,\nturn down "Visuals" or "Resolution" '
-                  'in Settings->Graphics'),]
+        tips += [
+            ('If your device gets too warm or you\'d like to conserve '
+             'battery power,\nturn down "Visuals" or "Resolution" '
+             'in Settings->Graphics'),
+        ]
     if bs.getEnvironment()['platform'] in ['mac', 'android']:
-        tips += ['Tired of the soundtrack?  Replace it with your own!'
-                 '\nSee Settings->Audio->Soundtrack']
+        tips += [
+            'Tired of the soundtrack?  Replace it with your own!'
+            '\nSee Settings->Audio->Soundtrack'
+        ]
     # hot-plugging is currently mac/android only
     if bs.getEnvironment()['platform'] in ['mac', 'android', 'windows']:
         tips += [
@@ -1423,6 +1474,7 @@ def _getAllTips():
             'and you can also plug and unplug controllers on the fly.',
         ]
     return tips
+
 
 def _getUnOwnedGameTypes():
     try:
@@ -1440,8 +1492,12 @@ def _getUnOwnedGameTypes():
         bs.printException("error calcing un-owned games")
         return set()
 
-def _filterPlaylist(playlist, sessionType, addResolvedType=False,
-                    removeUnOwned=True, markUnOwned=False):
+
+def _filterPlaylist(playlist,
+                    sessionType,
+                    addResolvedType=False,
+                    removeUnOwned=True,
+                    markUnOwned=False):
     """ returns a filtered version of a playlist - strips out or replaces
     invalid or unowned game types, makes sure all settings are present,
     and adds in a 'resolvedType' which is the actual type """
@@ -1519,7 +1575,7 @@ def _filterPlaylist(playlist, sessionType, addResolvedType=False,
                         gamespec['settings'][settingName] = setting['default']
                 goodList.append(gamespec)
             except Exception:
-                pass # hmm in what case would we want to report this?...
+                pass  # hmm in what case would we want to report this?...
         else:
             raise Exception("invalid gamespec format")
     return goodList
@@ -1538,26 +1594,33 @@ def _handleLog():
     gLogHaveNew = True
 
     if not gLogUploadTimerStarted:
+
         def _putLog():
             import bsUtils
             if not bsUtils._gSuppressDebugReports:
-                try: sessionName = str(bsInternal._getForegroundHostSession())
-                except Exception: sessionName = 'unavailable'
-                try: activityName = str(bsInternal._getForegroundHostActivity())
-                except Exception: activityName = 'unavailable'
+                try:
+                    sessionName = str(bsInternal._getForegroundHostSession())
+                except Exception:
+                    sessionName = 'unavailable'
+                try:
+                    activityName = str(bsInternal._getForegroundHostActivity())
+                except Exception:
+                    activityName = 'unavailable'
                 env = bs.getEnvironment()
                 info = {
-                    'log':bsInternal._getLog(),
-                    'version':env['version'],
-                    'build':env['buildNumber'],
-                    'userAgentString':bs.getEnvironment()['userAgentString'],
-                    'session':sessionName,
-                    'activity':activityName,
-                    'fatal':0,
-                    'userRanCommands':bsInternal._hasUserRunCommands(),
-                    'time':bs.getRealTime(),
-                    'userModded':bsInternal._hasUserMods(),
-                    'newsShow': bsInternal._get_news_show()}
+                    'log': bsInternal._getLog(),
+                    'version': env['version'],
+                    'build': env['buildNumber'],
+                    'userAgentString': bs.getEnvironment()['userAgentString'],
+                    'session': sessionName,
+                    'activity': activityName,
+                    'fatal': 0,
+                    'userRanCommands': bsInternal._hasUserRunCommands(),
+                    'time': bs.getRealTime(),
+                    'userModded': bsInternal._hasUserMods(),
+                    'newsShow': bsInternal._get_news_show()
+                }
+
                 def response(data):
                     # a non-None response means success; lets
                     # take note that we don't need to report further
@@ -1566,7 +1629,9 @@ def _handleLog():
                         global gLogHaveNew
                         gLogHaveNew = False
                         bsInternal._markLogSent()
+
                 bsUtils.serverPut('bsLog', info, response)
+
         gLogUploadTimerStarted = True
 
         # delay our log upload slightly in case other
@@ -1578,8 +1643,10 @@ def _handleLog():
             global gLogUploadTimerStarted
             gLogUploadTimerStarted = False
             if gLogHaveNew: _handleLog()
+
         if not bsInternal._isLogFull():
-            bs.realTimer(1000*60*10, _reset)
+            bs.realTimer(1000 * 60 * 10, _reset)
+
 
 def writeConfig(force=False, storeRemote=True):
     """category: General Utility Functions
@@ -1588,40 +1655,46 @@ def writeConfig(force=False, storeRemote=True):
     bsConfig = bs.getConfig()
     global gConfigFileIsHealthy
     if not gConfigFileIsHealthy and not force:
-        print ("Current config file is broken; "
-               "skipping write to avoid losing settings.")
+        print(
+            "Current config file is broken; "
+            "skipping write to avoid losing settings.")
         return
     bsInternal._markConfigDirty()
+
 
 def _setLanguage(language, printChange=True, storeToConfig=True):
     """Set the language used by the game.  Pass None to use OS default."""
     global _gLanguageTarget
     global _gLanguageMerged
     bsConfig = bs.getConfig()
-    try: curLanguage = bsConfig['Lang']
-    except Exception: curLanguage = None
+    try:
+        curLanguage = bsConfig['Lang']
+    except Exception:
+        curLanguage = None
 
     # store this in the config if its changing
     if language != curLanguage and storeToConfig:
         if language is None:
-            del bsConfig['Lang'] # clear it out for default
+            del bsConfig['Lang']  # clear it out for default
         else:
             bsConfig['Lang'] = language
         writeConfig()
         switched = True
-    else: switched = False
+    else:
+        switched = False
 
     # None implies default (currently locked to english)
     if language is None:
         language = _getDefaultLanguage()
     try:
         lEnglish = __import__('bsLanguageEnglish')
-        l = __import__('bsLanguage'+language)
-        if language != 'English': reload(l) # helpful for iterating
+        l = __import__('bsLanguage' + language)
+        if language != 'English': reload(l)  # helpful for iterating
     except Exception:
         bs.printException('Exception importing language:', language)
-        bs.screenMessage("Error setting language to '"
-                         + language + "'; see log for details", color=(1, 0, 0))
+        bs.screenMessage("Error setting language to '" + language +
+                         "'; see log for details",
+                         color=(1, 0, 0))
         switched = False
         l = None
     # create an attrdict of *just* our target language
@@ -1640,13 +1713,16 @@ def _setLanguage(language, printChange=True, storeToConfig=True):
 
     # pass some keys/values in for low level code to use;
     # start with everything in ther 'internal' section...
-    internalVals = [v for v in lFull['internal'].items()
-                    if type(v[1]) in (str, unicode)]
+    internalVals = [
+        v for v in lFull['internal'].items() if type(v[1]) in (str, unicode)
+    ]
     # cherry-pick various other values to include..
     # (should probably get rid of the 'internal' section
     # and do everything this way)
-    for value in ['replayNameDefaultText', 'replayWriteErrorText',
-                  'replayVersionErrorText', 'replayReadErrorText']:
+    for value in [
+            'replayNameDefaultText', 'replayWriteErrorText',
+            'replayVersionErrorText', 'replayReadErrorText'
+    ]:
         internalVals.append((value, lFull[value]))
     internalVals.append(('axisText', lFull['configGamepadWindow']['axisText']))
     randomNames = [n.strip() for n in _gLanguageMerged['randomPlayerNamesText']\
@@ -1655,11 +1731,14 @@ def _setLanguage(language, printChange=True, storeToConfig=True):
     bsInternal._setInternalLanguageKeys(internalVals, randomNames)
     if switched and printChange:
         bs.screenMessage(bs.Lstr(resource='languageSetText',
-                                 subs=[('${LANGUAGE}', bs.Lstr(
-                                     translate=('languages', language)))]),
+                                 subs=[('${LANGUAGE}',
+                                        bs.Lstr(translate=('languages',
+                                                           language)))]),
                          color=(0, 1, 0))
 
+
 gLastInGameAdRemoveMessageShowTime = None
+
 
 def _doRemoveInGameAdsMessage():
 
@@ -1667,15 +1746,20 @@ def _doRemoveInGameAdsMessage():
     t = bs.getRealTime()
     global gLastInGameAdRemoveMessageShowTime
     if (gLastInGameAdRemoveMessageShowTime is None
-            or (t - gLastInGameAdRemoveMessageShowTime > 1000*60*10)):
+            or (t - gLastInGameAdRemoveMessageShowTime > 1000 * 60 * 10)):
         gLastInGameAdRemoveMessageShowTime = t
         with bs.Context('UI'):
-            bs.realTimer(1000, bs.Call(bs.screenMessage, bs.Lstr(
-                resource='removeInGameAdsText',
-                subs=[('${PRO}',
-                       bs.Lstr(resource='store.bombSquadProNameText')),
-                      ('${APP_NAME}', bs.Lstr(resource='titleText'))]),
-                                       color=(1, 1, 0)))
+            bs.realTimer(
+                1000,
+                bs.Call(
+                    bs.screenMessage,
+                    bs.Lstr(
+                        resource='removeInGameAdsText',
+                        subs=[('${PRO}',
+                               bs.Lstr(resource='store.bombSquadProNameText')),
+                              ('${APP_NAME}', bs.Lstr(resource='titleText'))]),
+                    color=(1, 1, 0)))
+
 
 class AttrDict(dict):
     """ a dict that can be accessed with dot notation: foo.bar is equivalant
@@ -1686,44 +1770,80 @@ class AttrDict(dict):
         val = self[attr]
         if type(val) is str: return val.decode('utf-8')
         else: return val
+
     def __setattr__(self, attr, value):
         raise Exception()
         self[attr] = value
 
+
 def _addToAttrDict(dst, src):
     for key, value in src.items():
         if type(value) is dict:
-            try: dstDict = dst[key]
-            except Exception: dstDict = dst[key] = AttrDict()
+            try:
+                dstDict = dst[key]
+            except Exception:
+                dstDict = dst[key] = AttrDict()
             if type(dstDict) is not AttrDict:
-                raise Exception("language key '"+ key
-                                + "' is defined both as a dict and value")
+                raise Exception("language key '" + key +
+                                "' is defined both as a dict and value")
             _addToAttrDict(dstDict, value)
         else:
             if type(value) not in (float, int, bool, str, unicode, type(None)):
-                raise Exception("invalid value type for res '" + key
-                                + "': " + str(type(value)))
+                raise Exception("invalid value type for res '" + key + "': " +
+                                str(type(value)))
             dst[key] = value
 
+
 def _canDisplayLanguage(lang):
-    # we don't yet support full unicode display on windows or linux..
-    if (lang in ('Chinese', 'Persian', 'Korean', 'Arabic', 'Hindi')
+    # We don't yet support full unicode display on windows or linux. :(
+    if (lang in ('Chinese', 'ChineseTraditional', 'Persian', 'Korean',
+                 'Arabic', 'Hindi', 'Vietnamese')
             and bs.getEnvironment()['platform'] in ('windows', 'linux')):
         return False
     else:
         return True
 
+
 def _getDefaultLanguage():
-    langs = { 'de':'German', 'es':'Spanish', 'it':'Italian', 'nl':'Dutch',
-              'da':'Danish', 'pt':'Portuguese', 'fr':'French', 'el':'Greek',
-              'ru':'Russian', 'pl':'Polish', 'sv':'Swedish', 'eo':'Esperanto',
-              'cs':'Czech', 'hr':'Croatian', 'hu':'Hungarian',
-              'be':'Belarussian', 'ro':'Romanian', 'ko':'Korean',
-              'fa':'Persian', 'ar':'Arabic', 'zh':'Chinese', 'tr':'Turkish',
-              'id':'Indonesian', 'sr':'Serbian', 'uk':'Ukrainian', 'hi':'Hindi'}
-    lang = langs.get(bs.getEnvironment()['locale'][:2], 'English')
-    if not _canDisplayLanguage(lang): lang = 'English'
+    langs = {
+        'de': 'German',
+        'es': 'Spanish',
+        'it': 'Italian',
+        'nl': 'Dutch',
+        'da': 'Danish',
+        'pt': 'Portuguese',
+        'fr': 'French',
+        'el': 'Greek',
+        'ru': 'Russian',
+        'pl': 'Polish',
+        'sv': 'Swedish',
+        'eo': 'Esperanto',
+        'cs': 'Czech',
+        'hr': 'Croatian',
+        'hu': 'Hungarian',
+        'be': 'Belarussian',
+        'ro': 'Romanian',
+        'ko': 'Korean',
+        'vi': 'Vietnamese',
+        'fa': 'Persian',
+        'ar': 'Arabic',
+        'zh': 'Chinese',
+        'tr': 'Turkish',
+        'id': 'Indonesian',
+        'sr': 'Serbian',
+        'sk': 'Slovak',
+        'uk': 'Ukrainian',
+        'hi': 'Hindi'
+    }
+    locale = bs.getEnvironment()['locale']
+    if locale in ('zh_HANT', 'zh_TW'):
+        lang = 'ChineseTraditional'
+    else:
+        lang = langs.get(locale[:2], 'English')
+    if not _canDisplayLanguage(lang):
+        lang = 'English'
     return lang
+
 
 def getLanguage(returnNoneForDefault=False):
     """
@@ -1733,8 +1853,10 @@ def getLanguage(returnNoneForDefault=False):
     This may or may not equal the language in use by the OS.
     """
 
-    try: language = bs.getConfig()['Lang']
-    except Exception: language = None
+    try:
+        language = bs.getConfig()['Lang']
+    except Exception:
+        language = None
 
     if language is None and not returnNoneForDefault:
         language = _getDefaultLanguage()
@@ -1750,14 +1872,17 @@ def _getResource(resource, fallbackResource=None, fallbackValue=None):
         # if we have no language set, go ahead and set it
         if _gLanguageMerged is None:
             language = getLanguage()
-            try: _setLanguage(language, printChange=False, storeToConfig=False)
+            try:
+                _setLanguage(language, printChange=False, storeToConfig=False)
             except Exception:
                 bs.printException('exception setting language to', language)
                 # try english as a fallback
                 if (language != 'English'):
                     print 'Resorting to fallback language (English)'
-                    try: _setLanguage('English', printChange=False,
-                                      storeToConfig=False)
+                    try:
+                        _setLanguage('English',
+                                     printChange=False,
+                                     storeToConfig=False)
                     except Exception as e:
                         print 'Error setting language to English fallback: ', e
 
@@ -1770,7 +1895,8 @@ def _getResource(resource, fallbackResource=None, fallbackValue=None):
                 splits = resource.split('.')
                 dicts = splits[:-1]
                 key = splits[-1]
-                for d in dicts: values = values[d]
+                for d in dicts:
+                    values = values[d]
                 val = values[key]
                 if uni and type(val) is str:
                     val = val.decode('utf-8', errors='ignore')
@@ -1783,7 +1909,8 @@ def _getResource(resource, fallbackResource=None, fallbackValue=None):
                     splits = fallbackResource.split('.')
                     dicts = splits[:-1]
                     key = splits[-1]
-                    for d in dicts: values = values[d]
+                    for d in dicts:
+                        values = values[d]
                     val = values[key]
                     if uni and type(val) is str:
                         val = val.decode('utf-8', errors='ignore')
@@ -1800,7 +1927,8 @@ def _getResource(resource, fallbackResource=None, fallbackValue=None):
         splits = resource.split('.')
         dicts = splits[:-1]
         key = splits[-1]
-        for d in dicts: values = values[d]
+        for d in dicts:
+            values = values[d]
         val = values[key]
         if uni and type(val) is str:
             val = val.decode('utf-8', errors='ignore')
@@ -1811,40 +1939,51 @@ def _getResource(resource, fallbackResource=None, fallbackValue=None):
         # now if we've been given a fallback value, return it; otherwise fail
         if fallbackValue is not None:
             return uni(fallbackValue)
-        raise Exception("resource not found: '"+resource+"'")
+        raise Exception("resource not found: '" + resource + "'")
+
 
 def _translate(category, s, raiseExceptions=False, printErrors=False):
-    try: translated = _getResource('translations')[category][s]
+    try:
+        translated = _getResource('translations')[category][s]
     except Exception as e:
         if raiseExceptions: raise e
         if printErrors:
-            print ('Translate error: category=\'' + category + '\' name=\''
-                   + s +'\' exc=' + str(e) + '')
+            print('Translate error: category=\'' + category + '\' name=\'' +
+                  s + '\' exc=' + str(e) + '')
         translated = None
     if translated is None:
         translated = s
     return bs.uni(translated) if uni else translated
 
+
 def getTypeName(t):
     return t.__module__ + '.' + t.__name__
+
 
 def resolveTypeName(typeName):
     moduleName, className = typeName.split('.')
     module = __import__(moduleName)
     return getattr(module, className)
 
+
 def getPlayerColors():
     """ return user-selectable player colors """
     return _gPlayerColors
 
+
 # call suppressDebugReports() to keep from spamming the
 # debug log server during development
 _gSuppressDebugReports = False
+
+
 def suppressDebugReports():
     bs.screenMessage("Supressing debug reports", color=(1, 0, 0))
     global _gSuppressDebugReports
     _gSuppressDebugReports = True
+
+
 _gPrintedLiveObjectWarning = False
+
 
 def animate(node, attr, keys, loop=False, offset=0, driver='gameTime'):
     """
@@ -1860,18 +1999,19 @@ def animate(node, attr, keys, loop=False, offset=0, driver='gameTime'):
         raise Exception("fixme; only support game-time currently")
     items = keys.items()
     items.sort()
-    curve = bs.newNode("animCurve", owner=node,
-                       name='Driving '+str(node)+' \''+attr+'\'')
+    curve = bs.newNode("animCurve",
+                       owner=node,
+                       name='Driving ' + str(node) + ' \'' + attr + '\'')
     curve.times = [time for time, val in items]
     curve.values = [val for time, val in items]
     curve.loop = loop
-    curve.offset = bs.getGameTime()+offset
+    curve.offset = bs.getGameTime() + offset
     # if we're not looping, set a timer to kill this curve
     # after its done its job
     # FIXME - even if we are looping we should have a way to die once we
     # get disconnected
     if loop == False:
-        bs.gameTimer(int(items[-1][0])+1000, curve.delete)
+        bs.gameTimer(int(items[-1][0]) + 1000, curve.delete)
 
     # do the connects last so all our attrs are in place when we push initial
     # values through..
@@ -1879,47 +2019,55 @@ def animate(node, attr, keys, loop=False, offset=0, driver='gameTime'):
     curve.connectAttr("out", node, attr)
     return curve
 
-def animateArray(node, attr, size, keys, loop=False,
-                 offset=0, driver='gameTime'):
+
+def animateArray(node,
+                 attr,
+                 size,
+                 keys,
+                 loop=False,
+                 offset=0,
+                 driver='gameTime'):
     """
     category: Game Flow Functions
 
     Like bsUtils.animate(), but operates on array attributes.
     """
-    combine = bs.newNode('combine', owner=node, attrs={'size':size})
+    combine = bs.newNode('combine', owner=node, attrs={'size': size})
     if driver != 'gameTime':
         raise Exception("fixme; only support game-time currently")
     items = keys.items()
     items.sort()
     curves = {}
     for i in range(size):
-        curve = bs.newNode("animCurve", owner=node,
-                           name=('Driving '+str(node)+' \''
-                                  + attr + '\' member ' + str(i)))
+        curve = bs.newNode("animCurve",
+                           owner=node,
+                           name=('Driving ' + str(node) + ' \'' + attr +
+                                 '\' member ' + str(i)))
         bs.getSharedObject('globals').connectAttr(driver, curve, "in")
         curve.times = [time for time, val in items]
         curve.values = [val[i] for time, val in items]
         curve.loop = loop
-        curve.offset = bs.getGameTime()+offset
-        curve.connectAttr("out", combine, 'input'+str(i))
+        curve.offset = bs.getGameTime() + offset
+        curve.connectAttr("out", combine, 'input' + str(i))
         # if we're not looping, set a timer to kill this
         # curve after its done its job
         if loop == False:
-            bs.gameTimer(int(items[-1][0])+1000, curve.delete)
+            bs.gameTimer(int(items[-1][0]) + 1000, curve.delete)
     combine.connectAttr('output', node, attr)
     # if we're not looping, set a timer to kill the combine once the job is done
     # FIXME - even if we are looping we should have a way to die
     # once we get disconnected
     if loop == False:
-        bs.gameTimer(int(items[-1][0])+1000, combine.delete)
+        bs.gameTimer(int(items[-1][0]) + 1000, combine.delete)
+
 
 # called internally..
 def _shutdown():
     if _gMusicPlayer is not None:
         _gMusicPlayer.shutdown()
 
-class MusicPlayer(object):
 
+class MusicPlayer(object):
     def __init__(self):
         self._haveSetInitialVolume = False
         self._entryToPlay = None
@@ -1990,12 +2138,15 @@ class MusicPlayer(object):
         'Called on final app shutdown'
         pass
 
+
 _gMusicPlayer = None
 _gMusicPlayerType = None
+
 
 # for internal music player
 def _getValidMusicFileExtensions():
     return ['mp3', 'ogg', 'm4a', 'wav', 'flac', 'mid']
+
 
 if bs.getEnvironment()['platform'] == 'android':
 
@@ -2008,11 +2159,11 @@ if bs.getEnvironment()['platform'] == 'android':
 
         def onSelectEntry(self, callback, currentEntry, selectionTargetName):
             import bsUI
-            return bsUI.GetSoundtrackEntryTypeWindow(callback,
-                                                     currentEntry,
+            return bsUI.GetSoundtrackEntryTypeWindow(callback, currentEntry,
                                                      selectionTargetName)
+
         def onSetVolume(self, volume):
-            bsInternal._musicPlayerSetVolume(volume);
+            bsInternal._musicPlayerSetVolume(volume)
 
         class _PickFolderSongThread(threading.Thread):
             def __init__(self, path, callback):
@@ -2024,26 +2175,32 @@ if bs.getEnvironment()['platform'] == 'android':
                 try:
                     bsInternal._setThreadName("BS_PickFolderSongThread")
                     allFiles = []
-                    validExtensions = ['.'+x for x in
-                                       _getValidMusicFileExtensions()]
-                    for root, subFolders, files in os.walk(bs.utf8(self._path)):
+                    validExtensions = [
+                        '.' + x for x in _getValidMusicFileExtensions()
+                    ]
+                    for root, subFolders, files in os.walk(bs.utf8(
+                            self._path)):
                         for f in files:
                             if any(f.lower().endswith(ext)
                                    for ext in validExtensions):
-                                allFiles.insert(random.randrange(
-                                    len(allFiles)+1), bs.uni(root+'/'+f))
+                                allFiles.insert(
+                                    random.randrange(len(allFiles) + 1),
+                                    bs.uni(root + '/' + f))
                     if len(allFiles) == 0:
                         raise Exception(bs.Lstr(
                             resource='internal.noMusicFilesInFolderText')\
                                         .evaluate())
-                    bs.callInGameThread(bs.Call(self._callback,
-                                                result=allFiles))
+                    bs.callInGameThread(
+                        bs.Call(self._callback, result=allFiles))
                 except Exception as e:
                     bs.printException()
-                    try: errStr = unicode(e)
-                    except Exception: errStr = '<ENCERR4523>'
+                    try:
+                        errStr = unicode(e)
+                    except Exception:
+                        errStr = '<ENCERR4523>'
                     bs.callInGameThread(
-                        bs.Call(self._callback, result=self._path,
+                        bs.Call(self._callback,
+                                result=self._path,
                                 error=errStr))
 
         def onPlay(self, entry):
@@ -2063,8 +2220,8 @@ if bs.getEnvironment()['platform'] == 'android':
             if error is not None:
                 rstr = bs.Lstr(resource='internal.errorPlayingMusicText')\
                          .evaluate()
-                errStr = (rstr.replace(u'${MUSIC}', os.path.basename(result))
-                          +u'; '+unicode(error))
+                errStr = (rstr.replace(u'${MUSIC}', os.path.basename(result)) +
+                          u'; ' + unicode(error))
                 bs.screenMessage(errStr, color=(1, 0, 0))
                 return
 
@@ -2105,15 +2262,21 @@ elif (bs.getEnvironment()['platform'] == 'mac'
             # down when this thread dies.
             # ..so as a workaround, lets make it a global so it won't get killed
             global gITunesApp
-            try: gITunesApp
+            try:
+                gITunesApp
             except Exception:
                 bsInternal._iTunesInit()
+
                 # it looks like launching iTunes here on 10.7/10.8 knocks us
                 # out of fullscreen. Ew... that might be a bug, but for now we
                 # can work around it by reactivating ourself after
                 def doPrint():
-                    bs.realTimer(1000, bs.Call(bs.screenMessage, bs.Lstr(
-                        resource='usingItunesText'), (0, 1, 0)))
+                    bs.realTimer(
+                        1000,
+                        bs.Call(bs.screenMessage,
+                                bs.Lstr(resource='usingItunesText'),
+                                (0, 1, 0)))
+
                 bs.callInGameThread(doPrint)
                 # here we grab this to force the actual launch
                 # ..currently (on 10.8 at least) this is causing a switch
@@ -2164,43 +2327,49 @@ elif (bs.getEnvironment()['platform'] == 'mac'
                             # set our playlist and play it if our volume is up
                             self._currentPlaylist = cmd[1]
                             if self._volume > 0:
-                                self._origVolume = bsInternal._iTunesGetVolume()
+                                self._origVolume = bsInternal._iTunesGetVolume(
+                                )
                                 self._updateITunesVolume()
                                 self._playCurrentPlaylist()
                     elif cmd[0] == 'GET_PLAYLISTS':
                         try:
                             playlists = bsInternal._iTunesGetPlaylists()
-                            playlists = [p for p in playlists if p not in [
-                                'Music', 'Movies', 'TV Shows', 'Podcasts',
-                                u'iTunes\xa0U', 'Books', 'Genius', 'iTunes DJ',
-                                'Music Videos', 'Home Videos', 'Voice Memos',
-                                'Audiobooks']]
+                            playlists = [
+                                p for p in playlists if p not in [
+                                    'Music', 'Movies', 'TV Shows', 'Podcasts',
+                                    u'iTunes\xa0U', 'Books', 'Genius',
+                                    'iTunes DJ', 'Music Videos', 'Home Videos',
+                                    'Voice Memos', 'Audiobooks'
+                                ]
+                            ]
                             playlists.sort(key=lambda x: x.lower())
                         except Exception as e:
                             print 'Error getting iTunes playlists:', e
                             playlists = []
                         bs.callInGameThread(bs.Call(cmd[1], playlists))
 
-                    del cmd # allows the command data/callback/etc to be freed
+                    del cmd  # allows the command data/callback/etc to be freed
 
         def _playCurrentPlaylist(self):
             try:
                 if bsInternal._iTunesPlayPlaylist(self._currentPlaylist):
                     pass
                 else:
-                    bs.callInGameThread(bs.Call(bs.screenMessage, _getResource(
-                        'playlistNotFoundText')+': \''+self._currentPlaylist
-                                                +'\'', (1, 0, 0)))
+                    bs.callInGameThread(
+                        bs.Call(
+                            bs.screenMessage,
+                            _getResource('playlistNotFoundText') + ': \'' +
+                            self._currentPlaylist + '\'', (1, 0, 0)))
             except Exception as e:
                 try:
-                    print ('Exception playing playlist "'
-                           +self._currentPlaylist+'":'), e
+                    print('Exception playing playlist "' +
+                          self._currentPlaylist + '":'), e
                 except Exception:
                     pass
 
         def _updateITunesVolume(self):
             bsInternal._iTunesSetVolume(
-                max(0, min(100, int(100.0*self._volume))))
+                max(0, min(100, int(100.0 * self._volume))))
 
         def setVolume(self, volume):
             oldVolume = self._volume
@@ -2250,6 +2419,7 @@ elif (bs.getEnvironment()['platform'] == 'mac'
             import bsUI
             return bsUI.GetSoundtrackEntryTypeWindow(callback, currentEntry,
                                                      selectionTargetName)
+
         def onSetVolume(self, volume):
             self._thread.setVolume(volume)
 
@@ -2271,8 +2441,10 @@ elif (bs.getEnvironment()['platform'] == 'mac'
 
     _gMusicPlayerType = MacITunesMusicPlayer
 
+
 def haveMusicPlayer():
     return (_gMusicPlayerType is not None)
+
 
 def getMusicPlayer():
     global _gMusicPlayer
@@ -2282,12 +2454,15 @@ def getMusicPlayer():
         _gMusicPlayer = _gMusicPlayerType()
     return _gMusicPlayer
 
+
 def _musicVolumeChanged(val):
     if _gMusicPlayer is not None:
         _gMusicPlayer.setVolume(val)
 
+
 gMusicMode = 'regular'
-gMusicTypes = {'regular':None, 'test':None}
+gMusicTypes = {'regular': None, 'test': None}
+
 
 def setMusicPlayMode(mode, forceRestart=False):
     global gMusicMode
@@ -2300,6 +2475,7 @@ def setMusicPlayMode(mode, forceRestart=False):
         # we want to go back to whatever the normal song was
         if mode == 'regular': _playMusic(gMusicTypes['regular'])
 
+
 def _isSoundtrackEntryTypeSupported(entryType):
     ua = bs.getEnvironment()['userAgentString']
     if entryType == 'iTunesPlaylist':
@@ -2311,43 +2487,53 @@ def _isSoundtrackEntryTypeSupported(entryType):
     elif entryType == 'default':
         return True
 
+
 def _getSoundtrackEntryType(entry):
     """Given a soundtrack entry, returns its type, taking into
     account what is supported locally."""
     try:
-        if entry is None: entryType = u'default'
-        # simple string denotes iTunesPlaylist (legacy format)
-        elif type(entry) in (str, unicode): entryType = u'iTunesPlaylist'
-        # for other entries we expect type and name strings in a dict
-        elif (type(entry) is dict
-              and 'type' in entry and type(entry['type']) in (str, unicode)
-              and 'name' in entry and type(entry['name']) in (str, unicode)):
+        if entry is None:
+            entryType = u'default'
+            # simple string denotes iTunesPlaylist (legacy format)
+        elif type(entry) in (str, unicode):
+            entryType = u'iTunesPlaylist'
+            # for other entries we expect type and name strings in a dict
+        elif (type(entry) is dict and 'type' in entry
+              and type(entry['type']) in (str, unicode) and 'name' in entry
+              and type(entry['name']) in (str, unicode)):
             entryType = entry['type']
-        else: raise Exception("invalid soundtrack entry: "+str(entry)
-                              +" (type "+str(type(entry))+")")
+        else:
+            raise Exception("invalid soundtrack entry: " + str(entry) +
+                            " (type " + str(type(entry)) + ")")
         if _isSoundtrackEntryTypeSupported(entryType): return entryType
-        else: raise Exception("invalid soundtrack entry:"+str(entry))
+        else: raise Exception("invalid soundtrack entry:" + str(entry))
     except Exception as e:
         print 'EXC on _getSoundtrackEntryType', e
         return 'default'
+
 
 def _getSoundtrackEntryName(entry):
     """Given a soundtrack entry, returns its name. Note that this does
     not ensure the entry is valid (use _getSoundtrackEntryType() for that)."""
     try:
-        if entry is None: return None
-        # simple string denotes an iTunesPlaylist name (legacy entry format)
-        elif type(entry) is unicode: return entry
-        elif type(entry) is str: return entry
-        # for other entries we expect type and name strings in a dict
-        elif (type(entry) is dict
-              and 'type' in entry and type(entry['type']) in (str, unicode)
-              and 'name' in entry and type(entry['name']) in (str, unicode)):
+        if entry is None:
+            return None
+            # simple string denotes an iTunesPlaylist name (legacy entry format)
+        elif type(entry) is unicode:
+            return entry
+        elif type(entry) is str:
+            return entry
+            # for other entries we expect type and name strings in a dict
+        elif (type(entry) is dict and 'type' in entry
+              and type(entry['type']) in (str, unicode) and 'name' in entry
+              and type(entry['name']) in (str, unicode)):
             return entry['name']
-        else: raise Exception("invalid soundtrack entry:"+str(entry))
+        else:
+            raise Exception("invalid soundtrack entry:" + str(entry))
     except Exception as e:
         print 'EXC on _getSoundtrackEntryName', e
         return 'default'
+
 
 def playMusic(musicType, continuous=False):
     """
@@ -2381,8 +2567,11 @@ def playMusic(musicType, continuous=False):
     g.music = '' if musicType is None else musicType
     g.musicCount += 1
 
-def _playMusic(musicType, continuous=False,
-               mode='regular', testSoundtrack=None):
+
+def _playMusic(musicType,
+               continuous=False,
+               mode='regular',
+               testSoundtrack=None):
     "Actually plays the requested music type/mode"
     with bs.Context('UI'):
         # if they dont want to restart music and we're already
@@ -2408,11 +2597,13 @@ def _playMusic(musicType, continuous=False,
                 if testSoundtrack is not None:
                     soundtrack = testSoundtrack
                 else:
-                    soundtrack = bsConfig['Soundtracks'][bsConfig['Soundtrack']]
+                    soundtrack = bsConfig['Soundtracks'][
+                        bsConfig['Soundtrack']]
                 entry = soundtrack[musicType]
             except Exception:
                 entry = None
-        else: entry = None
+        else:
+            entry = None
 
         # go through music-player
         if entry is not None:
@@ -2499,7 +2690,7 @@ def _playMusic(musicType, continuous=False,
                     filename = 'whenJohnnyComesMarchingHomeMusic'
                     volume = 4.0
                 else:
-                    print "Unknown music: '"+musicType+"'"
+                    print "Unknown music: '" + musicType + "'"
                     filename = 'flagCatcherMusic'
                     volume = 6.0
 
@@ -2518,12 +2709,15 @@ def _playMusic(musicType, continuous=False,
                 # since attr values don't get updated until
                 # node updates happen  :-(
                 #with bs.Context(bs.getSession()):
-                gMusic = bs.newNode(type='sound', attrs={
-                    'sound':bs.getSound(filename),
-                    'positional':False,
-                    'music':True,
-                    'volume':volume,
-                    'loop':loop})
+                gMusic = bs.newNode(type='sound',
+                                    attrs={
+                                        'sound': bs.getSound(filename),
+                                        'positional': False,
+                                        'music': True,
+                                        'volume': volume,
+                                        'loop': loop
+                                    })
+
 
 class Spawner(object):
     """
@@ -2532,7 +2726,6 @@ class Spawner(object):
     Creates a light flash and sends a bs.Spawner.SpawnMessage
     to the current activity after a delay.
     """
-
     class SpawnMessage(object):
         """
         category: Message Classes
@@ -2558,8 +2751,12 @@ class Spawner(object):
             self.data = data
             self.pt = pt
 
-    def __init__(self, data=None, pt=(0, 0, 0), spawnTime=1000,
-                 sendSpawnMessage=True, spawnCallback=None):
+    def __init__(self,
+                 data=None,
+                 pt=(0, 0, 0),
+                 spawnTime=1000,
+                 sendSpawnMessage=True,
+                 spawnCallback=None):
         """
         Instantiate a spawner given some custom data,
         a position, and a spawn-time in milliseconds.
@@ -2570,22 +2767,37 @@ class Spawner(object):
         self._data = data
         self._pt = pt
         # create a light where the spawn will happen
-        self._light = bs.newNode('light', attrs={
-            'position':tuple(pt),
-            'radius':0.1,
-            'color':(1.0, 0.1, 0.1),
-            'lightVolumes':False})
-        s = float(spawnTime)/3750
+        self._light = bs.newNode('light',
+                                 attrs={
+                                     'position': tuple(pt),
+                                     'radius': 0.1,
+                                     'color': (1.0, 0.1, 0.1),
+                                     'lightVolumes': False
+                                 })
+        s = float(spawnTime) / 3750
         minVal = 0.4
         maxVal = 0.7
         bs.playSound(self._spawnerSound, position=self._light.position)
-        animate(self._light, 'intensity', {
-            0:0.0, int(250*s):maxVal, int(500*s):minVal, int(750*s):maxVal,
-            int(1000*s):minVal, int(1250*s):1.1*maxVal, int(1500*s):minVal,
-            int(1750*s):1.2*maxVal, int(2000*s):minVal, int(2250*s):1.3*maxVal,
-            int(2500*s):minVal, int(2750*s):1.4*maxVal, int(3000*s):minVal,
-            int(3250*s):1.5*maxVal, int(3500*s):minVal, int(3750*s):2.0,
-            int(4000*s):0.0})
+        animate(
+            self._light, 'intensity', {
+                0: 0.0,
+                int(250 * s): maxVal,
+                int(500 * s): minVal,
+                int(750 * s): maxVal,
+                int(1000 * s): minVal,
+                int(1250 * s): 1.1 * maxVal,
+                int(1500 * s): minVal,
+                int(1750 * s): 1.2 * maxVal,
+                int(2000 * s): minVal,
+                int(2250 * s): 1.3 * maxVal,
+                int(2500 * s): minVal,
+                int(2750 * s): 1.4 * maxVal,
+                int(3000 * s): minVal,
+                int(3250 * s): 1.5 * maxVal,
+                int(3500 * s): minVal,
+                int(3750 * s): 2.0,
+                int(4000 * s): 0.0
+            })
         bs.gameTimer(int(spawnTime), self._spawn)
 
     def _spawn(self):
@@ -2602,6 +2814,7 @@ class Spawner(object):
                 activity.handleMessage(
                     self.SpawnMessage(self, self._data, self._pt))
 
+
 def isPointInBox(p, b):
     """
     category: General Utility Functions
@@ -2609,22 +2822,29 @@ def isPointInBox(p, b):
     Return whether a given point is within a given box.
     For use with standard def boxes (position|rotate|scale).
     """
-    return ((abs(p[0]-b[0]) <= b[6]*0.5) and (abs(p[1]-b[1]) <= b[7]*0.5)
-            and (abs(p[2]-b[2]) <= b[8]*0.5))
+    return ((abs(p[0] - b[0]) <= b[6] * 0.5)
+            and (abs(p[1] - b[1]) <= b[7] * 0.5)
+            and (abs(p[2] - b[2]) <= b[8] * 0.5))
+
 
 def getPlayerProfileIcon(profileName):
     """ given a profile, returns an icon string for it
     (non-account profiles only) """
 
     bsConfig = bs.getConfig()
-    try: isGlobal = bsConfig['Player Profiles'][profileName]['global']
-    except Exception: isGlobal = False
+    try:
+        isGlobal = bsConfig['Player Profiles'][profileName]['global']
+    except Exception:
+        isGlobal = False
     if isGlobal:
-        try: icon = bsConfig['Player Profiles'][profileName]['icon']
-        except Exception: icon = bs.getSpecialChar('logo')
+        try:
+            icon = bsConfig['Player Profiles'][profileName]['icon']
+        except Exception:
+            icon = bs.getSpecialChar('logo')
     else:
         icon = ''
     return bs.uni(icon)
+
 
 def getPlayerProfileColors(profileName, profiles=None):
     """ given a profile, returns colors for them """
@@ -2637,7 +2857,8 @@ def getPlayerProfileColors(profileName, profiles=None):
         color = (0.5, 0.4, 1.0)
         highlight = (0.4, 0.4, 0.5)
     else:
-        try: color = profiles[profileName]['color']
+        try:
+            color = profiles[profileName]['color']
         except Exception:
             # key off name if possible
             if profileName is None:
@@ -2647,19 +2868,22 @@ def getPlayerProfileColors(profileName, profiles=None):
                 # first 6 are bright-ish
                 color = _gPlayerColors[sum([ord(c) for c in profileName]) % 6]
 
-        try: highlight = profiles[profileName]['highlight']
+        try:
+            highlight = profiles[profileName]['highlight']
         except Exception:
             # key off name if possible
             if profileName is None:
                 # last 2 are grey and white; ignore those or we
                 # get lots of old-looking players
-                highlight = _gPlayerColors[
-                    random.randrange(len(_gPlayerColors)-2)]
+                highlight = _gPlayerColors[random.randrange(
+                    len(_gPlayerColors) - 2)]
             else:
-                highlight = _gPlayerColors[sum([ord(c)+1 for c in profileName])
-                                           % (len(_gPlayerColors)-2)]
+                highlight = _gPlayerColors[sum(
+                    [ord(c) + 1
+                     for c in profileName]) % (len(_gPlayerColors) - 2)]
 
     return color, highlight
+
 
 def getTimeString(t, centi=True):
     """
@@ -2674,65 +2898,77 @@ def getTimeString(t, centi=True):
     if type(t) is not int: t = int(t)
     bits = []
     subs = []
-    h = (t/1000)/(60*60)
+    h = (t / 1000) / (60 * 60)
     if h != 0:
         bits.append('${H}')
-        subs.append(('${H}', bs.Lstr(resource='timeSuffixHoursText',
-                                     subs=[('${COUNT}', str(h))])))
-    m = ((t/1000)/60)%60
+        subs.append(('${H}',
+                     bs.Lstr(resource='timeSuffixHoursText',
+                             subs=[('${COUNT}', str(h))])))
+    m = ((t / 1000) / 60) % 60
     if m != 0:
         bits.append('${M}')
-        subs.append(('${M}', bs.Lstr(resource='timeSuffixMinutesText',
-                                     subs=[('${COUNT}', str(m))])))
+        subs.append(('${M}',
+                     bs.Lstr(resource='timeSuffixMinutesText',
+                             subs=[('${COUNT}', str(m))])))
 
     # we add seconds if its non-zero *or* we havn't added anything else
     if centi:
-        s = (t/1000.0 % 60.0)
+        s = (t / 1000.0 % 60.0)
         if s >= 0.005 or not bits:
             bits.append('${S}')
-            subs.append(('${S}', bs.Lstr(resource='timeSuffixSecondsText',
-                                         subs=[('${COUNT}', ('%.2f' % s))])))
+            subs.append(('${S}',
+                         bs.Lstr(resource='timeSuffixSecondsText',
+                                 subs=[('${COUNT}', ('%.2f' % s))])))
     else:
-        s = (t/1000 % 60)
+        s = (t / 1000 % 60)
         if s != 0 or not bits:
             bits.append('${S}')
-            subs.append(('${S}', bs.Lstr(resource='timeSuffixSecondsText',
-                                         subs=[('${COUNT}', str(s))])))
+            subs.append(('${S}',
+                         bs.Lstr(resource='timeSuffixSecondsText',
+                                 subs=[('${COUNT}', str(s))])))
     return bs.Lstr(value=' '.join(bits), subs=subs)
+
 
 def showDamageCount(damage, position, direction):
     lifespan = 1000
     env = bs.getEnvironment()
     doBig = env['interfaceType'] == 'small' or env['vrMode']
-    t = bs.newNode('text', attrs={
-        'text':damage,
-        'inWorld':True,
-        'hAlign':'center',
-        'flatness':1.0,
-        'shadow':1.0 if doBig else 0.7,
-        'color':(1, 0.25, 0.25, 1),
-        'scale':0.015 if doBig else 0.01})
+    t = bs.newNode('text',
+                   attrs={
+                       'text': damage,
+                       'inWorld': True,
+                       'hAlign': 'center',
+                       'flatness': 1.0,
+                       'shadow': 1.0 if doBig else 0.7,
+                       'color': (1, 0.25, 0.25, 1),
+                       'scale': 0.015 if doBig else 0.01
+                   })
     # translate upward
-    tcombine = bs.newNode("combine", owner=t, attrs={'size':3})
+    tcombine = bs.newNode("combine", owner=t, attrs={'size': 3})
     tcombine.connectAttr('output', t, 'position')
     vVals = []
-    p = 0; v = 0.07
+    p = 0
+    v = 0.07
     count = 6
     for i in range(count):
-        vVals.append((float(i)/count, p))
+        vVals.append((float(i) / count, p))
         p += v
         v *= 0.5
-    pStart = position[0]; pDir = direction[0]
+    pStart = position[0]
+    pDir = direction[0]
     animate(tcombine, "input0",
-            dict([[i[0]*lifespan, pStart+pDir*i[1]] for i in vVals]))
-    pStart = position[1]; pDir = direction[1]
+            dict([[i[0] * lifespan, pStart + pDir * i[1]] for i in vVals]))
+    pStart = position[1]
+    pDir = direction[1]
     animate(tcombine, "input1",
-            dict([[i[0]*lifespan, pStart+pDir*i[1]] for i in vVals]))
-    pStart = position[2]; pDir = direction[2]
+            dict([[i[0] * lifespan, pStart + pDir * i[1]] for i in vVals]))
+    pStart = position[2]
+    pDir = direction[2]
     animate(tcombine, "input2",
-            dict([[i[0]*lifespan, pStart+pDir*i[1]] for i in vVals]))
-    animate(t, 'opacity', {0.7*lifespan:1.0, lifespan:0.0})
+            dict([[i[0] * lifespan, pStart + pDir * i[1]] for i in vVals]))
+    animate(t, 'opacity', {0.7 * lifespan: 1.0, lifespan: 0.0})
     bs.gameTimer(lifespan, t.delete)
+
 
 def getLastPlayerNameFromInputDevice(device):
     """Returns a reasonable player name associated with a device
@@ -2741,7 +2977,7 @@ def getLastPlayerNameFromInputDevice(device):
     # look for a default player profile name for them..
     # otherwise default to their current random name
     profileName = '_random'
-    keyName = device.getName()+' '+device.getUniqueIdentifier()
+    keyName = device.getName() + ' ' + device.getUniqueIdentifier()
     if ('Default Player Profiles' in bsConfig
             and keyName in bsConfig['Default Player Profiles']):
         profileName = bsConfig['Default Player Profiles'][keyName]
@@ -2751,15 +2987,17 @@ def getLastPlayerNameFromInputDevice(device):
         profileName = bsInternal._getAccountDisplayString()
     return profileName
 
+
 def getNormalizedColor(color):
     """
     category: General Utility Functions
 
     Scale a color so its largest value is 1; useful for coloring lights.
     """
-    colorBiased = tuple(max(c, 0.01) for c in color) # account for black
-    mult = 1.0/max(colorBiased)
-    return tuple(c*mult for c in colorBiased)
+    colorBiased = tuple(max(c, 0.01) for c in color)  # account for black
+    mult = 1.0 / max(colorBiased)
+    return tuple(c * mult for c in colorBiased)
+
 
 def garbageCollect(sessionEnd=True):
     gc.collect()
@@ -2768,9 +3006,10 @@ def garbageCollect(sessionEnd=True):
     if len(gc.garbage) > 0:
         print 'PTHON GC FOUND', len(gc.garbage), 'UNCOLLECTABLE OBJECTS:'
         for i, obj in enumerate(gc.garbage):
-            print str(i)+':', obj
+            print str(i) + ':', obj
     if sessionEnd:
         printLiveObjectWarnings('after session shutdown')
+
 
 def printRefs(obj):
     "Handy function to print a list of live references to an object"
@@ -2782,6 +3021,7 @@ def printRefs(obj):
     for ref in refs:
         print '     ref', i, ':', ref
         i += 1
+
 
 def printLiveObjectWarnings(when, ignoreSession=None, ignoreActivity=None):
     sessions = []
@@ -2807,13 +3047,13 @@ def printLiveObjectWarnings(when, ignoreSession=None, ignoreActivity=None):
         #     if type(ref) is types.FrameType: continue
         #     print '     ref', i, ':', ref
         #     i += 1
-            # if type(ref) is list or type(ref) is tuple or type(ref) is dict:
-            #     refs2 = list(gc.get_referrers(ref))
-            #     j = 1
-            #     for ref2 in refs2:
-            #         if type(ref2) is types.FrameType: continue
-            #         print '        ref\'s ref', j, ':', ref2
-            #         j += 1
+        # if type(ref) is list or type(ref) is tuple or type(ref) is dict:
+        #     refs2 = list(gc.get_referrers(ref))
+        #     j = 1
+        #     for ref2 in refs2:
+        #         if type(ref2) is types.FrameType: continue
+        #         print '        ref\'s ref', j, ':', ref2
+        #         j += 1
 
     # complain about any remaining activities
     for activity in activities:
@@ -2826,13 +3066,13 @@ def printLiveObjectWarnings(when, ignoreSession=None, ignoreActivity=None):
         #     if type(ref) is types.FrameType: continue
         #     print '     ref', i, ':', ref
         #     i += 1
-            # if type(ref) is list or type(ref) is tuple or type(ref) is dict:
-            #     refs2 = list(gc.get_referrers(ref))
-            #     j = 1
-            #     for ref2 in refs2:
-            #         if type(ref2) is types.FrameType: continue
-            #         print '        ref\'s ref', j, ':', ref2
-            #         j += 1
+        # if type(ref) is list or type(ref) is tuple or type(ref) is dict:
+        #     refs2 = list(gc.get_referrers(ref))
+        #     j = 1
+        #     for ref2 in refs2:
+        #         if type(ref2) is types.FrameType: continue
+        #         print '        ref\'s ref', j, ':', ref2
+        #         j += 1
 
     # complain about any remaining actors
     for actor in actors:
@@ -2851,27 +3091,30 @@ def printLiveObjectWarnings(when, ignoreSession=None, ignoreActivity=None):
         #     if type(ref) is types.FrameType: continue
         #     print '     ref', i, ':', ref
         #     i += 1
-            # if type(ref) is list or type(ref) is tuple or type(ref) is dict:
-            #     refs2 = list(gc.get_referrers(ref))
-            #     j = 1
-            #     for ref2 in refs2:
-            #         if type(ref2) is types.FrameType: continue
-            #         print '        ref\'s ref', j, ':', ref2
-            #         j += 1
+        # if type(ref) is list or type(ref) is tuple or type(ref) is dict:
+        #     refs2 = list(gc.get_referrers(ref))
+        #     j = 1
+        #     for ref2 in refs2:
+        #         if type(ref2) is types.FrameType: continue
+        #         print '        ref\'s ref', j, ':', ref2
+        #         j += 1
 
 
 def _isValidRemainingNode(node):
     return (node.getName() in ['Globals'])
 
+
 def _weakDeleteNode(node, weakRef):
     node.delete()
+
 
 def _setNodeOwner(node, owner):
 
     # ..owner can be an activity..
     if isinstance(owner, bs.Activity):
-        print ('WARNING: explicitly passing a bs.Activity as node owner is no '
-               'longer allowed; that is default behavior')
+        print(
+            'WARNING: explicitly passing a bs.Activity as node owner is no '
+            'longer allowed; that is default behavior')
         import traceback
         traceback.print_stack()
 
@@ -2887,8 +3130,8 @@ def _setNodeOwner(node, owner):
             traceback.print_stack()
         global gNodeOwnerWeakRefs
         global gNodeOwnerWeakRefsCleanCounter
-        gNodeOwnerWeakRefs.append(weakref.ref(owner,
-                                              bs.Call(_weakDeleteNode, node)))
+        gNodeOwnerWeakRefs.append(
+            weakref.ref(owner, bs.Call(_weakDeleteNode, node)))
         gNodeOwnerWeakRefsCleanCounter += 1
         # pull dead refs off our list periodically (I supposed the callback
         # could do it, but this works)
@@ -2898,8 +3141,8 @@ def _setNodeOwner(node, owner):
                 [r for r in gNodeOwnerWeakRefs if r() is not None]
             gNodeOwnerWeakRefsCleanCounter = 0
 
-class ServerCallThread(threading.Thread):
 
+class ServerCallThread(threading.Thread):
     def __init__(self, request, requestType, data, callback):
         threading.Thread.__init__(self)
         self._request = request
@@ -2909,20 +3152,22 @@ class ServerCallThread(threading.Thread):
         self._context = bs.Context('current')
         # save and restore the context we were created from
         activity = bs.getActivity(exceptionOnNone=False)
-        self._activity = weakref.ref(activity) if activity is not None else None
+        self._activity = weakref.ref(
+            activity) if activity is not None else None
 
     def _runCallback(self, arg):
 
         # if we were created in an activity context and that activity has
         # since died, do nothing (hmm should we be using a context-call
         # instead of doing this manually?)
-        if (self._activity is not None
-            and (self._activity() is None
-                 or self._activity().isFinalized())): return
+        if (self._activity is not None and
+            (self._activity() is None or self._activity().isFinalized())):
+            return
 
         # (technically we could do the same check for session contexts,
         # but not gonna worry about it for now)
-        with self._context: self._callback(arg)
+        with self._context:
+            self._callback(arg)
 
     def run(self):
         try:
@@ -2930,19 +3175,26 @@ class ServerCallThread(threading.Thread):
             bsInternal._setThreadName("BS_ServerCallThread")
 
             if self._requestType == 'get':
-                response = urllib2.urlopen(urllib2.Request(
-                    # fails with unicode for some reason
-                    str(bsInternal._get_master_server_address()+'/'+self._request
-                        +'?'+urllib.urlencode(self._data)),
-                    None,
-                    { 'User-Agent' : bs.getEnvironment()['userAgentString'] }))
+                response = urllib2.urlopen(
+                    urllib2.Request(
+                        # fails with unicode for some reason
+                        str(bsInternal._get_master_server_address() + '/' +
+                            self._request + '?' +
+                            urllib.urlencode(self._data)),
+                        None,
+                        {'User-Agent': bs.getEnvironment()['userAgentString']
+                         }))
             elif self._requestType == 'post':
-                response = urllib2.urlopen(urllib2.Request(
-                    # this fails with unicode for some reason
-                    str(bsInternal._get_master_server_address()+'/'+self._request),
-                    urllib.urlencode(self._data),
-                    { 'User-Agent' : bs.getEnvironment()['userAgentString'] }))
-            else: raise Exception("Invalid requestType: "+self._requestType)
+                response = urllib2.urlopen(
+                    urllib2.Request(
+                        # this fails with unicode for some reason
+                        str(bsInternal._get_master_server_address() + '/' +
+                            self._request),
+                        urllib.urlencode(self._data),
+                        {'User-Agent': bs.getEnvironment()['userAgentString']
+                         }))
+            else:
+                raise Exception("Invalid requestType: " + self._requestType)
             responseData = ast.literal_eval(response.read())
             if self._callback is not None:
                 bs.callInGameThread(bs.Call(self._runCallback, responseData))
@@ -2950,18 +3202,23 @@ class ServerCallThread(threading.Thread):
             if self._callback is not None:
                 bs.callInGameThread(bs.Call(self._runCallback, None))
 
+
 def serverGet(request, data, callback=None):
     ServerCallThread(request, 'get', data, callback).start()
+
 
 def serverPut(request, data, callback=None):
     ServerCallThread(request, 'post', data, callback).start()
 
+
 def runGPUBenchmark():
     bs.screenMessage("FIXME: not wired up yet", color=(1, 0, 0))
+
 
 def runMediaReloadBenchmark():
     bs.reloadMedia()
     bsInternal._showProgressBar()
+
     def delayAdd(startTime):
         def foo(startTime):
             bs.screenMessage(
@@ -2969,13 +3226,16 @@ def runMediaReloadBenchmark():
                 .replace('${TIME}', str(bs.getRealTime()-startTime)))
             bsInternal._printLoadInfo()
             if bsInternal._getSetting("Texture Quality") != 'High':
-                bs.screenMessage(_getResource(
-                    'debugWindow.reloadBenchmarkBestResultsText'),
-                                 color=(1, 1, 0))
+                bs.screenMessage(
+                    _getResource('debugWindow.reloadBenchmarkBestResultsText'),
+                    color=(1, 1, 0))
+
         bsInternal._addCleanFrameCallback(bs.Call(foo, startTime))
+
     # the reload starts (should add a completion callback to the
     # reload func to fix this)
     bs.realTimer(50, bs.Call(delayAdd, bs.getRealTime()))
+
 
 def _printCorruptFileError():
     bs.realTimer(2000, bs.Call(
@@ -2983,8 +3243,10 @@ def _printCorruptFileError():
         .replace('${EMAIL}', 'support@froemling.net'), color=(1, 0, 0)))
     bs.realTimer(2000, bs.Call(bs.playSound, bs.getSound('error')))
 
+
 def runCPUBenchmark():
     import bsTutorial
+
     class BenchmarkSession(bs.Session):
         def __init__(self):
             bs.Session.__init__(self)
@@ -3002,25 +3264,35 @@ def runCPUBenchmark():
 
         def onPlayerRequest(self, player):
             return False
+
     bsInternal._newHostSession(BenchmarkSession, benchmarkType='cpu')
 
-def runStressTest(playlistType='Random', playlistName='__default__',
-                  playerCount=8, roundDuration=30):
-    bs.screenMessage('Beginning stress test.. use '
-                     '\'End Game\' to stop testing.',
-                     color=(1, 1, 0))
+
+def runStressTest(playlistType='Random',
+                  playlistName='__default__',
+                  playerCount=8,
+                  roundDuration=30):
+    bs.screenMessage(
+        'Beginning stress test.. use '
+        '\'End Game\' to stop testing.',
+        color=(1, 1, 0))
     with bs.Context('UI'):
         _startStressTest({
-            'playlistType':playlistType,
-            'playlistName':playlistName,
-            'playerCount':playerCount,
-            'roundDuration':roundDuration})
-        bs.realTimer(7000, bs.Call(
-            bs.screenMessage, ('stats will be written to '
-                              + getHumanReadableUserScriptsPath()
-                              + '/stressTestStats.csv')))
+            'playlistType': playlistType,
+            'playlistName': playlistName,
+            'playerCount': playerCount,
+            'roundDuration': roundDuration
+        })
+        bs.realTimer(
+            7000,
+            bs.Call(
+                bs.screenMessage,
+                ('stats will be written to ' +
+                 getHumanReadableUserScriptsPath() + '/stressTestStats.csv')))
+
 
 _gStressTestResetTimer = None
+
 
 def stopStressTest():
     bsInternal._setStressTesting(False, 0)
@@ -3028,8 +3300,10 @@ def stopStressTest():
     try:
         if _gStressTestResetTimer is not None:
             bs.screenMessage("Ending stress test...", color=(1, 1, 0))
-    except Exception: pass
+    except Exception:
+        pass
     _gStressTestResetTimer = None
+
 
 def _startStressTest(args):
     bsConfig = bs.getConfig()
@@ -3037,30 +3311,35 @@ def _startStressTest(args):
     if playlistType == 'Random':
         if (random.random() < 0.5): playlistType = 'Teams'
         else: playlistType = 'Free-For-All'
-    bs.screenMessage('Running Stress Test (listType="'
-                     + playlistType + '", listName="'
-                     + args['playlistName']+'")...')
+    bs.screenMessage('Running Stress Test (listType="' + playlistType +
+                     '", listName="' + args['playlistName'] + '")...')
     if playlistType == 'Teams':
         bsConfig['Team Tournament Playlist Selection'] = args['playlistName']
         bsConfig['Team Tournament Playlist Randomize'] = 1
-        bs.realTimer(1000, bs.Call(bs.pushCall, bs.Call(
-            bsInternal._newHostSession, bs.TeamsSession)))
+        bs.realTimer(
+            1000,
+            bs.Call(bs.pushCall,
+                    bs.Call(bsInternal._newHostSession, bs.TeamsSession)))
     else:
         bsConfig['Free-for-All Playlist Selection'] = args['playlistName']
         bsConfig['Free-for-All Playlist Randomize'] = 1
-        bs.realTimer(1000, bs.Call(bs.pushCall, bs.Call(
-            bsInternal._newHostSession, bs.FreeForAllSession)))
+        bs.realTimer(
+            1000,
+            bs.Call(bs.pushCall,
+                    bs.Call(bsInternal._newHostSession, bs.FreeForAllSession)))
     bsInternal._setStressTesting(True, args['playerCount'])
     global _gStressTestResetTimer
-    _gStressTestResetTimer = bs.Timer(args['roundDuration']*1000,
+    _gStressTestResetTimer = bs.Timer(args['roundDuration'] * 1000,
                                       bs.Call(_resetStressTest, args),
                                       timeType='real')
+
 
 def _resetStressTest(args):
     bsInternal._setStressTesting(False, args['playerCount'])
     bs.screenMessage('Resetting stress test...')
     bsInternal._getForegroundHostSession().end()
     bs.realTimer(1000, bs.Call(_startStressTest, args))
+
 
 class ControlsHelpOverlay(bsGame.Actor):
     """
@@ -3070,8 +3349,12 @@ class ControlsHelpOverlay(bsGame.Actor):
     based on what controllers are connected. Handy to show at the
     start of a series or whenever there might be newbies watching.
     """
-    def __init__(self, position=(390, 120), scale=1.0,
-                 delay=0, lifespan=None, bright=False):
+    def __init__(self,
+                 position=(390, 120),
+                 scale=1.0,
+                 delay=0,
+                 lifespan=None,
+                 bright=False):
         """
         Instantiate an overlay.
 
@@ -3086,98 +3369,187 @@ class ControlsHelpOverlay(bsGame.Actor):
         bsGame.Actor.__init__(self)
         showTitle = True
         scale *= 0.75
-        imageSize = 90.0*scale
-        offs = 74.0*scale
-        offs5 = 43.0*scale
+        imageSize = 90.0 * scale
+        offs = 74.0 * scale
+        offs5 = 43.0 * scale
         ouya = bsInternal._isRunningOnOuya()
         mw = 50
-        shadOffs = 2.0*scale
+        shadOffs = 2.0 * scale
         self._lifespan = lifespan
         self._dead = False
         self._bright = bright
         if showTitle:
-            self._titleTextPosTop = (position[0], position[1]+139.0*scale)
-            self._titleTextPosBottom = (position[0], position[1]+139.0*scale)
+            self._titleTextPosTop = (position[0], position[1] + 139.0 * scale)
+            self._titleTextPosBottom = (position[0],
+                                        position[1] + 139.0 * scale)
             c = (1, 1, 1) if bright else (0.7, 0.7, 0.7)
-            self._titleText = bs.newNode('text', attrs={
-                'text':bs.Lstr(value='${A}:',
-                               subs=[('${A}',
-                                      bs.Lstr(resource='controlsText'))]),
-                'hostOnly':True,
-                'scale':1.1*scale,
-                'shadow':0.5,
-                'flatness':1.0,
-                'maxWidth':480,
-                'vAlign':'center', 'hAlign':'center',
-                'color':c})
+            self._titleText = bs.newNode(
+                'text',
+                attrs={
+                    'text':
+                        bs.Lstr(value='${A}:',
+                                subs=[('${A}',
+                                       bs.Lstr(resource='controlsText'))]),
+                    'hostOnly':
+                        True,
+                    'scale':
+                        1.1 * scale,
+                    'shadow':
+                        0.5,
+                    'flatness':
+                        1.0,
+                    'maxWidth':
+                        480,
+                    'vAlign':
+                        'center',
+                    'hAlign':
+                        'center',
+                    'color':
+                        c
+                })
         else:
             self._titleText = None
-        p = (position[0], position[1]-offs)
+        p = (position[0], position[1] - offs)
         c = (0.4, 1, 0.4)
-        self._jumpImage = bs.newNode('image', attrs={
-            'texture':bs.getTexture('buttonJump'), 'absoluteScale':True,
-            'hostOnly':True, 'vrDepth':10, 'position':p,
-            'scale':(imageSize, imageSize), 'color':c})
-        self._jumpText = bs.newNode('text', attrs={
-            'vAlign':'top', 'hAlign':'center', 'scale':1.5*scale,
-            'flatness':1.0, 'hostOnly':True, 'shadow':1.0, 'maxWidth':mw,
-            'position':(p[0], p[1]-offs5), 'color':c})
-        p = (position[0]-offs*1.1, position[1])
+        self._jumpImage = bs.newNode(
+            'image',
+            attrs={
+                'texture': bs.getTexture('buttonJump'),
+                'absoluteScale': True,
+                'hostOnly': True,
+                'vrDepth': 10,
+                'position': p,
+                'scale': (imageSize, imageSize),
+                'color': c
+            })
+        self._jumpText = bs.newNode('text',
+                                    attrs={
+                                        'vAlign': 'top',
+                                        'hAlign': 'center',
+                                        'scale': 1.5 * scale,
+                                        'flatness': 1.0,
+                                        'hostOnly': True,
+                                        'shadow': 1.0,
+                                        'maxWidth': mw,
+                                        'position': (p[0], p[1] - offs5),
+                                        'color': c
+                                    })
+        p = (position[0] - offs * 1.1, position[1])
         c = (0.2, 0.6, 1) if ouya else (1, 0.7, 0.3)
-        self._punchImage = bs.newNode('image', attrs={
-            'texture':bs.getTexture('buttonPunch'), 'absoluteScale':True,
-            'hostOnly':True, 'vrDepth':10, 'position':p,
-            'scale':(imageSize, imageSize), 'color':c})
-        self._punchText = bs.newNode('text', attrs={
-            'vAlign':'top', 'hAlign':'center', 'scale':1.5*scale,
-            'flatness':1.0, 'hostOnly':True,
-            'shadow':1.0, 'maxWidth':mw, 'position':(p[0], p[1]-offs5),
-            'color':c})
-        p = (position[0]+offs*1.1, position[1])
+        self._punchImage = bs.newNode(
+            'image',
+            attrs={
+                'texture': bs.getTexture('buttonPunch'),
+                'absoluteScale': True,
+                'hostOnly': True,
+                'vrDepth': 10,
+                'position': p,
+                'scale': (imageSize, imageSize),
+                'color': c
+            })
+        self._punchText = bs.newNode('text',
+                                     attrs={
+                                         'vAlign': 'top',
+                                         'hAlign': 'center',
+                                         'scale': 1.5 * scale,
+                                         'flatness': 1.0,
+                                         'hostOnly': True,
+                                         'shadow': 1.0,
+                                         'maxWidth': mw,
+                                         'position': (p[0], p[1] - offs5),
+                                         'color': c
+                                     })
+        p = (position[0] + offs * 1.1, position[1])
         c = (1, 0.3, 0.3)
-        self._bombImage = bs.newNode('image', attrs={
-            'texture':bs.getTexture('buttonBomb'), 'absoluteScale':True,
-            'hostOnly':True, 'vrDepth':10, 'position':p,
-            'scale':(imageSize, imageSize), 'color':c})
-        self._bombText = bs.newNode('text', attrs={
-            'hAlign':'center', 'vAlign':'top', 'scale':1.5*scale,
-            'flatness':1.0, 'hostOnly':True, 'shadow':1.0, 'maxWidth':mw,
-            'position':(p[0], p[1]-offs5), 'color':c})
-        p = (position[0], position[1]+offs)
+        self._bombImage = bs.newNode(
+            'image',
+            attrs={
+                'texture': bs.getTexture('buttonBomb'),
+                'absoluteScale': True,
+                'hostOnly': True,
+                'vrDepth': 10,
+                'position': p,
+                'scale': (imageSize, imageSize),
+                'color': c
+            })
+        self._bombText = bs.newNode('text',
+                                    attrs={
+                                        'hAlign': 'center',
+                                        'vAlign': 'top',
+                                        'scale': 1.5 * scale,
+                                        'flatness': 1.0,
+                                        'hostOnly': True,
+                                        'shadow': 1.0,
+                                        'maxWidth': mw,
+                                        'position': (p[0], p[1] - offs5),
+                                        'color': c
+                                    })
+        p = (position[0], position[1] + offs)
         c = (1, 0.8, 0.3) if ouya else (0.8, 0.5, 1)
-        self._pickUpImage = bs.newNode('image', attrs={
-            'texture':bs.getTexture('buttonPickUp'), 'absoluteScale':True,
-            'hostOnly':True, 'vrDepth':10, 'position':p,
-            'scale':(imageSize, imageSize), 'color':c})
-        self._pickUpText = bs.newNode('text', attrs={
-            'vAlign':'top', 'hAlign':'center', 'scale':1.5*scale,
-            'flatness':1.0, 'hostOnly':True, 'shadow':1.0, 'maxWidth':mw,
-            'position':(p[0], p[1]-offs5), 'color':c})
+        self._pickUpImage = bs.newNode(
+            'image',
+            attrs={
+                'texture': bs.getTexture('buttonPickUp'),
+                'absoluteScale': True,
+                'hostOnly': True,
+                'vrDepth': 10,
+                'position': p,
+                'scale': (imageSize, imageSize),
+                'color': c
+            })
+        self._pickUpText = bs.newNode('text',
+                                      attrs={
+                                          'vAlign': 'top',
+                                          'hAlign': 'center',
+                                          'scale': 1.5 * scale,
+                                          'flatness': 1.0,
+                                          'hostOnly': True,
+                                          'shadow': 1.0,
+                                          'maxWidth': mw,
+                                          'position': (p[0], p[1] - offs5),
+                                          'color': c
+                                      })
         c = (0.9, 0.9, 2.0) if bright else (0.8, 0.8, 2.0, 1.0)
-        self._runTextPosTop = (position[0], position[1] - 135.0*scale)
-        self._runTextPosBottom = (position[0], position[1] - 172.0*scale)
-        self._runText = bs.newNode('text', attrs={
-            'scale':1.0*scale if bs.getEnvironment()['vrMode'] else 0.8*scale,
-            'hostOnly':True,
-            'shadow':1.0 if bs.getEnvironment()['vrMode'] else 0.5,
-            'flatness':1.0,
-            'maxWidth':380,
-            'vAlign':'top', 'hAlign':'center',
-            'color':c})
+        self._runTextPosTop = (position[0], position[1] - 135.0 * scale)
+        self._runTextPosBottom = (position[0], position[1] - 172.0 * scale)
+        self._runText = bs.newNode(
+            'text',
+            attrs={
+                'scale':
+                    1.0 * scale if bs.getEnvironment()['vrMode'] else 0.8 *
+                    scale,
+                'hostOnly':
+                    True,
+                'shadow':
+                    1.0 if bs.getEnvironment()['vrMode'] else 0.5,
+                'flatness':
+                    1.0,
+                'maxWidth':
+                    380,
+                'vAlign':
+                    'top',
+                'hAlign':
+                    'center',
+                'color':
+                    c
+            })
         c = (1, 1, 1) if bright else (0.7, 0.7, 0.7)
-        self._extraText = bs.newNode('text', attrs={
-            'scale':0.8*scale,
-            'hostOnly':True,
-            'shadow':0.5,
-            'flatness':1.0,
-            'maxWidth':380,
-            'vAlign':'top', 'hAlign':'center',
-            'color':c})
-        self._nodes = [self._bombImage, self._bombText,
-                       self._punchImage, self._punchText,
-                       self._jumpImage, self._jumpText,
-                       self._pickUpImage, self._pickUpText,
-                       self._runText, self._extraText]
+        self._extraText = bs.newNode('text',
+                                     attrs={
+                                         'scale': 0.8 * scale,
+                                         'hostOnly': True,
+                                         'shadow': 0.5,
+                                         'flatness': 1.0,
+                                         'maxWidth': 380,
+                                         'vAlign': 'top',
+                                         'hAlign': 'center',
+                                         'color': c
+                                     })
+        self._nodes = [
+            self._bombImage, self._bombText, self._punchImage, self._punchText,
+            self._jumpImage, self._jumpText, self._pickUpImage,
+            self._pickUpText, self._runText, self._extraText
+        ]
         if showTitle: self._nodes.append(self._titleText)
         # start everything invisible
         for n in self._nodes:
@@ -3192,57 +3564,66 @@ class ControlsHelpOverlay(bsGame.Actor):
         # ...also set up a timer so if we havnt faded in by the end of our
         # duration, abort.
         if self._lifespan is not None:
-            self._cancelTimer = bs.Timer(self._lifespan, bs.WeakCall(
-                self.handleMessage, bs.DieMessage(immediate=True)))
-        self._fadeInTimer = bs.Timer(1000, bs.WeakCall(self._checkFadeIn),
+            self._cancelTimer = bs.Timer(
+                self._lifespan,
+                bs.WeakCall(self.handleMessage, bs.DieMessage(immediate=True)))
+        self._fadeInTimer = bs.Timer(1000,
+                                     bs.WeakCall(self._checkFadeIn),
                                      repeat=True)
-        self._checkFadeIn() # do one check immediately
+        self._checkFadeIn()  # do one check immediately
 
     def _checkFadeIn(self):
         import bsUI
 
         # if we have a touchscreen, we only fade in if we have a player with
         # an input device that is *not* the touchscreen
-        touchscreen = bsInternal._getInputDevice('TouchScreen', '#1',
+        touchscreen = bsInternal._getInputDevice('TouchScreen',
+                                                 '#1',
                                                  exceptionOnNone=False)
         if touchscreen is not None:
             # we look at the session's players; not the activity's
             # - we want to get ones who are still in the process of
             # selecting a character, etc.
-            inputDevices = [p.getInputDevice() for p in bs.getSession().players]
-            inputDevices = [i for i in inputDevices if i is not None
-                            and i.exists() and i is not touchscreen]
+            inputDevices = [
+                p.getInputDevice() for p in bs.getSession().players
+            ]
+            inputDevices = [
+                i for i in inputDevices
+                if i is not None and i.exists() and i is not touchscreen
+            ]
             fadeIn = False
             if len(inputDevices) > 0:
                 # only count this one if it has non-empty button names
                 # (filters out wiimotes, the remote-app, etc)
                 for device in inputDevices:
-                    for name in ('buttonPunch', 'buttonJump',
-                                 'buttonBomb', 'buttonPickUp'):
+                    for name in ('buttonPunch', 'buttonJump', 'buttonBomb',
+                                 'buttonPickUp'):
                         if device.getButtonName(
                                 bsUI.getControllerValue(device, name)) != '':
                             fadeIn = True
                             break
-                    if fadeIn: break # no need to keep looking
+                    if fadeIn: break  # no need to keep looking
         else:
             # no touch-screen; fade in immediately
             fadeIn = True
         if fadeIn:
-            self._cancelTimer = None # didnt need this
-            self._fadeInTimer = None # done with this
+            self._cancelTimer = None  # didnt need this
+            self._fadeInTimer = None  # done with this
             self._fadeIn()
 
     def _fadeIn(self):
         for n in self._nodes:
-            bs.animate(n, 'opacity', {0:0.0, 2000:1.0})
+            bs.animate(n, 'opacity', {0: 0.0, 2000: 1.0})
 
         # if we were given a lifespan, transition out after it..
         if self._lifespan is not None:
             bs.gameTimer(self._lifespan,
                          bs.WeakCall(self.handleMessage, bs.DieMessage()))
         self._update()
-        self._updateTimer = bs.Timer(1000, bs.WeakCall(self._update),
+        self._updateTimer = bs.Timer(1000,
+                                     bs.WeakCall(self._update),
                                      repeat=True)
+
     def _update(self):
         import bsUI
         if self._dead: return
@@ -3254,22 +3635,24 @@ class ControlsHelpOverlay(bsGame.Actor):
         # we look at the session's players; not the activity's - we want to
         # get ones who are still in the process of selecting a character, etc.
         inputDevices = [p.getInputDevice() for p in bs.getSession().players]
-        inputDevices = [i for i in inputDevices if i is not None and i.exists()]
+        inputDevices = [
+            i for i in inputDevices if i is not None and i.exists()
+        ]
 
         # if there's no players with input devices yet, try to default to
         # showing keyboard controls
         if len(inputDevices) == 0:
-            kb = bsInternal._getInputDevice('Keyboard', '#1',
+            kb = bsInternal._getInputDevice('Keyboard',
+                                            '#1',
                                             exceptionOnNone=False)
             if kb is not None: inputDevices.append(kb)
 
         # we word things specially if we have nothing but keyboards..
-        allKeyboards = (len(inputDevices) > 0
-                        and all(i.getName() == 'Keyboard'
-                                for i in inputDevices))
+        allKeyboards = (len(inputDevices) > 0 and all(i.getName() == 'Keyboard'
+                                                      for i in inputDevices))
         onlyRemote = (len(inputDevices) == 1
-                        and all(i.getName() == 'Amazon Fire TV Remote'
-                                for i in inputDevices))
+                      and all(i.getName() == 'Amazon Fire TV Remote'
+                              for i in inputDevices))
         if allKeyboards:
             rightButtonNames = set()
             leftButtonNames = set()
@@ -3282,14 +3665,18 @@ class ControlsHelpOverlay(bsGame.Actor):
         for device in inputDevices:
             # (we only care about movement buttons in the case of keyboards)
             if allKeyboards:
-                rightButtonNames.add(device.getButtonName(
-                    bsUI.getControllerValue(device, 'buttonRight')))
-                leftButtonNames.add(device.getButtonName(
-                    bsUI.getControllerValue(device, 'buttonLeft')))
-                downButtonNames.add(device.getButtonName(
-                    bsUI.getControllerValue(device, 'buttonDown')))
-                upButtonNames.add(device.getButtonName(
-                    bsUI.getControllerValue(device, 'buttonUp')))
+                rightButtonNames.add(
+                    device.getButtonName(
+                        bsUI.getControllerValue(device, 'buttonRight')))
+                leftButtonNames.add(
+                    device.getButtonName(
+                        bsUI.getControllerValue(device, 'buttonLeft')))
+                downButtonNames.add(
+                    device.getButtonName(
+                        bsUI.getControllerValue(device, 'buttonDown')))
+                upButtonNames.add(
+                    device.getButtonName(
+                        bsUI.getControllerValue(device, 'buttonUp')))
             # ignore empty values; things like the remote app or
             # wiimotes can return these..
             bname = device.getButtonName(
@@ -3306,8 +3693,9 @@ class ControlsHelpOverlay(bsGame.Actor):
             if bname != '': pickUpButtonNames.add(bname)
 
         # if we have no values yet, we may want to throw out some sane defaults
-        if all(len(l) == 0 for l in (punchButtonNames, jumpButtonNames,
-                                     bombButtonNames, pickUpButtonNames)):
+        if all(
+                len(l) == 0 for l in (punchButtonNames, jumpButtonNames,
+                                      bombButtonNames, pickUpButtonNames)):
             # show ouya buttons
             if bsInternal._isRunningOnOuya():
                 # FIXME - should look at the ouya controller config;
@@ -3329,10 +3717,13 @@ class ControlsHelpOverlay(bsGame.Actor):
                     bombButtonNames.add('B')
                     pickUpButtonNames.add('Y')
 
-        runText = bs.Lstr(value='${R}: ${B}', subs=[
-            ('${R}', bs.Lstr(resource='runText')),
-            ('${B}', bs.Lstr(resource='holdAnyKeyText' if allKeyboards
-                             else 'holdAnyButtonText'))])
+        runText = bs.Lstr(value='${R}: ${B}',
+                          subs=[
+                              ('${R}', bs.Lstr(resource='runText')),
+                              ('${B}',
+                               bs.Lstr(resource='holdAnyKeyText' if
+                                       allKeyboards else 'holdAnyButtonText'))
+                          ])
 
         # if we're all keyboards, lets show move keys too
         if allKeyboards \
@@ -3344,11 +3735,11 @@ class ControlsHelpOverlay(bsGame.Actor):
             downText = list(downButtonNames)[0]
             leftText = list(leftButtonNames)[0]
             rightText = list(rightButtonNames)[0]
-            runText = bs.Lstr(
-                value='${M}: ${U}, ${L}, ${D}, ${R}\n${RUN}', subs=[
-                    ('${M}', bs.Lstr(resource='moveText')), ('${U}', upText),
-                    ('${L}', leftText), ('${D}', downText),
-                    ('${R}', rightText), ('${RUN}', runText)])
+            runText = bs.Lstr(value='${M}: ${U}, ${L}, ${D}, ${R}\n${RUN}',
+                              subs=[('${M}', bs.Lstr(resource='moveText')),
+                                    ('${U}', upText), ('${L}', leftText),
+                                    ('${D}', downText), ('${R}', rightText),
+                                    ('${RUN}', runText)])
 
         self._runText.text = runText
         if onlyRemote and self._lifespan is None:
@@ -3359,7 +3750,8 @@ class ControlsHelpOverlay(bsGame.Actor):
         self._extraText.text = wText
         if len(punchButtonNames) == 1:
             self._punchText.text = list(punchButtonNames)[0]
-        else: self._punchText.text = ''
+        else:
+            self._punchText.text = ''
 
         if len(jumpButtonNames) == 1: t = list(jumpButtonNames)[0]
         else: t = ''
@@ -3367,14 +3759,15 @@ class ControlsHelpOverlay(bsGame.Actor):
         if t == '':
             self._runText.position = self._runTextPosTop
             self._extraText.position = (self._runTextPosTop[0],
-                                        self._runTextPosTop[1]-50)
+                                        self._runTextPosTop[1] - 50)
         else:
             self._runText.position = self._runTextPosBottom
             self._extraText.position = (self._runTextPosBottom[0],
-                                        self._runTextPosBottom[1]-50)
+                                        self._runTextPosBottom[1] - 50)
         if len(bombButtonNames) == 1:
             self._bombText.text = list(bombButtonNames)[0]
-        else: self._bombText.text = ''
+        else:
+            self._bombText.text = ''
 
         # also move our title up/down depending on if this is shown.
         if len(pickUpButtonNames) == 1:
@@ -3387,7 +3780,8 @@ class ControlsHelpOverlay(bsGame.Actor):
                 self._titleText.position = self._titleTextPosBottom
 
     def _die(self):
-        for node in self._nodes: node.delete()
+        for node in self._nodes:
+            node.delete()
         self._nodes = []
         self._updateTimer = None
         self._dead = True
@@ -3403,10 +3797,12 @@ class ControlsHelpOverlay(bsGame.Actor):
             else:
                 # if they dont need immediate, fade out our nodes and die later
                 for node in self._nodes:
-                    bs.animate(node, 'opacity', {0:node.opacity, 3000:0.0})
+                    bs.animate(node, 'opacity', {0: node.opacity, 3000: 0.0})
                 bs.gameTimer(3100, bs.WeakCall(self._die))
 
-        else: bsGame.Actor.handleMessage(self, m)
+        else:
+            bsGame.Actor.handleMessage(self, m)
+
 
 class Background(bsGame.Actor):
     'Simple Fading Background Actor'
@@ -3414,7 +3810,7 @@ class Background(bsGame.Actor):
     def __init__(self, fadeTime=500, startFaded=False, showLogo=False):
         bs.Actor.__init__(self)
         self._dying = False
-        self.fadeTime=fadeTime
+        self.fadeTime = fadeTime
         # we're special in that we create our node in the session
         # scene-graph instead of the activity scene-graph.
         # this way we can overlap multiple activities for fades
@@ -3422,55 +3818,71 @@ class Background(bsGame.Actor):
         session = bs.getSession()
         self._session = weakref.ref(session)
         with bs.Context(session):
-            self.node = bs.newNode('image', delegate=self, attrs={
-                'fillScreen':True,
-                'texture':bs.getTexture('menuBG'),
-                'tiltTranslate':-0.3,
-                'hasAlphaChannel':False,
-                'color':(1, 1, 1)})
+            self.node = bs.newNode('image',
+                                   delegate=self,
+                                   attrs={
+                                       'fillScreen': True,
+                                       'texture': bs.getTexture('bg'),
+                                       'tiltTranslate': -0.3,
+                                       'hasAlphaChannel': False,
+                                       'color': (1, 1, 1)
+                                   })
             if not startFaded:
-                animate(self.node, 'opacity',
-                        {0:0, self.fadeTime:1}, loop=False)
+                animate(self.node,
+                        'opacity', {
+                            0: 0,
+                            self.fadeTime: 1
+                        },
+                        loop=False)
             if showLogo:
                 logoTexture = bs.getTexture('logo')
                 logoModel = bs.getModel('logo')
                 logoModelTransparent = bs.getModel('logoTransparent')
-                self.logo = bs.newNode('image', owner=self.node, attrs={
-                    'texture':logoTexture,
-                    'modelOpaque':logoModel,
-                    'modelTransparent':logoModelTransparent,
-                    'scale':(0.7, 0.7),
-                    'vrDepth':-250,
-                    'color':(0.15, 0.15, 0.15),
-                    'position':(0, 0),
-                    'tiltTranslate':-0.05,
-                    'absoluteScale':False})
-                bs.animate(self.logo, 'rotate', {0: 0.0, 5400: 360.0}, loop=True)
-                bs.animateArray(self.logo,'color',3,{0:(0,0,2),500:(0,2,0),1000:(2,0,0),1500:(2,2,0),2000:(2,0,2),2500:(0,1,6),3000:(1,2,0)},loop=True)
-                bs.animate(self.logo, 'opacity', {0: 0.0, 500: 1.0,1000: 1.0, 1500: 0},loop=True)
-
+                self.logo = bs.newNode(
+                    'image',
+                    owner=self.node,
+                    attrs={
+                        'texture': logoTexture,
+                        'modelOpaque': logoModel,
+                        'modelTransparent': logoModelTransparent,
+                        'scale': (0.7, 0.7),
+                        'vrDepth': -250,
+                        'color': (0.15, 0.15, 0.15),
+                        'position': (0, 0),
+                        'tiltTranslate': -0.05,
+                        'absoluteScale': False
+                    })
+                self.node.connectAttr('opacity', self.logo, 'opacity')
                 # add jitter/pulse for a stop-motion-y look unless we're in VR
                 # in which case stillness is better
                 if not bs.getEnvironment()['vrMode']:
-                    self.c = bs.newNode('combine', owner=self.node,
-                                        attrs={'size':2})
+                    self.c = bs.newNode('combine',
+                                        owner=self.node,
+                                        attrs={'size': 2})
                     for attr in ['input0', 'input1']:
-                        animate(self.c, attr, {0:0.693, 50:0.7, 500:0.693},
+                        animate(self.c,
+                                attr, {
+                                    0: 0.693,
+                                    50: 0.7,
+                                    500: 0.693
+                                },
                                 loop=True)
                     self.c.connectAttr('output', self.logo, 'scale')
-                    c = bs.newNode('combine', owner=self.node, attrs={'size':2})
+                    c = bs.newNode('combine',
+                                   owner=self.node,
+                                   attrs={'size': 2})
                     c.connectAttr('output', self.logo, 'position')
                     # gen some random keys for that stop-motion-y look
                     keys = {}
                     time = 0
                     for i in range(10):
-                        keys[time] = (random.random()-0.5)*0.0015
+                        keys[time] = (random.random() - 0.5) * 0.0015
                         time += random.random() * 100
                     animate(c, "input0", keys, loop=True)
                     keys = {}
                     time = 0
                     for i in range(10):
-                        keys[time] = (random.random()-0.5)*0.0015 + 0.05
+                        keys[time] = (random.random() - 0.5) * 0.0015 + 0.05
                         time += random.random() * 100
                     animate(c, "input1", keys, loop=True)
 
@@ -3498,53 +3910,80 @@ class Background(bsGame.Actor):
                     if immediate:
                         self.node.delete()
                     else:
-                        animate(self.node, "opacity",
-                                {0:1, self.fadeTime:0}, loop=False)
-                        bs.gameTimer(self.fadeTime+100, self.node.delete)
+                        animate(self.node,
+                                "opacity", {
+                                    0: 1,
+                                    self.fadeTime: 0
+                                },
+                                loop=False)
+                        bs.gameTimer(self.fadeTime + 100, self.node.delete)
 
     def handleMessage(self, m):
         self._handleMessageSanityCheck()
         if isinstance(m, bs.DieMessage):
             self._die(m.immediate)
-        else: bs.Actor.handleMessage(self, m)
+        else:
+            bs.Actor.handleMessage(self, m)
 
 
 class Text(bsGame.Actor):
     """ Text with some tricks """
-
-    def __init__(self, text, position=(0, 0), hAlign='left', vAlign='none',
-                 color=(1, 1, 1, 1), transition=None, transitionDelay=0,
-                 flash=False, vAttach='center', hAttach='center', scale=1.0,
-                 transitionOutDelay=None, maxWidth=None, shadow=0.5,
-                 flatness=0.0, vrDepth=0.0, hostOnly=False, front=False):
+    def __init__(self,
+                 text,
+                 position=(0, 0),
+                 hAlign='left',
+                 vAlign='none',
+                 color=(1, 1, 1, 1),
+                 transition=None,
+                 transitionDelay=0,
+                 flash=False,
+                 vAttach='center',
+                 hAttach='center',
+                 scale=1.0,
+                 transitionOutDelay=None,
+                 maxWidth=None,
+                 shadow=0.5,
+                 flatness=0.0,
+                 vrDepth=0.0,
+                 hostOnly=False,
+                 front=False):
         bs.Actor.__init__(self)
-        self.node = bs.newNode('text', delegate=self, attrs={
-            'text':text,
-            'color':color,
-            'position':position,
-            'hAlign':hAlign,
-            'vrDepth':vrDepth,
-            'vAlign':vAlign,
-            'hAttach':hAttach,
-            'vAttach':vAttach,
-            'shadow':shadow,
-            'flatness':flatness,
-            'maxWidth':0.0 if maxWidth is None else maxWidth,
-            'hostOnly':hostOnly,
-            'front':front,
-            'scale':scale})
+        self.node = bs.newNode(
+            'text',
+            delegate=self,
+            attrs={
+                'text': text,
+                'color': color,
+                'position': position,
+                'hAlign': hAlign,
+                'vrDepth': vrDepth,
+                'vAlign': vAlign,
+                'hAttach': hAttach,
+                'vAttach': vAttach,
+                'shadow': shadow,
+                'flatness': flatness,
+                'maxWidth': 0.0 if maxWidth is None else maxWidth,
+                'hostOnly': hostOnly,
+                'front': front,
+                'scale': scale
+            })
 
         if transition == 'fadeIn':
             if flash:
                 raise Exception("fixme: flash and fade-in"
                                 " currently cant both be on")
-            c = bs.newNode('combine', owner=self.node, attrs={
-                'input0':color[0], 'input1':color[1],
-                'input2':color[2], 'size':4})
-            keys = {transitionDelay:0, transitionDelay+500:color[3]}
+            c = bs.newNode('combine',
+                           owner=self.node,
+                           attrs={
+                               'input0': color[0],
+                               'input1': color[1],
+                               'input2': color[2],
+                               'size': 4
+                           })
+            keys = {transitionDelay: 0, transitionDelay + 500: color[3]}
             if transitionOutDelay is not None:
-                keys[transitionDelay+transitionOutDelay] = color[3]
-                keys[transitionDelay+transitionOutDelay+500] = 0
+                keys[transitionDelay + transitionOutDelay] = color[3]
+                keys[transitionDelay + transitionOutDelay + 500] = 0
             animate(c, "input3", keys)
             c.connectAttr('output', self.node, 'color')
 
@@ -3552,59 +3991,79 @@ class Text(bsGame.Actor):
             mult = 2.0
             t1 = 150
             t2 = 300
-            c = bs.newNode('combine', owner=self.node, attrs={'size':4})
-            animate(c, "input0", {0:color[0]*mult, t1:color[0],
-                                  t2:color[0]*mult}, loop=True)
-            animate(c, "input1", {0:color[1]*mult, t1:color[1],
-                                  t2:color[1]*mult}, loop=True)
-            animate(c, "input2", {0:color[2]*mult, t1:color[2],
-                                  t2:color[2]*mult}, loop=True)
+            c = bs.newNode('combine', owner=self.node, attrs={'size': 4})
+            animate(c,
+                    "input0", {
+                        0: color[0] * mult,
+                        t1: color[0],
+                        t2: color[0] * mult
+                    },
+                    loop=True)
+            animate(c,
+                    "input1", {
+                        0: color[1] * mult,
+                        t1: color[1],
+                        t2: color[1] * mult
+                    },
+                    loop=True)
+            animate(c,
+                    "input2", {
+                        0: color[2] * mult,
+                        t1: color[2],
+                        t2: color[2] * mult
+                    },
+                    loop=True)
             #c.input2 = color[2]
             c.input3 = color[3]
             c.connectAttr('output', self.node, 'color')
 
-        c = self.positionCombine = bs.newNode('combine', owner=self.node,
-                                              attrs={'size':2})
+        c = self.positionCombine = bs.newNode('combine',
+                                              owner=self.node,
+                                              attrs={'size': 2})
         if transition == 'inRight':
-            keys = {transitionDelay:position[0]+1300,
-                    transitionDelay+200:position[0]}
-            oKeys = {transitionDelay:0.0,
-                     transitionDelay+50:1.0}
+            keys = {
+                transitionDelay: position[0] + 1300,
+                transitionDelay + 200: position[0]
+            }
+            oKeys = {transitionDelay: 0.0, transitionDelay + 50: 1.0}
             animate(c, 'input0', keys)
             c.input1 = position[1]
             animate(self.node, 'opacity', oKeys)
         elif transition == 'inLeft':
-            keys = {transitionDelay:position[0]-1300,
-                    transitionDelay+200:position[0]}
-            oKeys = {transitionDelay:0.0, transitionDelay+50:1.0}
+            keys = {
+                transitionDelay: position[0] - 1300,
+                transitionDelay + 200: position[0]
+            }
+            oKeys = {transitionDelay: 0.0, transitionDelay + 50: 1.0}
             if transitionOutDelay is not None:
-                keys[transitionDelay+transitionOutDelay] = position[0]
-                keys[transitionDelay+transitionOutDelay+200] = position[0]-1300
-                oKeys[transitionDelay+transitionOutDelay+150] = 1.0
-                oKeys[transitionDelay+transitionOutDelay+200] = 0.0
+                keys[transitionDelay + transitionOutDelay] = position[0]
+                keys[transitionDelay + transitionOutDelay +
+                     200] = position[0] - 1300
+                oKeys[transitionDelay + transitionOutDelay + 150] = 1.0
+                oKeys[transitionDelay + transitionOutDelay + 200] = 0.0
             animate(c, 'input0', keys)
             c.input1 = position[1]
             animate(self.node, 'opacity', oKeys)
         elif transition == 'inBottomSlow':
-            keys = {transitionDelay:-100, transitionDelay+1000:position[1]}
-            oKeys = {transitionDelay:0.0, transitionDelay+200:1.0}
+            keys = {transitionDelay: -100, transitionDelay + 1000: position[1]}
+            oKeys = {transitionDelay: 0.0, transitionDelay + 200: 1.0}
             c.input0 = position[0]
             animate(c, 'input1', keys)
             animate(self.node, 'opacity', oKeys)
         elif transition == 'inBottom':
-            keys = {transitionDelay:-100, transitionDelay+200:position[1]}
-            oKeys = {transitionDelay:0.0, transitionDelay+50:1.0}
+            keys = {transitionDelay: -100, transitionDelay + 200: position[1]}
+            oKeys = {transitionDelay: 0.0, transitionDelay + 50: 1.0}
             if transitionOutDelay is not None:
-                keys[transitionDelay+transitionOutDelay] = position[1]
-                keys[transitionDelay+transitionOutDelay+200] = -100
-                oKeys[transitionDelay+transitionOutDelay+150] = 1.0
-                oKeys[transitionDelay+transitionOutDelay+200] = 0.0
+                keys[transitionDelay + transitionOutDelay] = position[1]
+                keys[transitionDelay + transitionOutDelay + 200] = -100
+                oKeys[transitionDelay + transitionOutDelay + 150] = 1.0
+                oKeys[transitionDelay + transitionOutDelay + 200] = 0.0
             c.input0 = position[0]
             animate(c, 'input1', keys)
             animate(self.node, 'opacity', oKeys)
         elif transition == 'inTopSlow':
-            keys = {transitionDelay:400, transitionDelay+3500:position[1]}
-            oKeys = {transitionDelay:0.0, transitionDelay+1000:1.0}
+            keys = {transitionDelay: 400, transitionDelay + 3500: position[1]}
+            oKeys = {transitionDelay: 0.0, transitionDelay + 1000: 1.0}
             c.input0 = position[0]
             animate(c, 'input1', keys)
             animate(self.node, 'opacity', oKeys)
@@ -3615,7 +4074,7 @@ class Text(bsGame.Actor):
 
         # if we're transitioning out, die at the end of it
         if transitionOutDelay is not None:
-            bs.gameTimer(transitionDelay+transitionOutDelay+1000,
+            bs.gameTimer(transitionDelay + transitionOutDelay + 1000,
                          bs.WeakCall(self.handleMessage, bs.DieMessage()))
 
     def handleMessage(self, m):
@@ -3625,13 +4084,23 @@ class Text(bsGame.Actor):
         else:
             bs.Actor.handleMessage(self, m)
 
+
 class Image(bsGame.Actor):
     """ just an image node with a few tricks """
-    def __init__(self, texture, position=(0, 0), transition=None,
-                 transitionDelay=0, attach='center',
-                 color=(1, 1, 1, 1), scale=(100, 100), transitionOutDelay=None,
-                 modelOpaque=None, modelTransparent=None,
-                 vrDepth=0, hostOnly=False, front=False):
+    def __init__(self,
+                 texture,
+                 position=(0, 0),
+                 transition=None,
+                 transitionDelay=0,
+                 attach='center',
+                 color=(1, 1, 1, 1),
+                 scale=(100, 100),
+                 transitionOutDelay=None,
+                 modelOpaque=None,
+                 modelTransparent=None,
+                 vrDepth=0,
+                 hostOnly=False,
+                 front=False):
         bs.Actor.__init__(self)
         # if they provided a dict as texture, assume its an icon..
         # otherwise its just a texture value itself
@@ -3647,20 +4116,21 @@ class Image(bsGame.Actor):
             tintTexture = None
             maskTexture = None
 
-
         self.node = bs.newNode('image',
-                               attrs={'texture':texture,
-                                      'tintColor':tintColor,
-                                      'tintTexture':tintTexture,
-                                      'position':position,
-                                      'vrDepth':vrDepth,
-                                      'scale':scale,
-                                      'maskTexture':maskTexture,
-                                      'color':color,
-                                      'absoluteScale':True,
-                                      'hostOnly':hostOnly,
-                                      'front':front,
-                                      'attach':attach},
+                               attrs={
+                                   'texture': texture,
+                                   'tintColor': tintColor,
+                                   'tintTexture': tintTexture,
+                                   'position': position,
+                                   'vrDepth': vrDepth,
+                                   'scale': scale,
+                                   'maskTexture': maskTexture,
+                                   'color': color,
+                                   'absoluteScale': True,
+                                   'hostOnly': hostOnly,
+                                   'front': front,
+                                   'attach': attach
+                               },
                                delegate=self)
 
         if modelOpaque is not None: self.node.modelOpaque = modelOpaque
@@ -3669,54 +4139,59 @@ class Image(bsGame.Actor):
         if tint2Color is not None: self.node.tint2Color = tint2Color
 
         if transition == 'fadeIn':
-            keys = {transitionDelay:0, transitionDelay+500:color[3]}
+            keys = {transitionDelay: 0, transitionDelay + 500: color[3]}
             if transitionOutDelay is not None:
-                keys[transitionDelay+transitionOutDelay] = color[3]
-                keys[transitionDelay+transitionOutDelay+500] = 0
+                keys[transitionDelay + transitionOutDelay] = color[3]
+                keys[transitionDelay + transitionOutDelay + 500] = 0
             animate(self.node, 'opacity', keys)
 
         c = self.positionCombine = bs.newNode('combine',
                                               owner=self.node,
-                                              attrs={'size':2})
+                                              attrs={'size': 2})
         if transition == 'inRight':
-            keys = {transitionDelay:position[0]+1200,
-                    transitionDelay+200:position[0]}
-            oKeys = {transitionDelay:0.0, transitionDelay+50:1.0}
+            keys = {
+                transitionDelay: position[0] + 1200,
+                transitionDelay + 200: position[0]
+            }
+            oKeys = {transitionDelay: 0.0, transitionDelay + 50: 1.0}
             animate(c, 'input0', keys)
             c.input1 = position[1]
             animate(self.node, 'opacity', oKeys)
         elif transition == 'inLeft':
-            keys = {transitionDelay:position[0]-1200,
-                    transitionDelay+200:position[0]}
-            oKeys = {transitionDelay:0.0, transitionDelay+50:1.0}
+            keys = {
+                transitionDelay: position[0] - 1200,
+                transitionDelay + 200: position[0]
+            }
+            oKeys = {transitionDelay: 0.0, transitionDelay + 50: 1.0}
             if transitionOutDelay is not None:
-                keys[transitionDelay+transitionOutDelay] = position[0]
-                keys[transitionDelay+transitionOutDelay+200] = -position[0]-1200
-                oKeys[transitionDelay+transitionOutDelay+150] = 1.0
-                oKeys[transitionDelay+transitionOutDelay+200] = 0.0
+                keys[transitionDelay + transitionOutDelay] = position[0]
+                keys[transitionDelay + transitionOutDelay +
+                     200] = -position[0] - 1200
+                oKeys[transitionDelay + transitionOutDelay + 150] = 1.0
+                oKeys[transitionDelay + transitionOutDelay + 200] = 0.0
             animate(c, 'input0', keys)
             c.input1 = position[1]
             animate(self.node, 'opacity', oKeys)
         elif transition == 'inBottomSlow':
-            keys = {transitionDelay:-400, transitionDelay+3500:position[1]}
-            oKeys = {transitionDelay:0.0, transitionDelay+2000:1.0}
+            keys = {transitionDelay: -400, transitionDelay + 3500: position[1]}
+            oKeys = {transitionDelay: 0.0, transitionDelay + 2000: 1.0}
             c.input0 = position[0]
             animate(c, 'input1', keys)
             animate(self.node, 'opacity', oKeys)
         elif transition == 'inBottom':
-            keys = {transitionDelay:-400, transitionDelay+200:position[1]}
-            oKeys = {transitionDelay:0.0, transitionDelay+50:1.0}
+            keys = {transitionDelay: -400, transitionDelay + 200: position[1]}
+            oKeys = {transitionDelay: 0.0, transitionDelay + 50: 1.0}
             if transitionOutDelay is not None:
-                keys[transitionDelay+transitionOutDelay] = position[1]
-                keys[transitionDelay+transitionOutDelay+200] = -400
-                oKeys[transitionDelay+transitionOutDelay+150] = 1.0
-                oKeys[transitionDelay+transitionOutDelay+200] = 0.0
+                keys[transitionDelay + transitionOutDelay] = position[1]
+                keys[transitionDelay + transitionOutDelay + 200] = -400
+                oKeys[transitionDelay + transitionOutDelay + 150] = 1.0
+                oKeys[transitionDelay + transitionOutDelay + 200] = 0.0
             c.input0 = position[0]
             animate(c, 'input1', keys)
             animate(self.node, 'opacity', oKeys)
         elif transition == 'inTopSlow':
-            keys = {transitionDelay:400, transitionDelay+3500:position[1]}
-            oKeys = {transitionDelay:0.0, transitionDelay+1000:1.0}
+            keys = {transitionDelay: 400, transitionDelay + 3500: position[1]}
+            oKeys = {transitionDelay: 0.0, transitionDelay + 1000: 1.0}
             c.input0 = position[0]
             animate(c, 'input1', keys)
             animate(self.node, 'opacity', oKeys)
@@ -3727,7 +4202,7 @@ class Image(bsGame.Actor):
 
         # if we're transitioning out, die at the end of it
         if transitionOutDelay is not None:
-            bs.gameTimer(transitionDelay+transitionOutDelay+1000,
+            bs.gameTimer(transitionDelay + transitionOutDelay + 1000,
                          bs.WeakCall(self.handleMessage, bs.DieMessage()))
 
     def handleMessage(self, m):
@@ -3744,8 +4219,13 @@ class PopupText(bsGame.Actor):
 
     A bit of text that pops up above a position to denote something special.
     """
-    def __init__(self, text, position=(0, 0, 0), color=(1, 1, 1, 1),
-                 randomOffset=0.5, offset=(0, 0, 0), scale=1.0):
+    def __init__(self,
+                 text,
+                 position=(0, 0, 0),
+                 color=(1, 1, 1, 1),
+                 randomOffset=0.5,
+                 offset=(0, 0, 0),
+                 scale=1.0):
         """
         Instantiate with given values.
 
@@ -3757,47 +4237,73 @@ class PopupText(bsGame.Actor):
 
         if len(color) == 3: color = (color[0], color[1], color[2], 1.0)
 
-        pos = (position[0]+offset[0]+randomOffset*(0.5-random.random()),
-               position[1]+offset[0]+randomOffset*(0.5-random.random()),
-               position[2]+offset[0]+randomOffset*(0.5-random.random()))
+        pos = (position[0] + offset[0] + randomOffset *
+               (0.5 - random.random()), position[1] + offset[0] +
+               randomOffset * (0.5 - random.random()), position[2] +
+               offset[0] + randomOffset * (0.5 - random.random()))
 
         self.node = bs.newNode('text',
-                               attrs={'text':text,
-                                      'inWorld':True,
-                                      'shadow':1.0,
-                                      'flatness':1.0,
-                                      'hAlign':'center'},
+                               attrs={
+                                   'text': text,
+                                   'inWorld': True,
+                                   'shadow': 1.0,
+                                   'flatness': 1.0,
+                                   'hAlign': 'center'
+                               },
                                delegate=self)
 
         lifespan = 1500.0
 
         # scale up
-        animate(self.node, 'scale', {0:0.0,
-                                   lifespan*0.11:0.020*0.7*scale,
-                                   lifespan*0.16:0.013*0.7*scale,
-                                   lifespan*0.25:0.014*0.7*scale})
+        animate(
+            self.node, 'scale', {
+                0: 0.0,
+                lifespan * 0.11: 0.020 * 0.7 * scale,
+                lifespan * 0.16: 0.013 * 0.7 * scale,
+                lifespan * 0.25: 0.014 * 0.7 * scale
+            })
 
         # translate upward
-        self._tcombine = bs.newNode('combine', owner=self.node, attrs={
-            'input0':pos[0], 'input2':pos[2], 'size':3})
-        animate(self._tcombine, 'input1', {0:pos[1]+1.5, lifespan:pos[1]+2.0})
+        self._tcombine = bs.newNode('combine',
+                                    owner=self.node,
+                                    attrs={
+                                        'input0': pos[0],
+                                        'input2': pos[2],
+                                        'size': 3
+                                    })
+        animate(self._tcombine, 'input1', {
+            0: pos[1] + 1.5,
+            lifespan: pos[1] + 2.0
+        })
         self._tcombine.connectAttr('output', self.node, 'position')
 
         # fade our opacity in/out
-        self._combine = bs.newNode('combine', owner=self.node, attrs={
-            'input0':color[0], 'input1':color[1], 'input2':color[2], 'size':4})
+        self._combine = bs.newNode('combine',
+                                   owner=self.node,
+                                   attrs={
+                                       'input0': color[0],
+                                       'input1': color[1],
+                                       'input2': color[2],
+                                       'size': 4
+                                   })
         for i in range(4):
-            animate(self._combine, 'input'+str(i), {0.13*lifespan:color[i],
-                                                    0.18*lifespan:4.0*color[i],
-                                                    0.22*lifespan:color[i]})
-        animate(self._combine, 'input3', {0:0, 0.1*lifespan:color[3],
-                                        0.7*lifespan:color[3], lifespan:0})
+            animate(
+                self._combine, 'input' + str(i), {
+                    0.13 * lifespan: color[i],
+                    0.18 * lifespan: 4.0 * color[i],
+                    0.22 * lifespan: color[i]
+                })
+        animate(self._combine, 'input3', {
+            0: 0,
+            0.1 * lifespan: color[3],
+            0.7 * lifespan: color[3],
+            lifespan: 0
+        })
         self._combine.connectAttr('output', self.node, 'color')
 
         # kill ourself
-        self._dieTimer = bs.Timer(int(lifespan),
-                                  bs.WeakCall(self.handleMessage,
-                                              bs.DieMessage()))
+        self._dieTimer = bs.Timer(
+            int(lifespan), bs.WeakCall(self.handleMessage, bs.DieMessage()))
 
     def handleMessage(self, msg):
         self._handleMessageSanityCheck()
@@ -3813,30 +4319,51 @@ class TipsText(bsGame.Actor):
         self._tipScale = 0.8
         self._tipTitleScale = 1.1
         self._offsY = offsY
-        self.node = bs.newNode('text', delegate=self, attrs={
-            'text':'',
-            'scale':self._tipScale,
-            'hAlign':'left',
-            'maxWidth':800,
-            'vrDepth':-20,
-            'vAlign':'center',
-            'vAttach':'bottom'})
-        self.titleNode = bs.newNode('text', delegate=self, attrs={
-            'text':bs.Lstr(value='${A}:',
-                           subs=[('${A}', bs.Lstr(resource='tipText'))]),
-            'scale':self._tipTitleScale,
-            'maxWidth':122,
-            'hAlign':'right',
-            'vrDepth':-20,
-            'vAlign':'center',
-            'vAttach':'bottom'})
+        self.node = bs.newNode('text',
+                               delegate=self,
+                               attrs={
+                                   'text': '',
+                                   'scale': self._tipScale,
+                                   'hAlign': 'left',
+                                   'maxWidth': 800,
+                                   'vrDepth': -20,
+                                   'vAlign': 'center',
+                                   'vAttach': 'bottom'
+                               })
+        self.titleNode = bs.newNode(
+            'text',
+            delegate=self,
+            attrs={
+                'text':
+                    bs.Lstr(value='${A}:',
+                            subs=[('${A}', bs.Lstr(resource='tipText'))]),
+                'scale':
+                    self._tipTitleScale,
+                'maxWidth':
+                    122,
+                'hAlign':
+                    'right',
+                'vrDepth':
+                    -20,
+                'vAlign':
+                    'center',
+                'vAttach':
+                    'bottom'
+            })
         self._messageDuration = 10000
         self._messageSpacing = 3000
-        self._changeTimer = bs.Timer(self._messageDuration+self._messageSpacing,
+        self._changeTimer = bs.Timer(self._messageDuration +
+                                     self._messageSpacing,
                                      bs.WeakCall(self.changePhrase),
                                      repeat=True)
-        self._combine = bs.newNode("combine", owner=self.node, attrs={
-            'input0':1.0, 'input1':0.8, 'input2':1.0, 'size':4})
+        self._combine = bs.newNode("combine",
+                                   owner=self.node,
+                                   attrs={
+                                       'input0': 1.0,
+                                       'input1': 0.8,
+                                       'input2': 1.0,
+                                       'size': 4
+                                   })
         self._combine.connectAttr('output', self.node, 'color')
         self._combine.connectAttr('output', self.titleNode, 'color')
         self.changePhrase()
@@ -3846,11 +4373,15 @@ class TipsText(bsGame.Actor):
                           subs=[('${REMOTE_APP_NAME}', _getRemoteAppName())])
         s = self._messageSpacing
         self.node.position = (-200, self._offsY)
-        self.titleNode.position = (-220, self._offsY+3)
-        keys = {s:0, s+1000:1.0, s+self._messageDuration-1000:1.0,
-                s+self._messageDuration:0.0}
+        self.titleNode.position = (-220, self._offsY + 3)
+        keys = {
+            s: 0,
+            s + 1000: 1.0,
+            s + self._messageDuration - 1000: 1.0,
+            s + self._messageDuration: 0.0
+        }
         animate(self._combine, "input3",
-                dict([[k, v*0.5] for k, v in keys.items()]))
+                dict([[k, v * 0.5] for k, v in keys.items()]))
         self.node.text = nextTip
 
     def handleMessage(self, m):
@@ -3858,7 +4389,9 @@ class TipsText(bsGame.Actor):
         if isinstance(m, bs.DieMessage):
             self.node.delete()
             self.titleNode.delete()
-        else: bs.Actor.handleMessage(self, m)
+        else:
+            bs.Actor.handleMessage(self, m)
+
 
 class OnScreenCountdown(bsGame.Actor):
     """
@@ -3873,38 +4406,47 @@ class OnScreenCountdown(bsGame.Actor):
         self._timeRemaining = duration
         self._ended = False
         self._endCall = endCall
-        self.node = bs.newNode('text', attrs={
-            'vAttach':'top',
-            'hAttach':'center',
-            'hAlign':'center',
-            'color':(1, 1, 0.5, 1),
-            'flatness':0.5,
-            'shadow':0.5,
-            'position':(0, -70),
-            'scale':1.4,
-            'text':''})
-        self.inputNode = bs.newNode('timeDisplay', attrs={
-            'time2':duration*1000,
-            'timeMax':duration*1000,
-            'timeMin':0})
+        self.node = bs.newNode('text',
+                               attrs={
+                                   'vAttach': 'top',
+                                   'hAttach': 'center',
+                                   'hAlign': 'center',
+                                   'color': (1, 1, 0.5, 1),
+                                   'flatness': 0.5,
+                                   'shadow': 0.5,
+                                   'position': (0, -70),
+                                   'scale': 1.4,
+                                   'text': ''
+                               })
+        self.inputNode = bs.newNode('timeDisplay',
+                                    attrs={
+                                        'time2': duration * 1000,
+                                        'timeMax': duration * 1000,
+                                        'timeMin': 0
+                                    })
         self.inputNode.connectAttr('output', self.node, 'text')
-        self._countDownSounds = {10:bs.getSound('announceTen'),
-                                 9:bs.getSound('announceNine'),
-                                 8:bs.getSound('announceEight'),
-                                 7:bs.getSound('announceSeven'),
-                                 6:bs.getSound('announceSix'),
-                                 5:bs.getSound('announceFive'),
-                                 4:bs.getSound('announceFour'),
-                                 3:bs.getSound('announceThree'),
-                                 2:bs.getSound('announceTwo'),
-                                 1:bs.getSound('announceOne')}
+        self._countDownSounds = {
+            10: bs.getSound('announceTen'),
+            9: bs.getSound('announceNine'),
+            8: bs.getSound('announceEight'),
+            7: bs.getSound('announceSeven'),
+            6: bs.getSound('announceSix'),
+            5: bs.getSound('announceFive'),
+            4: bs.getSound('announceFour'),
+            3: bs.getSound('announceThree'),
+            2: bs.getSound('announceTwo'),
+            1: bs.getSound('announceOne')
+        }
 
     def start(self):
         'Starts the timer.'
         g = bs.getSharedObject('globals')
         g.connectAttr('gameTime', self.inputNode, 'time1')
-        self.inputNode.time2 = g.gameTime + (self._timeRemaining+1) * 1000
-        self._timer = bs.Timer(1000, self._update, repeat=True, timeType='game')
+        self.inputNode.time2 = g.gameTime + (self._timeRemaining + 1) * 1000
+        self._timer = bs.Timer(1000,
+                               self._update,
+                               repeat=True,
+                               timeType='game')
 
     def onFinalize(self):
         bs.Actor.onFinalize(self)
@@ -3921,11 +4463,11 @@ class OnScreenCountdown(bsGame.Actor):
         # havn't played yet, play it
         if t == 10:
             self.node.scale *= 1.2
-            c = bs.newNode('combine', owner=self.node, attrs={'size':4})
+            c = bs.newNode('combine', owner=self.node, attrs={'size': 4})
             c.connectAttr('output', self.node, 'color')
-            animate(c, "input0", {0:1, 150:1}, loop=True)
-            animate(c, "input1", {0:1, 150:0.5}, loop=True)
-            animate(c, "input2", {0:0.1, 150:0.0}, loop=True)
+            animate(c, "input0", {0: 1, 150: 1}, loop=True)
+            animate(c, "input1", {0: 1, 150: 0.5}, loop=True)
+            animate(c, "input2", {0: 0.1, 150: 0.0}, loop=True)
             c.input3 = 1.0
         if t <= 10 and not self._ended:
             bs.playSound(bs.getSound('tick'))
@@ -3937,6 +4479,7 @@ class OnScreenCountdown(bsGame.Actor):
             self._ended = True
             if self._endCall is not None: self._endCall()
 
+
 class OnScreenTimer(bsGame.Actor):
     """
     category: Game Flow Classes
@@ -3947,27 +4490,31 @@ class OnScreenTimer(bsGame.Actor):
     def __init__(self):
         bs.Actor.__init__(self)
         self._startTime = None
-        self.node = bs.newNode('text', attrs={
-            'vAttach':'top',
-            'hAttach':'center',
-            'hAlign':'center',
-            'color':(1, 1, 0.5, 1),
-            'flatness':0.5,
-            'shadow':0.5,
-            'position':(0, -70),
-            'scale':1.4,
-            'text':''})
-        self.inputNode = bs.newNode('timeDisplay', attrs={
-            'timeMin':0,
-            'showSubSeconds':True})
+        self.node = bs.newNode('text',
+                               attrs={
+                                   'vAttach': 'top',
+                                   'hAttach': 'center',
+                                   'hAlign': 'center',
+                                   'color': (1, 1, 0.5, 1),
+                                   'flatness': 0.5,
+                                   'shadow': 0.5,
+                                   'position': (0, -70),
+                                   'scale': 1.4,
+                                   'text': ''
+                               })
+        self.inputNode = bs.newNode('timeDisplay',
+                                    attrs={
+                                        'timeMin': 0,
+                                        'showSubSeconds': True
+                                    })
         self.inputNode.connectAttr('output', self.node, 'text')
 
     def start(self):
         'Starts the timer.'
         self._startTime = bs.getGameTime()
         self.inputNode.time1 = self._startTime
-        bs.getSharedObject('globals').connectAttr('gameTime',
-                                                  self.inputNode, 'time2')
+        bs.getSharedObject('globals').connectAttr('gameTime', self.inputNode,
+                                                  'time2')
 
     def hasStarted(self):
         'Returns whether this timer has started yet.'
@@ -3981,7 +4528,7 @@ class OnScreenTimer(bsGame.Actor):
         if self._startTime is None:
             print 'Warning: OnScreenTimer.stop() called without start() first'
         else:
-            self.inputNode.timeMax = endTime-self._startTime
+            self.inputNode.timeMax = endTime - self._startTime
 
     def getStartTime(self):
         'Returns the game-time when start() was called'
@@ -3996,6 +4543,7 @@ class OnScreenTimer(bsGame.Actor):
             self._timer = None
             self.node.delete()
 
+
 class ZoomText(bsGame.Actor):
     """
     category: Game Flow Classes
@@ -4003,32 +4551,46 @@ class ZoomText(bsGame.Actor):
     Big Zooming Text Actor.
     Used for things such as the 'BOB WINS' victory messages.
     """
-
-    def __init__(self, text, position=(0, 0), shiftPosition=None,
-                 shiftDelay=None, lifespan=None, flash=True, trail=True,
-                 hAlign="center", color=(0.9, 0.4, 0.0), jitter=0.0,
-                 trailColor=(1.0, 0.35, 0.1, 0.0), scale=1.0, projectScale=1.0,
-                 tiltTranslate=0.0, maxWidth=None):
+    def __init__(self,
+                 text,
+                 position=(0, 0),
+                 shiftPosition=None,
+                 shiftDelay=None,
+                 lifespan=None,
+                 flash=True,
+                 trail=True,
+                 hAlign="center",
+                 color=(0.9, 0.4, 0.0),
+                 jitter=0.0,
+                 trailColor=(1.0, 0.35, 0.1, 0.0),
+                 scale=1.0,
+                 projectScale=1.0,
+                 tiltTranslate=0.0,
+                 maxWidth=None):
         bs.Actor.__init__(self)
         self._dying = False
-        positionAdjusted = (position[0], position[1]-100)
+        positionAdjusted = (position[0], position[1] - 100)
         if shiftDelay is None: shiftDelay = 2500
         if shiftDelay < 0:
             bs.printError('got shiftDelay < 0')
             shiftDelay = 0
         self._projectScale = projectScale
-        self.node = bs.newNode('text', delegate=self, attrs={
-            'position':positionAdjusted,
-            'big':True,
-            'text':text,
-            'trail':trail,
-            'vrDepth':0,
-            'shadow':0.0 if trail else 0.3,
-            'scale':scale,
-            'maxWidth':maxWidth if maxWidth is not None else 0.0,
-            'tiltTranslate':tiltTranslate,
-            'hAlign':hAlign,
-            'vAlign':'center'})
+        self.node = bs.newNode(
+            'text',
+            delegate=self,
+            attrs={
+                'position': positionAdjusted,
+                'big': True,
+                'text': text,
+                'trail': trail,
+                'vrDepth': 0,
+                'shadow': 0.0 if trail else 0.3,
+                'scale': scale,
+                'maxWidth': maxWidth if maxWidth is not None else 0.0,
+                'tiltTranslate': tiltTranslate,
+                'hAlign': hAlign,
+                'vAlign': 'center'
+            })
 
         # we never jitter in vr mode..
         if bs.getEnvironment()['vrMode']:
@@ -4036,56 +4598,87 @@ class ZoomText(bsGame.Actor):
 
         # if they want jitter, animate its position slightly...
         if jitter > 0.0:
-            self._jitter(positionAdjusted, jitter*scale)
+            self._jitter(positionAdjusted, jitter * scale)
 
         # if they want shifting, move to the shift position and
         # then resume jittering
         if shiftPosition is not None:
-            positionAdjusted2 = (shiftPosition[0], shiftPosition[1]-100)
-            bs.gameTimer(shiftDelay, bs.WeakCall(self._shift, positionAdjusted,
-                                                 positionAdjusted2))
+            positionAdjusted2 = (shiftPosition[0], shiftPosition[1] - 100)
+            bs.gameTimer(
+                shiftDelay,
+                bs.WeakCall(self._shift, positionAdjusted, positionAdjusted2))
             if jitter > 0.0:
-                bs.gameTimer(shiftDelay+250, bs.WeakCall(self._jitter,
-                                                         positionAdjusted2,
-                                                         jitter*scale))
-        colorCombine = bs.newNode('combine', owner=self.node, attrs={
-            'input2':color[2],
-            'input3':1.0,
-            'size':4})
+                bs.gameTimer(
+                    shiftDelay + 250,
+                    bs.WeakCall(self._jitter, positionAdjusted2,
+                                jitter * scale))
+        colorCombine = bs.newNode('combine',
+                                  owner=self.node,
+                                  attrs={
+                                      'input2': color[2],
+                                      'input3': 1.0,
+                                      'size': 4
+                                  })
         if trail:
-            trailColor = bs.newNode('combine', owner=self.node, attrs={
-                'size':3,
-                'input0':trailColor[0],
-                'input1':trailColor[1],
-                'input2':trailColor[2]})
+            trailColor = bs.newNode('combine',
+                                    owner=self.node,
+                                    attrs={
+                                        'size': 3,
+                                        'input0': trailColor[0],
+                                        'input1': trailColor[1],
+                                        'input2': trailColor[2]
+                                    })
             trailColor.connectAttr('output', self.node, 'trailColor')
             foo = 0.85
-            animate(self.node, 'trailProjectScale', {
-                0:0*projectScale, int(foo*201):0.6*projectScale,
-                int(foo*347):0.8*projectScale, int(foo*478):0.9*projectScale,
-                int(foo*595):0.93*projectScale, int(foo*748):0.95*projectScale,
-                int(foo*941):0.95*projectScale})
+            animate(
+                self.node, 'trailProjectScale', {
+                    0: 0 * projectScale,
+                    int(foo * 201): 0.6 * projectScale,
+                    int(foo * 347): 0.8 * projectScale,
+                    int(foo * 478): 0.9 * projectScale,
+                    int(foo * 595): 0.93 * projectScale,
+                    int(foo * 748): 0.95 * projectScale,
+                    int(foo * 941): 0.95 * projectScale
+                })
         if flash:
             mult = 2.0
             t1 = 150
             t2 = 300
-            animate(colorCombine, 'input0', {0:color[0]*mult, t1:color[0],
-                                             t2:color[0]*mult}, loop=True)
-            animate(colorCombine, 'input1', {0:color[1]*mult, t1:color[1],
-                                             t2:color[1]*mult}, loop=True)
-            animate(colorCombine, 'input2', {0:color[2]*mult, t1:color[2],
-                                             t2:color[2]*mult}, loop=True)
+            animate(colorCombine,
+                    'input0', {
+                        0: color[0] * mult,
+                        t1: color[0],
+                        t2: color[0] * mult
+                    },
+                    loop=True)
+            animate(colorCombine,
+                    'input1', {
+                        0: color[1] * mult,
+                        t1: color[1],
+                        t2: color[1] * mult
+                    },
+                    loop=True)
+            animate(colorCombine,
+                    'input2', {
+                        0: color[2] * mult,
+                        t1: color[2],
+                        t2: color[2] * mult
+                    },
+                    loop=True)
         else:
             colorCombine.input0 = color[0]
             colorCombine.input1 = color[1]
         colorCombine.connectAttr('output', self.node, 'color')
-        animate(self.node, 'projectScale',
-                {0:0, 270:1.05*projectScale, 300:1*projectScale})
+        animate(self.node, 'projectScale', {
+            0: 0,
+            270: 1.05 * projectScale,
+            300: 1 * projectScale
+        })
 
         # if they give us a lifespan, kill ourself down the line
         if lifespan is not None:
-            bs.gameTimer(lifespan, bs.WeakCall(self.handleMessage,
-                                               bs.DieMessage()))
+            bs.gameTimer(lifespan,
+                         bs.WeakCall(self.handleMessage, bs.DieMessage()))
 
     def handleMessage(self, m):
         self._handleMessageSanityCheck()
@@ -4095,35 +4688,37 @@ class ZoomText(bsGame.Actor):
                 if m.immediate:
                     self.node.delete()
                 else:
-                    animate(self.node, 'projectScale',
-                            {0:1*self._projectScale,
-                             600:1.2*self._projectScale})
-                    animate(self.node, 'opacity', {0:1, 300:0})
-                    animate(self.node, 'trailOpacity', {0:1, 600:0})
+                    animate(self.node, 'projectScale', {
+                        0: 1 * self._projectScale,
+                        600: 1.2 * self._projectScale
+                    })
+                    animate(self.node, 'opacity', {0: 1, 300: 0})
+                    animate(self.node, 'trailOpacity', {0: 1, 600: 0})
                     bs.gameTimer(700, self.node.delete)
         else:
             bs.Actor.handleMessage(self, m)
 
     def _jitter(self, position, jitterAmount):
         if not self.node.exists(): return
-        c = bs.newNode('combine', owner=self.node, attrs={'size':2})
+        c = bs.newNode('combine', owner=self.node, attrs={'size': 2})
         for index, attr in enumerate(['input0', 'input1']):
             keys = {}
             time = 0
             # gen some random keys for that stop-motion-y look
             for i in range(10):
-                keys[time] = (position[index]
-                              + (random.random()-0.5)*jitterAmount*1.6)
+                keys[time] = (position[index] +
+                              (random.random() - 0.5) * jitterAmount * 1.6)
                 time += random.random() * 100
             animate(c, attr, keys, loop=True)
         c.connectAttr('output', self.node, 'position')
 
     def _shift(self, position1, position2):
         if not self.node.exists(): return
-        c = bs.newNode('combine', owner=self.node, attrs={'size':2})
-        animate(c, 'input0', {0:position1[0], 250:position2[0]})
-        animate(c, 'input1', {0:position1[1], 250:position2[1]})
+        c = bs.newNode('combine', owner=self.node, attrs={'size': 2})
+        animate(c, 'input0', {0: position1[0], 250: position2[0]})
+        animate(c, 'input1', {0: position1[1], 250: position2[1]})
         c.connectAttr('output', self.node, 'position')
+
 
 _gAdAmt = None
 _gLastAdPurpose = 'invalid'
@@ -4133,28 +4728,32 @@ _lastAdCompletionTime = None
 _lastAdShort = False
 _attemptedFirstAd = False
 
+
 def _showAd(purpose, onCompletionCall=None, passActuallyShowed=False):
     global _gLastAdPurpose
     _gLastAdPurpose = purpose
     bsInternal._showAd(purpose, onCompletionCall, passActuallyShowed)
+
 
 def _callAfterAd(c):
 
     show = True
     # no ads without net-connections, etc..
     if not bsInternal._canShowAd(): show = False
-    if _havePro(): show = False # pro disables interstitials
+    if _havePro(): show = False  # pro disables interstitials
 
     try:
-        isTournament = (bsInternal._getForegroundHostSession()._tournamentID
-                        is not None)
+        isTournament = (bsInternal._getForegroundHostSession()._tournamentID is
+                        not None)
     except Exception:
         isTournament = False
-    if isTournament: show = False # never show ads during tournaments
+    if isTournament: show = False  # never show ads during tournaments
 
     if show:
-        try: launchCount = bs.getConfig()['launchCount']
-        except Exception: launchCount = 0
+        try:
+            launchCount = bs.getConfig()['launchCount']
+        except Exception:
+            launchCount = 0
         global _gAdAmt
         global _attemptedFirstAd
         # if we're seeing short ads we may want to space them differently..
@@ -4173,8 +4772,8 @@ def _callAfterAd(c):
             # see if we should *actually* show ( we reach our threshold faster
             # the longer we've been playing..)
             base = 'ads' if bsInternal._hasVideoAds() else 'ads2'
-            minLC = bsInternal._getAccountMiscReadVal(base+'.minLC', 0.0)
-            maxLC = bsInternal._getAccountMiscReadVal(base+'.maxLC', 5.0)
+            minLC = bsInternal._getAccountMiscReadVal(base + '.minLC', 0.0)
+            maxLC = bsInternal._getAccountMiscReadVal(base + '.maxLC', 5.0)
             minLCScale = \
                 bsInternal._getAccountMiscReadVal(base+'.minLCScale', 0.25)
             maxLCScale = \
@@ -4185,9 +4784,9 @@ def _callAfterAd(c):
                 bsInternal._getAccountMiscReadVal(base+'.maxLCInterval', 300)
             if launchCount < minLC: lcAmt = 0.0
             elif launchCount > maxLC: lcAmt = 1.0
-            else: lcAmt = (float(launchCount)-minLC)/(maxLC-minLC)
-            incr = (1.0-lcAmt)*minLCScale+lcAmt*maxLCScale
-            interval = (1.0-lcAmt)*minLCInterval+lcAmt*maxLCInterval
+            else: lcAmt = (float(launchCount) - minLC) / (maxLC - minLC)
+            incr = (1.0 - lcAmt) * minLCScale + lcAmt * maxLCScale
+            interval = (1.0 - lcAmt) * minLCInterval + lcAmt * maxLCInterval
             _gAdAmt += incr
         if _gAdAmt >= 1.0:
             _gAdAmt = _gAdAmt % 1.0
@@ -4213,29 +4812,36 @@ def _callAfterAd(c):
             def __init__(self, call):
                 self._call = call
                 self._ran = False
+
             def run(self, fallback=False):
                 if not self._ran:
                     if fallback:
-                        print ('ERROR: relying on fallback ad-callback! '
-                               'last network: '+_gLastAdNetwork+' (set '
-                               +str(int(time.time()-_gLastAdNetworkSetTime))
-                               +'s ago); purpose='+_gLastAdPurpose)
+                        print(
+                            'ERROR: relying on fallback ad-callback! '
+                            'last network: ' + _gLastAdNetwork + ' (set ' +
+                            str(int(time.time() - _gLastAdNetworkSetTime)) +
+                            's ago); purpose=' + _gLastAdPurpose)
                     bs.pushCall(self._call)
                     self._ran = True
+
         p = _Payload(c)
         with bs.Context('UI'):
             bs.realTimer(5000, lambda: p.run(fallback=True))
         _showAd('between_game', onCompletionCall=p.run)
-    else: bs.pushCall(c) # just run the callback without the ad
+    else:
+        bs.pushCall(c)  # just run the callback without the ad
+
 
 _gLastAdNetwork = 'unknown'
 _gLastAdNetworkSetTime = time.time()
+
 
 def _havePro():
     # check our tickets-based pro upgrade and our two real-IAP based upgrades
     return (bsInternal._getPurchased('upgrades.pro')
             or bsInternal._getPurchased('static.pro')
             or bsInternal._getPurchased('static.pro_sale'))
+
 
 def _haveProOptions():
     # we expose pro options if the server tells us to
@@ -4245,29 +4851,38 @@ def _haveProOptions():
         bsInternal._getAccountMiscReadVal2('proOptionsUnlocked', False)
         or bs.getConfig().get('lc14292', 0) > 1) else False
 
+
 _gLastPostPurchaseMessageTime = None
+
+
 def _showPostPurchaseMessage():
     global _gLastPostPurchaseMessageTime
     curTime = bs.getRealTime()
     if (_gLastPostPurchaseMessageTime is None
-            or curTime-_gLastPostPurchaseMessageTime > 3000):
+            or curTime - _gLastPostPurchaseMessageTime > 3000):
         _gLastPostPurchaseMessageTime = curTime
         with bs.Context('UI'):
             bs.screenMessage(bs.Lstr(resource='updatingAccountText',
                                      fallbackResource='purchasingText'),
                              color=(0, 1, 0))
             bs.playSound(bs.getSound('click01'))
+
+
 _gSales = []
+
 
 def _handleSaleInfo(info):
     pass
 
+
 def _adCompleteGeneral():
     pass
+
 
 # if we try to run promo-codes due to launch-args/etc we might not be signed;
 # in yet; go ahead and queue them up in that case..
 _pendingPromoCodes = []
+
 
 def _onAccountStateChanged():
 
@@ -4275,21 +4890,25 @@ def _onAccountStateChanged():
     global _pendingPromoCodes
     if bsInternal._getAccountState() == 'SIGNED_IN' and _pendingPromoCodes:
         for code in _pendingPromoCodes:
-            bs.screenMessage(
-                bs.Lstr(resource='submittingPromoCodeText'), color=(0, 1, 0))
-            bsInternal._addTransaction({'type':'PROMO_CODE',
-                                        'expireTime':time.time()+5,
-                                        'code':code})
+            bs.screenMessage(bs.Lstr(resource='submittingPromoCodeText'),
+                             color=(0, 1, 0))
+            bsInternal._addTransaction({
+                'type': 'PROMO_CODE',
+                'expireTime': time.time() + 5,
+                'code': code
+            })
         bsInternal._runTransactions()
         _pendingPromoCodes = []
+
 
 def _checkPendingCodes():
     # if we're still not signed in and have pending codes,
     # inform the user that they need to sign in to use them
     if _pendingPromoCodes:
-        bs.screenMessage(
-            bs.Lstr(resource='signInForPromoCodeText'), color=(1, 0, 0))
+        bs.screenMessage(bs.Lstr(resource='signInForPromoCodeText'),
+                         color=(1, 0, 0))
         bs.playSound(bs.getSound('error'))
+
 
 def _handleDeepLink(url):
     if url.startswith('bombsquad://code/'):
@@ -4300,15 +4919,18 @@ def _handleDeepLink(url):
             _pendingPromoCodes.append(code)
             bs.realTimer(6000, _checkPendingCodes)
             return
-        bs.screenMessage(
-            bs.Lstr(resource='submittingPromoCodeText'), color=(0, 1, 0))
-        bsInternal._addTransaction({'type':'PROMO_CODE',
-                                    'expireTime':time.time()+5,
-                                    'code':code})
+        bs.screenMessage(bs.Lstr(resource='submittingPromoCodeText'),
+                         color=(0, 1, 0))
+        bsInternal._addTransaction({
+            'type': 'PROMO_CODE',
+            'expireTime': time.time() + 5,
+            'code': code
+        })
         bsInternal._runTransactions()
     else:
         bs.screenMessage(bs.Lstr(resource='errorText'), color=(1, 0, 0))
         bs.playSound(bs.getSound('error'))
+
 
 def uni(s):
     """
@@ -4318,6 +4940,7 @@ def uni(s):
     """
     if type(s) is not unicode: return s.decode('utf-8', errors='ignore')
     else: return s
+
 
 def utf8(s):
     """
@@ -4329,10 +4952,12 @@ def utf8(s):
     if type(s) is unicode: return s.encode('utf-8', errors='ignore')
     else: return s
 
+
 def isCustomUnicodeChar(c):
     if type(c) is not unicode or len(c) != 1:
         raise Exception("Invalid Input; not unicode or not length 1")
     return True if ord(c) >= 0xE000 and ord(c) <= 0xF8FF else False
+
 
 def jsonPrep(data):
     """ converts data to a form that should
@@ -4352,6 +4977,7 @@ def jsonPrep(data):
     else:
         return data
 
+
 def toUTF8(data):
     """ converts any unicode data to utf8 """
     if isinstance(data, dict):
@@ -4365,6 +4991,7 @@ def toUTF8(data):
         return data.encode('utf-8', errors='ignore')
     else:
         return data
+
 
 def _getIPAddressType(addr):
     """ Returns socket.AF_INET6 or socket.AF_INET4.
@@ -4397,11 +5024,13 @@ def _getIPAddressType(addr):
             pass
 
     if socketType is None:
-        raise Exception("addr seems to be neither v4 or v6: "+str(addr))
+        raise Exception("addr seems to be neither v4 or v6: " + str(addr))
 
     return socketType
 
+
 _gServerConfigDirty = False
+
 
 def _configServer():
     """apply server config changes that can always take effect immediately
@@ -4418,9 +5047,9 @@ def _configServer():
 
     bsInternal._setPublicPartyMaxSize(config.get('maxPartySize', 9))
     bsInternal._setPublicPartyName(config.get('partyName', 'party'))
-    bsInternal._setPublicPartyStatsURL(config.get('statsURL', ''));
+    bsInternal._setPublicPartyStatsURL(config.get('statsURL', ''))
     # call set-enabled last (will push state)
-    bsInternal._setPublicPartyEnabled(config.get('partyIsPublic', True));
+    bsInternal._setPublicPartyEnabled(config.get('partyIsPublic', True))
 
     if not _gRunServerFirstRun:
         print 'server config updated.'
@@ -4431,7 +5060,9 @@ def _configServer():
     global _gServerConfigDirty
     _gServerConfigDirty = True
 
+
 _gRunServerFirstRun = True
+
 
 def _runServer():
     """kick off a host-session based on the current server config"""
@@ -4447,11 +5078,12 @@ def _runServer():
     sessionTypeName = config.get('sessionType', 'ffa')
     if sessionTypeName == 'ffa': sessionType = bs.FreeForAllSession
     elif sessionTypeName == 'teams': sessionType = bs.TeamsSession
-    else: raise Exception('invalid sessionType value: '+sessionTypeName)
+    else: raise Exception('invalid sessionType value: ' + sessionTypeName)
 
     if bsInternal._getAccountState() != 'SIGNED_IN':
-        print ('WARNING: _runServer() expects to run '
-               'with a signed in server account')
+        print(
+            'WARNING: _runServer() expects to run '
+            'with a signed in server account')
 
     if _gRunServerFirstRun:
         env = bs.getEnvironment()
@@ -4482,6 +5114,7 @@ def _runServer():
     # also lets fire off an access check if this is our first time
     # through (and they want a public party)...
     if _gRunServerFirstRun:
+
         def accessCheckResponse(data):
             port = bsInternal._getGamePort()
             if data is None:
@@ -4492,16 +5125,21 @@ def _runServer():
                                              'server appears to be joinable '
                                              'from the internet.')
                 else:
-                    print 'UDP port', port, ('access check failed. Your server '
-                                             'does not appear to be joinable '
-                                             'from the internet.')
-        serverGet('bsAccessCheck', {'port':bsInternal._getGamePort()},
+                    print 'UDP port', port, (
+                        'access check failed. Your server '
+                        'does not appear to be joinable '
+                        'from the internet.')
+
+        serverGet('bsAccessCheck', {'port': bsInternal._getGamePort()},
                   callback=accessCheckResponse)
     _gRunServerFirstRun = False
     _gServerConfigDirty = False
+
+
 _gRunServerWaitTimer = None
 _gRunServerPlaylistFetch = None
 _gLaunchedServer = False
+
 
 def configServer(configFile=None):
     """ utility function to run the game in server-mode """
@@ -4523,9 +5161,11 @@ def configServer(configFile=None):
     global _gRunServerPlaylistFetch
     playlist_code = _gServerConfig.get('playlistCode')
     if playlist_code is not None:
-        _gRunServerPlaylistFetch = {'sentRequest':False,
-                                    'gotResponse':False,
-                                    'playlistCode':str(playlist_code)}
+        _gRunServerPlaylistFetch = {
+            'sentRequest': False,
+            'gotResponse': False,
+            'playlistCode': str(playlist_code)
+        }
 
     # apply config stuff that can take effect immediately (party name, etc)
     _configServer()
@@ -4537,6 +5177,7 @@ def configServer(configFile=None):
         # now sit around until we're signed in and then kick off the server
         global _gRunServerWaitTimer
         with bs.Context('UI'):
+
             def doIt():
                 global _gRunServerWaitTimer
                 global _gRunServerPlaylistFetch
@@ -4555,25 +5196,34 @@ def configServer(configFile=None):
 
                                 # once we get here we simply modify our
                                 # config to use this playlist
-                                typeName = ('teams' if result['playlistType']
-                                            == 'Team Tournament' else 'ffa'
-                                            if result['playlistType'] ==
-                                            'Free-for-All' else '??')
-                                print ('Playlist \''+result['playlistName']
-                                       +'\' ('+typeName
-                                       +') downloaded; running...')
+                                typeName = (
+                                    'teams' if
+                                    result['playlistType'] == 'Team Tournament'
+                                    else 'ffa' if result['playlistType'] ==
+                                    'Free-for-All' else '??')
+                                print('Playlist \'' + result['playlistName'] +
+                                      '\' (' + typeName +
+                                      ') downloaded; running...')
                                 _gRunServerPlaylistFetch['gotResponse'] = True
                                 _gServerConfig['sessionType'] = typeName
                                 _gServerConfig['playlistName'] = \
                                     result['playlistName']
-                            print ('Requesting shared-playlist '+str(
-                                _gRunServerPlaylistFetch['playlistCode'])+'...')
+
+                            print(
+                                'Requesting shared-playlist ' +
+                                str(_gRunServerPlaylistFetch['playlistCode']) +
+                                '...')
                             _gRunServerPlaylistFetch['sentRequest'] = True
                             bsInternal._addTransaction(
-                                { 'type':'IMPORT_PLAYLIST',
-                                  'code':
-                                  _gRunServerPlaylistFetch['playlistCode'],
-                                  'overwrite':True},
+                                {
+                                    'type':
+                                        'IMPORT_PLAYLIST',
+                                    'code':
+                                        _gRunServerPlaylistFetch['playlistCode'
+                                                                 ],
+                                    'overwrite':
+                                        True
+                                },
                                 callback=onPlaylistFetchResponse)
                             bsInternal._runTransactions()
                         # if we got a valid result, forget the fetch ever
@@ -4586,6 +5236,9 @@ def configServer(configFile=None):
                     if can_launch:
                         _gRunServerWaitTimer = None
                         bs.pushCall(_runServer)
-            _gRunServerWaitTimer = bs.Timer(250, doIt,
-                                            timeType='real', repeat=True)
+
+            _gRunServerWaitTimer = bs.Timer(250,
+                                            doIt,
+                                            timeType='real',
+                                            repeat=True)
         _gLaunchedServer = True

@@ -23,16 +23,20 @@ class ChangeMessage(object):
 
 gAccountProfileDeviceID = None
 
+MAX_QUICK_CHANGE_COUNT = 30
+QUICK_CHANGE_INTERVAL = 50
+QUICK_CHANGE_RESET_INTERVAL = 1000
+
 class Chooser(object):
 
     def __del__(self):
         # just kill off our base node; the rest should go down with it
         self._textNode.delete()
-        
+
     def __init__(self, vPos, player, lobby):
-        
+
         import bsInternal
-        
+
         self._deekSound = bs.getSound('deek')
         self._clickSound = bs.getSound('click01')
         self._punchSound = bs.getSound('punch01')
@@ -44,11 +48,12 @@ class Chooser(object):
         self._player = player
         self._inited = False
         self._dead = False
+        self.last_change = (0, 0)
 
         # load available profiles either from the local config or from the
         # remote device..
         self.reloadProfiles()
-        
+
         # note: this is just our local index out of available teams; *not*
         # the team ID!
         self._selectedTeamIndex = self.getLobby().nextAddTeam
@@ -102,7 +107,7 @@ class Chooser(object):
         except Exception:
 
             profileNames = self.profileNames
-            
+
             # we want the first local input-device in the game to latch on to
             # the account profile
             if (not inputDevice.isRemoteClient()
@@ -141,9 +146,9 @@ class Chooser(object):
                             gRandProfileIndex += 1
                         else:
                             self.profileIndex = profileNames.index('_random')
-                    
+
             self.profileName = profileNames[self.profileIndex]
-            
+
         self.characterIndex = self._randomCharacterIndex
         self._color = self._randomColor
         self._highlight = self._randomHighlight
@@ -220,7 +225,7 @@ class Chooser(object):
         isTestInput = True if (inputDevice is not None
                                and inputDevice.getName()
                                .startswith('TestInput')) else False
-        
+
         # pull this player's list of unlocked characters
         if isRemote:
             # FIXME - pull this from remote player (but make sure to
@@ -228,7 +233,7 @@ class Chooser(object):
             self.characterNames = ['Spaz']
         else:
             self.characterNames = self.getLobby().characterNamesLocalUnlocked
-        
+
         # if we're a local player, pull our local profiles from the config..
         # otherwise ask the remote-input-device for its profile list
         if isRemote:
@@ -250,7 +255,7 @@ class Chooser(object):
         for p in self.profiles.items():
             if p[1].get('character', '') not in bsSpaz.appearances:
                 p[1]['character'] = 'Spaz'
-        
+
         # add in a random one so we're ok even if there's no
         # user-created profiles
         self.profiles['_random'] = {}
@@ -259,17 +264,17 @@ class Chooser(object):
         if bsUtils.gRunningKioskModeGame:
             if '__account__' in self.profiles:
                 del self.profiles['__account__']
-                
+
         # for local devices, add it an 'edit' option which will pop up
         # the profile window
         if (not isRemote and not isTestInput
                 and not bsUtils.gRunningKioskModeGame):
             self.profiles['_edit'] = {}
-            
+
         # build a sorted name list we can iterate through
         self.profileNames = self.profiles.keys()
         self.profileNames.sort(key=lambda x:x.lower())
-            
+
         try:
             self.profileIndex = self.profileNames.index(self.profileName)
         except Exception:
@@ -296,7 +301,7 @@ class Chooser(object):
                               100:(-130+offs, self._vPos+22)})
     def getCharacterName(self):
         return self.characterNames[self.characterIndex]
-    
+
     def _doNothing(self):
         pass
 
@@ -343,7 +348,7 @@ class Chooser(object):
                 # we now clamp non-full versions of names so there's at
                 # least some hope of reading them in-game
                 clamp = True
-                
+
         if clamp:
             # in python < 3.5 some unicode chars can have length 2, so we need
             # to convert to raw int vals for safe trimming
@@ -355,7 +360,7 @@ class Chooser(object):
     def _setReady(self, ready):
 
         import bsInternal
-        
+
         profileName = self.profileNames[self.profileIndex]
 
         # handle '_edit' as a special case
@@ -367,7 +372,7 @@ class Chooser(object):
                 # (prevent someone else from snatching it in crowded games)
                 bsInternal._setUIInputDevice(self._player.getInputDevice())
             return
-        
+
         if not ready:
             self._player.assignInputCall(
                 'leftPress',
@@ -427,20 +432,33 @@ class Chooser(object):
 
             # inform the session that this player is ready
             bs.getSession().handleMessage(PlayerReadyMessage(self))
-                
+
     def handleMessage(self, msg):
 
         if isinstance(msg, ChangeMessage):
+
+            # Stop a repeated-message attack.
+            now = bs.getRealTime()
+            count = self.last_change[1]
+            if now - self.last_change[0] < QUICK_CHANGE_INTERVAL:
+                count += 1
+                if count > MAX_QUICK_CHANGE_COUNT:
+                    # Hmm maybe we should notify client?
+                    bsInternal._disconnectClient(
+                        self._player.getInputDevice().getClientID())
+            elif now - self.last_change[0] > QUICK_CHANGE_RESET_INTERVAL:
+                count = 0
+            self.last_change = (now, count)
 
             # if we've been removed from the lobby, ignore this stuff
             if self._dead:
                 print "WARNING: chooser got ChangeMessage after dying"
                 return
-            
+
             if not self._textNode.exists():
                 bs.printError('got ChangeMessage after nodes died')
                 return
-            
+
             if msg.what == 'team':
                 if len(self.getLobby()._teams) > 1:
                     bs.playSound(self._swishSound)
@@ -462,7 +480,7 @@ class Chooser(object):
                     self.profileIndex = ((self.profileIndex + msg.value)
                                          % len(self.profileNames))
                     self.updateFromPlayerProfile()
-                
+
             elif msg.what == 'character':
                 bs.playSound(self._clickSound)
                 # update our index in our local list of characters
@@ -600,7 +618,7 @@ class Chooser(object):
             bs.printException('Error updating char icon list')
             texName = 'neoSpazIcon'
             tintTexName = 'neoSpazIconColorMask'
-        
+
         tex = bs.getTexture(texName)
         tintTex = bs.getTexture(tintTexName)
 
@@ -638,9 +656,9 @@ class Lobby(object):
         players = [chooser._player for chooser in self.choosers
                    if chooser._player.exists()]
         for p in players: p._reset()
-        
+
     def __init__(self):
-        
+
         session = bs.getSession()
         teams = session.teams if session._useTeams else None
         self._useTeamColors = session._useTeamColors
@@ -650,9 +668,9 @@ class Lobby(object):
         else:
             self._dummyTeam = bs.Team()
             self._teams = [weakref.ref(self._dummyTeam)]
-        
+
         vOffset = -150 if isinstance(session, bs.CoopSession) else -50
-        
+
         self.choosers = []
         self.baseVOffset = vOffset
         self.updatePositions()
@@ -662,7 +680,7 @@ class Lobby(object):
         self.reloadProfiles()
 
         self._joinInfoText = None
-        
+
     def getChoosers(self):
         return self.choosers
 
@@ -724,7 +742,7 @@ class Lobby(object):
                                    +' '+bs.getSpecialChar('rightArrow'))])]
                                    if canSwitchTeams else [])
                                   + [m1] + [m3] + [joinStr])
-            
+
             self._timer = bs.Timer(4000, bs.WeakCall(self._update), repeat=True)
 
         def _update(self):
@@ -740,7 +758,7 @@ class Lobby(object):
         # bought something; reload these too..
         self.characterNamesLocalUnlocked = bsSpaz.getAppearances()
         self.characterNamesLocalUnlocked.sort(key=lambda x:x.lower())
-        
+
         # do any overall prep we need to such as creating account profile..
         bsUtils._ensureHaveAccountPlayerProfile()
 
@@ -785,7 +803,7 @@ class Lobby(object):
             except Exception:
                 bs.printException('Error removing chooser player')
         self.removeAllChoosers()
-        
+
     def removeChooser(self, player):
         'called to remove a player chooser once he enters a game'
         found = False

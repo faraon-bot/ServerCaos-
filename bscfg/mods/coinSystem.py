@@ -36,11 +36,11 @@ def checkExpiredItems():
     flag = 0
     for i in bsInternal._getForegroundHostActivity().players:
         accountID = i.get_account_id()
-        if accountID is None and i is None:
+        custom = customers[accountID]
+        if (accountID is None) and (not accountID in customers):
             pass
 
-        custom = customers[accountID]
-        for k, v in customers["effects"].items():
+        for k, v in custom["effects"].items():
             now = datetime.now()
             expiry = datetime.strptime(v, '%d-%m-%Y %H:%M:%S')
             if expiry < now:

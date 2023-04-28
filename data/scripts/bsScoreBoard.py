@@ -15,7 +15,7 @@ class _Entry(object):
         self._barWidth = 2.0*self._scale
         self._barHeight = 32.0*self._scale
         self._barTex = self._backingTex = bs.getTexture('bar')
-        self._coverTex = bs.getTexture('cuteSpaz')
+        self._coverTex = bs.getTexture('uiAtlas')
         self._model = bs.getModel('meterTransparent')
 
         safeTeamColor = bs.getSafeColor(team.color, targetIntensity=1.0)
@@ -252,6 +252,7 @@ class _EntryProxy(object):
 class ScoreBoard(object):
     """
     category: Game Flow Classes
+
     A display for player or team scores during the game.
     """
 
