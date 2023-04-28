@@ -71,7 +71,7 @@ class chatOptions(object):
 
         client_str = player.get_account_id()
         try:
-            if client_str in roles['owner']:
+            if client_str in roles['owners']:
                 reply = u'\ue043|\ue00cCOMMAND ACCEPTED MY LORD\ue00c|\ue043'
                 # reply = ':)'
                 return 10
