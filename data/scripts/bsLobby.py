@@ -33,10 +33,10 @@ class Chooser(object):
         
         import bsInternal
         
-        self._deekSound = bs.getSound('ding')
+        self._deekSound = bs.getSound('deek')
         self._clickSound = bs.getSound('click01')
-        self._punchSound = bs.getSound('penguinHit2')
-        self._swishSound = bs.getSound('ninjaAttack1')
+        self._punchSound = bs.getSound('punch01')
+        self._swishSound = bs.getSound('punchSwish')
         self._errorSound = bs.getSound('error')
         self._maskTexture = bs.getTexture('characterIconMask')
         self._vPos = vPos

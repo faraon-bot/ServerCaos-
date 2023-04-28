@@ -5,9 +5,9 @@ import bsVector
 import settings
 
 if settings.nightMode:
-    Tint = (0.6,0.8,1.1)
+    Tint = (0.5,0.7,1)
 else:
-    Tint = (1.1,1.1,1.23)
+    Tint = (1.2,1.3,1.33)
 _maps = {}
 
 def preloadPreviewMedia():
@@ -340,8 +340,8 @@ class HockeyStadium(Map):
         data['tex'] = bs.getTexture('hockeyStadium')
         data['standsTex'] = bs.getTexture('footballStadium')
         m = bs.Material()
-        m.addActions(actions=('modifyPartCollision', 'friction',1))
-        data['footingMaterial'] = m
+        m.addActions(actions=('modifyPartCollision', 'friction',0.01))
+        data['iceMaterial'] = m
         return data
     
     def __init__(self):
@@ -511,6 +511,19 @@ class BridgitMap(Map):
                          bs.getSharedObject('deathMaterial')]})
 
         bsGlobals = bs.getSharedObject('globals')
+        def snowfall():
+                p = (-10+(random.random()*30),15,-10+(random.random()*30))
+                v = ((-5.0+random.random()*30.0) * (-1.0 if p[0] > 0 else 1.0), -50.0,(-5.0+random.random()*30.0) * (-1.0 if p[0] > 0 else 1.0))
+                bs.emitBGDynamics(position=p,velocity=v,count=10,scale=1+random.random(),spread=0,chunkType='spark')
+        
+        bs.gameTimer(20,bs.Call(snowfall),repeat = True)
+        
+        bsGlobals.tint = Tint
+        bsGlobals.ambientColor = (1.3, 1.2, 1.03)
+        bsGlobals.vignetteOuter = (0.62, 0.64, 0.69)
+        bsGlobals.vignetteInner = (0.97, 0.95, 0.93)
+        
+        self._light = bs.Timer(5000,bs.WeakCall(self.light),repeat = True)
 
     def light(self):
                 light = bs.newNode('light',
@@ -584,7 +597,19 @@ class BigGMap(Map):
                          bs.getSharedObject('deathMaterial')]})
 
         bsGlobals = bs.getSharedObject('globals')
-
+        def snowfall():
+                p = (-10+(random.random()*30),15,-10+(random.random()*30))
+                v = ((-5.0+random.random()*30.0) * (-1.0 if p[0] > 0 else 1.0), -50.0,(-5.0+random.random()*30.0) * (-1.0 if p[0] > 0 else 1.0))
+                bs.emitBGDynamics(position=p,velocity=v,count=10,scale=1+random.random(),spread=0,chunkType='spark')
+        
+        bs.gameTimer(20,bs.Call(snowfall),repeat = True)
+        
+        bsGlobals.tint = Tint
+        bsGlobals.ambientColor = (1.3, 1.2, 1.03)
+        bsGlobals.vignetteOuter = (0.62, 0.64, 0.69)
+        bsGlobals.vignetteInner = (0.97, 0.95, 0.93)
+        
+        self._light = bs.Timer(5000,bs.WeakCall(self.light),repeat = True)
 
     def light(self):
                 light = bs.newNode('light',
@@ -656,6 +681,19 @@ class RoundaboutMap(Map):
             'bumper':True})
 
         bsGlobals = bs.getSharedObject('globals')
+        def snowfall():
+                p = (-10+(random.random()*30),15,-10+(random.random()*30))
+                v = ((-5.0+random.random()*30.0) * (-1.0 if p[0] > 0 else 1.0), -50.0,(-5.0+random.random()*30.0) * (-1.0 if p[0] > 0 else 1.0))
+                bs.emitBGDynamics(position=p,velocity=v,count=10,scale=1+random.random(),spread=0,chunkType='spark')
+        
+        bs.gameTimer(20,bs.Call(snowfall),repeat = True)
+        
+        bsGlobals.tint = Tint
+        bsGlobals.ambientColor = (1.3, 1.2, 1.03)
+        bsGlobals.vignetteOuter = (0.62, 0.64, 0.69)
+        bsGlobals.vignetteInner = (0.97, 0.95, 0.93)
+        
+        self._light = bs.Timer(5000,bs.WeakCall(self.light),repeat = True)
 
     def light(self):
                 light = bs.newNode('light',
@@ -727,7 +765,19 @@ class MonkeyFaceMap(Map):
             'bumper':True})
 
         bsGlobals = bs.getSharedObject('globals')
-
+        def snowfall():
+                p = (-10+(random.random()*30),15,-10+(random.random()*30))
+                v = ((-5.0+random.random()*30.0) * (-1.0 if p[0] > 0 else 1.0), -50.0,(-5.0+random.random()*30.0) * (-1.0 if p[0] > 0 else 1.0))
+                bs.emitBGDynamics(position=p,velocity=v,count=10,scale=1+random.random(),spread=0,chunkType='spark')
+        
+        bs.gameTimer(20,bs.Call(snowfall),repeat = True)
+        
+        bsGlobals.tint = Tint
+        bsGlobals.ambientColor = (1.3, 1.2, 1.03)
+        bsGlobals.vignetteOuter = (0.62, 0.64, 0.69)
+        bsGlobals.vignetteInner = (0.97, 0.95, 0.93)
+        
+        self._light = bs.Timer(5000,bs.WeakCall(self.light),repeat = True)
 
     def light(self):
                 light = bs.newNode('light',
@@ -797,6 +847,19 @@ class ZigZagMap(Map):
             'bumper':True})
 
         bsGlobals = bs.getSharedObject('globals')
+        def snowfall():
+                p = (-10+(random.random()*30),15,-10+(random.random()*30))
+                v = ((-5.0+random.random()*30.0) * (-1.0 if p[0] > 0 else 1.0), -50.0,(-5.0+random.random()*30.0) * (-1.0 if p[0] > 0 else 1.0))
+                bs.emitBGDynamics(position=p,velocity=v,count=10,scale=1+random.random(),spread=0,chunkType='spark')
+        
+        bs.gameTimer(20,bs.Call(snowfall),repeat = True)
+        
+        bsGlobals.tint = Tint
+        bsGlobals.ambientColor = (1.3, 1.2, 1.03)
+        bsGlobals.vignetteOuter = (0.62, 0.64, 0.69)
+        bsGlobals.vignetteInner = (0.97, 0.95, 0.93)
+        
+        self._light = bs.Timer(5000,bs.WeakCall(self.light),repeat = True)
 
     def light(self):
                 light = bs.newNode('light',
@@ -861,7 +924,19 @@ class ThePadMap(Map):
             'colorTexture':self.preloadData['vrFillMoundTex']})
 
         bsGlobals = bs.getSharedObject('globals')
-
+        def snowfall():
+                p = (-10+(random.random()*30),15,-10+(random.random()*30))
+                v = ((-5.0+random.random()*30.0) * (-1.0 if p[0] > 0 else 1.0), -50.0,(-5.0+random.random()*30.0) * (-1.0 if p[0] > 0 else 1.0))
+                bs.emitBGDynamics(position=p,velocity=v,count=10,scale=1+random.random(),spread=0,chunkType='spark')
+        
+        bs.gameTimer(20,bs.Call(snowfall),repeat = True)
+        
+        bsGlobals.tint = Tint
+        bsGlobals.ambientColor = (1.3, 1.2, 1.03)
+        bsGlobals.vignetteOuter = (0.62, 0.64, 0.69)
+        bsGlobals.vignetteInner = (0.97, 0.95, 0.93)
+        
+        self._light = bs.Timer(5000,bs.WeakCall(self.light),repeat = True)
 
     def light(self):
                 light = bs.newNode('light',
@@ -923,7 +998,18 @@ class DoomShroomMap(Map):
                          bs.getSharedObject('deathMaterial')]})
 
         bsGlobals = bs.getSharedObject('globals')
-
+        def snowfall():
+                p = (-10+(random.random()*30),15,-10+(random.random()*30))
+                v = ((-5.0+random.random()*30.0) * (-1.0 if p[0] > 0 else 1.0), -50.0,(-5.0+random.random()*30.0) * (-1.0 if p[0] > 0 else 1.0))
+                bs.emitBGDynamics(position=p,velocity=v,count=10,scale=1+random.random(),spread=0,chunkType='spark')
+        
+        bs.gameTimer(20,bs.Call(snowfall),repeat = True)
+        
+        bsGlobals.tint = Tint
+        bsGlobals.ambientColor = (1.3, 1.2, 1.03)
+        bsGlobals.vignetteOuter = (0.62, 0.64, 0.69)
+        bsGlobals.vignetteInner = (0.97, 0.95, 0.93)
+        self._light = bs.Timer(5000,bs.WeakCall(self.light),repeat = True)
 
     def light(self):
                 light = bs.newNode('light',
@@ -965,8 +1051,8 @@ class LakeFrigidMap(Map):
         data['texReflections'] = bs.getTexture('lakeFrigidReflections')
         data['vrFillModel'] = bs.getModel('lakeFrigidVRFill')
         m = bs.Material()
-        m.addActions(actions=('modifyPartCollision','friction',1))
-        data['footingMaterial'] = m
+        m.addActions(actions=('modifyPartCollision','friction',0.01))
+        data['iceMaterial'] = m
         return data
 
     def __init__(self):
@@ -1060,7 +1146,19 @@ class TipTopMap(Map):
             'bumper':True})
 
         bsGlobals = bs.getSharedObject('globals')
-
+        def snowfall():
+                p = (-10+(random.random()*30),15,-10+(random.random()*30))
+                v = ((-5.0+random.random()*30.0) * (-1.0 if p[0] > 0 else 1.0), -50.0,(-5.0+random.random()*30.0) * (-1.0 if p[0] > 0 else 1.0))
+                bs.emitBGDynamics(position=p,velocity=v,count=10,scale=1+random.random(),spread=0,chunkType='spark')
+        
+        bs.gameTimer(20,bs.Call(snowfall),repeat = True)
+        
+        bsGlobals.tint = Tint
+        bsGlobals.ambientColor = (1.3, 1.2, 1.03)
+        bsGlobals.vignetteOuter = (0.62, 0.64, 0.69)
+        bsGlobals.vignetteInner = (0.97, 0.95, 0.93)
+        
+        self._light = bs.Timer(5000,bs.WeakCall(self.light),repeat = True)
 
     def light(self):
                 light = bs.newNode('light',
@@ -1128,7 +1226,18 @@ class CragCastleMap(Map):
         bsGlobals = bs.getSharedObject('globals')
         bsGlobals.shadowOrtho = True
         bsGlobals.shadowOffset = (0,0, -5.0)
-
+        def snowfall():
+                p = (-10+(random.random()*30),15,-10+(random.random()*30))
+                v = ((-5.0+random.random()*30.0) * (-1.0 if p[0] > 0 else 1.0), -50.0,(-5.0+random.random()*30.0) * (-1.0 if p[0] > 0 else 1.0))
+                bs.emitBGDynamics(position=p,velocity=v,count=10,scale=1+random.random(),spread=0,chunkType='spark')
+        
+        bs.gameTimer(20,bs.Call(snowfall),repeat = True)
+        
+        bsGlobals.tint = Tint
+        bsGlobals.ambientColor = (1.3, 1.2, 1.03)
+        bsGlobals.vignetteOuter = (0.62, 0.64, 0.69)
+        bsGlobals.vignetteInner = (0.97, 0.95, 0.93)
+        self._light = bs.Timer(5000,bs.WeakCall(self.light),repeat = True)
 
     def light(self):
                 light = bs.newNode('light',
@@ -1201,7 +1310,19 @@ class TowerDMap(Map):
             'materials':[self.preloadData['playerWallMaterial']]})
 
         bsGlobals = bs.getSharedObject('globals')
-
+        def snowfall():
+                p = (-10+(random.random()*30),15,-10+(random.random()*30))
+                v = ((-5.0+random.random()*30.0) * (-1.0 if p[0] > 0 else 1.0), -50.0,(-5.0+random.random()*30.0) * (-1.0 if p[0] > 0 else 1.0))
+                bs.emitBGDynamics(position=p,velocity=v,count=10,scale=1+random.random(),spread=0,chunkType='spark')
+        
+        bs.gameTimer(20,bs.Call(snowfall),repeat = True)
+        
+        bsGlobals.tint = Tint
+        bsGlobals.ambientColor = (1.3, 1.2, 1.03)
+        bsGlobals.vignetteOuter = (0.62, 0.64, 0.69)
+        bsGlobals.vignetteInner = (0.97, 0.95, 0.93)
+        
+        self._light = bs.Timer(5000,bs.WeakCall(self.light),repeat = True)
 
     def light(self):
                 light = bs.newNode('light',
@@ -1356,8 +1477,20 @@ class StepRightUpMap(Map):
             'colorTexture':self.preloadData['bgTex']})
 
         bsGlobals = bs.getSharedObject('globals')
+        def snowfall():
+                p = (-10+(random.random()*30),15,-10+(random.random()*30))
+                v = ((-5.0+random.random()*30.0) * (-1.0 if p[0] > 0 else 1.0), -50.0,(-5.0+random.random()*30.0) * (-1.0 if p[0] > 0 else 1.0))
+                bs.emitBGDynamics(position=p,velocity=v,count=10,scale=1+random.random(),spread=0,chunkType='spark')
+        
+        bs.gameTimer(20,bs.Call(snowfall),repeat = True)
+        
+        bsGlobals.tint = Tint
+        bsGlobals.ambientColor = (1.3, 1.2, 1.03)
+        bsGlobals.vignetteOuter = (0.62, 0.64, 0.69)
+        bsGlobals.vignetteInner = (0.97, 0.95, 0.93)
+        
+        self._light = bs.Timer(5000,bs.WeakCall(self.light),repeat = True)
 
-                        
     def light(self):
                 light = bs.newNode('light',
                                 attrs={'position':(0,10,0),
@@ -1434,6 +1567,19 @@ class CourtyardMap(Map):
                 'materials':[self.preloadData['playerWallMaterial']]})
 
         bsGlobals = bs.getSharedObject('globals')
+        def snowfall():
+                p = (-10+(random.random()*30),15,-10+(random.random()*30))
+                v = ((-5.0+random.random()*30.0) * (-1.0 if p[0] > 0 else 1.0), -50.0,(-5.0+random.random()*30.0) * (-1.0 if p[0] > 0 else 1.0))
+                bs.emitBGDynamics(position=p,velocity=v,count=10,scale=1+random.random(),spread=0,chunkType='spark')
+        
+        bs.gameTimer(20,bs.Call(snowfall),repeat = True)
+        
+        bsGlobals.tint = Tint
+        bsGlobals.ambientColor = (1.3, 1.2, 1.03)
+        bsGlobals.vignetteOuter = (0.62, 0.64, 0.69)
+        bsGlobals.vignetteInner = (0.97, 0.95, 0.93)
+        
+        self._light = bs.Timer(5000,bs.WeakCall(self.light),repeat = True)
 
     def light(self):
                 light = bs.newNode('light',
@@ -1511,7 +1657,18 @@ class RampageMap(Map):
             'bumper':True})
             
         bsGlobals = bs.getSharedObject('globals')
-
+        def snowfall():
+                p = (-10+(random.random()*30),15,-10+(random.random()*30))
+                v = ((-5.0+random.random()*30.0) * (-1.0 if p[0] > 0 else 1.0), -50.0,(-5.0+random.random()*30.0) * (-1.0 if p[0] > 0 else 1.0))
+                bs.emitBGDynamics(position=p,velocity=v,count=10,scale=1+random.random(),spread=0,chunkType='spark')
+        
+        bs.gameTimer(20,bs.Call(snowfall),repeat = True)
+        
+        bsGlobals.tint = Tint
+        bsGlobals.ambientColor = (1.3, 1.2, 1.03)
+        bsGlobals.vignetteOuter = (0.62, 0.64, 0.69)
+        bsGlobals.vignetteInner = (0.97, 0.95, 0.93)
+        self._light = bs.Timer(5000,bs.WeakCall(self.light),repeat = True)
 
     def light(self):
                 light = bs.newNode('light',

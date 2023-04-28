@@ -497,7 +497,7 @@ class Session(object):
                  teamColors=[(0.6, 0.2, 1.0)],
                  useTeamColors=True,
                  minPlayers=1,
-                 maxPlayers=16,
+                 maxPlayers=8,
                  allowMidActivityJoins=True):
         """
         Instantiate a session with the provided info about'
@@ -2345,13 +2345,13 @@ class GameActivity(Activity):
                 if len(self.players) == 1:
                     bsInternal._incrementAnalyticsCount(
                         'Teams round start 1 human player')
-                elif len(self.players) > 1 and len(self.players) < 16:
+                elif len(self.players) > 1 and len(self.players) < 8:
                     bsInternal._incrementAnalyticsCount(
                         'Teams round start ' + str(len(self.players)) +
                         ' human players')
-                elif len(self.players) >= 16:
+                elif len(self.players) >= 8:
                     bsInternal._incrementAnalyticsCount(
-                        'Teams round start 16 + human players')
+                        'Teams round start 8+ human players')
             elif isinstance(s, bs.FreeForAllSession):
                 bsInternal._setAnalyticsScreen(
                     'FreeForAll Game: '+self.getName())
@@ -2359,11 +2359,11 @@ class GameActivity(Activity):
                 if len(self.players) == 1:
                     bsInternal._incrementAnalyticsCount(
                         'Free-for-all round start 1 human player')
-                elif len(self.players) > 1 and len(self.players) < 16:
+                elif len(self.players) > 1 and len(self.players) < 8:
                     bsInternal._incrementAnalyticsCount(
                         'Free-for-all round start ' + str(len(self.players)) +
                         ' human players')
-                elif len(self.players) >= 16:
+                elif len(self.players) >= 8:
                     bsInternal._incrementAnalyticsCount(
                         'Free-for-all round start 8+ human players')
         except Exception:

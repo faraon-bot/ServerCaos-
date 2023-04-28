@@ -1238,12 +1238,12 @@ class TeamBaseSession(bs.Session):
             try:
                 return bs.getConfig()['Team Game Max Players']
             except Exception:
-                return 16
+                return 8
         else:
             try:
                 return bs.getConfig()['Free-for-All Max Players']
             except Exception:
-                return 16
+                return 8
 
     def _instantiateNextGame(self):
         self._nextGameInstance = bs.newActivity(

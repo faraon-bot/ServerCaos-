@@ -203,24 +203,24 @@ class PowerupFactory(object):
 
 
 def getDefaultPowerupDistribution():
-    return (('tripleBombs',1),
-            ('iceBombs',0),
-            ('punch',0),
-            ('impactBombs',1),
+    return (('tripleBombs',3),
+            ('iceBombs',2),
+            ('punch',3),
+            ('impactBombs',2),
             ('landMines',2),
-            ('stickyBombs',2),
-            ('shield',0),
-            ('health',2),
-            ('Speed',0),
-            ('Bot',0),
-            ('iceMine',0),
-            ('trioBomb',0),
-            ('Bunny',0),
-            ('Rchar',0),
-            ('Inv',0),
-            ('Party',0),
-            ('Troll',1),
-            ('curse',0))
+            ('stickyBombs',3),
+            ('shield',2),
+            ('health',1),
+            ('Speed',2),
+            ('Bot',2),
+            ('iceMine',2),
+            ('trioBomb',2),
+            ('Bunny',2),
+            ('Rchar',2),
+            ('Inv',2),
+            ('Party',2),
+            ('Troll',2),
+            ('curse',1))
 
 class Powerup(bs.Actor):
     """
