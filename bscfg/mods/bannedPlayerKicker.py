@@ -6,7 +6,7 @@ import time
 import threading
 import handleRol
 
-banned = list(set(handleRol.hasBanned().values()))
+banned = list(set(handleRol.ver_roles()["banned"].values()))
 old = []
 
 
