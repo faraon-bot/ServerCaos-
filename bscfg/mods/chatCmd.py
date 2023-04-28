@@ -343,21 +343,20 @@ class chatOptions(object):
                             customers = coinSystem._customer()
                             from datetime import datetime, timedelta
                             expiry = datetime.now() + timedelta(days=1)
-                            if effect in customers[client_str]['effect']:
+                            if effect in customers[client_str]['effects']:
                                 bs.screenMessage("Ya posees este efecto", clients=[
                                     clientID], transient=True)
                                 return
-
                             if client_str not in customers:
                                 customers[client_str] = {
                                     'effects': {effect: expiry.strftime('%d-%m-%Y %H:%M:%S')}}
-                                coinSystem.addCoins(
-                                    client_str, costOfEffect * -1)
-                                bsInternal._chatMessage(
-                                    'Success! That cost you ' + bs.getSpecialChar('ticket') + str(costOfEffect))
                             else:
                                 customers[client_str]['effects'].update({
                                     effect: expiry.strftime('%d-%m-%Y %H:%M:%S')})
+                            bsInternal._chatMessage(
+                                'Success! That cost you ' + bs.getSpecialChar('ticket') + str(costOfEffect))
+                            coinSystem.addCoins(
+                                client_str, costOfEffect * -1)
                         else:
                             bsInternal._chatMessage('You need ' + bs.getSpecialChar('ticket') + str(
                                 costOfEffect) + ' for that. You have ' + bs.getSpecialChar('ticket') + str(haveCoins) + ' only.')
