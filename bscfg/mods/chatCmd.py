@@ -1479,28 +1479,28 @@ class chatOptions(object):
                                                 i.get_account_id())
                                             commandSuccess = True
 
-                            elif m == '/customtag':
-                                if True:
-                                    clID = int(a[0])
-                                    for i in bsInternal._getForegroundHostActivity().players:
-                                        if i.getInputDevice().getClientID() == clID:
-                                            newadmin = i.get_account_id()
-                                            if a[1] == 'add':
-                                                gph.customtagHashes.append(
-                                                    newadmin)
-                                                commandSuccess = True
-                                            elif a[1] == 'remove':
-                                                if newadmin in gph.dragonHashes:
-                                                    gph.customtagHashes.remove(
-                                                        newadmin)
-                                                    commandSuccess = True
+                            # elif m == '/customtag':
+                            #     if True:
+                            #         clID = int(a[0])
+                            #         for i in bsInternal._getForegroundHostActivity().players:
+                            #             if i.getInputDevice().getClientID() == clID:
+                            #                 newadmin = i.get_account_id()
+                            #                 if a[1] == 'add':
+                            #                     gph.customtagHashes.append(
+                            #                         newadmin)
+                            #                     commandSuccess = True
+                            #                 elif a[1] == 'remove':
+                            #                     if newadmin in gph.dragonHashes:
+                            #                         gph.customtagHashes.remove(
+                            #                             newadmin)
+                            #                         commandSuccess = True
 
-                            elif m == '/clear':
-                                if True:
-                                    gph.customlist = []
-                                    gph.customtagHashes = []
-                                    gph.dragonHashes = []
-                                    gph.adminHashes = []
+                            # elif m == '/clear':
+                            #     if True:
+                            #         gph.customlist = []
+                            #         gph.customtagHashes = []
+                            #         gph.dragonHashes = []
+                            #         gph.adminHashes = []
 
                             elif m == '/ban':
                                 if a != []:
@@ -1517,8 +1517,7 @@ class chatOptions(object):
                                                         name = i.getName()
 
                                         if aid is not None:
-                                            hasBan = handleRol.ver_roles()
-                                            hasBan['banned'][bannedID] = aid
+                                            roles['banned'][bannedID] = aid
                                             handleRol.commit_roles(hasBan)
                                             bsInternal._chatMessage(
                                                 'banned ' + name)
@@ -1528,79 +1527,79 @@ class chatOptions(object):
                                         bsInternal._chatMessage(
                                             'player not found')
 
-                            elif m == '/custom' and level > 2:
-                                try:
-                                    attributes = len(a)
-                                    clID = int(a[0])
-                                    for i in bsInternal._getForegroundHostActivity().players:
-                                        if i.getInputDevice().getClientID() == clID:
-                                            customer = i.get_account_id()
-                                            if a[1] == 'add':
-                                                if customer in gph.customlist:
-                                                    gph.customlist.pop(
-                                                        customer)
-                                                try:
-                                                    if attributes > 2:
-                                                        tag = a[2]
-                                                        if '\\' in tag:
-                                                            tag = tag.replace('\\d', ('\\ue048').decode(
-                                                                'unicode-escape'))  # Dragon
-                                                            tag = tag.replace('\\c', ('\\ue043').decode(
-                                                                'unicode-escape'))  # Crown
-                                                            tag = tag.replace('\\h', ('\\ue049').decode(
-                                                                'unicode-escape'))  # Helmet
-                                                            tag = tag.replace('\\s', ('\\ue046').decode(
-                                                                'unicode-escape'))  # skull
-                                                            tag = tag.replace('\\n', ('\\ue04b').decode(
-                                                                'unicode-escape'))  # ninja star
-                                                            tag = tag.replace('\\f', ('\\ue04f').decode(
-                                                                'unicode-escape'))  # fireball
-                                                        gph.customlist[customer] = tag
-                                                        if attributes > 3:
-                                                            if a[3] == 'permanent' and level > 5:
-                                                                with open(bs.getEnvironment()['systemScriptsDirectory'] + '/getPermissionsHashes.py') as (file):
-                                                                    s = [
-                                                                        row for row in file]
-                                                                    s[5] = 'customlist = ' + \
-                                                                        str(gph.customlist) + '\n'
-                                                                    f = open(bs.getEnvironment()[
-                                                                             'systemScriptsDirectory'] + '/getPermissionsHashes.py', 'w')
-                                                                    for i in s:
-                                                                        f.write(
-                                                                            i)
+                            # elif m == '/custom' and level > 2:
+                            #     try:
+                            #         attributes = len(a)
+                            #         clID = int(a[0])
+                            #         for i in bsInternal._getForegroundHostActivity().players:
+                            #             if i.getInputDevice().getClientID() == clID:
+                            #                 customer = i.get_account_id()
+                            #                 if a[1] == 'add':
+                            #                     if customer in gph.customlist:
+                            #                         gph.customlist.pop(
+                            #                             customer)
+                            #                     try:
+                            #                         if attributes > 2:
+                            #                             tag = a[2]
+                            #                             if '\\' in tag:
+                            #                                 tag = tag.replace('\\d', ('\\ue048').decode(
+                            #                                     'unicode-escape'))  # Dragon
+                            #                                 tag = tag.replace('\\c', ('\\ue043').decode(
+                            #                                     'unicode-escape'))  # Crown
+                            #                                 tag = tag.replace('\\h', ('\\ue049').decode(
+                            #                                     'unicode-escape'))  # Helmet
+                            #                                 tag = tag.replace('\\s', ('\\ue046').decode(
+                            #                                     'unicode-escape'))  # skull
+                            #                                 tag = tag.replace('\\n', ('\\ue04b').decode(
+                            #                                     'unicode-escape'))  # ninja star
+                            #                                 tag = tag.replace('\\f', ('\\ue04f').decode(
+                            #                                     'unicode-escape'))  # fireball
+                            #                             gph.customlist[customer] = tag
+                            #                             if attributes > 3:
+                            #                                 if a[3] == 'permanent' and level > 5:
+                            #                                     with open(bs.getEnvironment()['systemScriptsDirectory'] + '/getPermissionsHashes.py') as (file):
+                            #                                         s = [
+                            #                                             row for row in file]
+                            #                                         s[5] = 'customlist = ' + \
+                            #                                             str(gph.customlist) + '\n'
+                            #                                         f = open(bs.getEnvironment()[
+                            #                                                  'systemScriptsDirectory'] + '/getPermissionsHashes.py', 'w')
+                            #                                         for i in s:
+                            #                                             f.write(
+                            #                                                 i)
 
-                                                                    f.close()
-                                                except:
-                                                    print 'inside exception but adding into customHashes'
-                                                    gph.customtagHashes.append(
-                                                        customer)
+                            #                                         f.close()
+                            #                     except:
+                            #                         print 'inside exception but adding into customHashes'
+                            #                         gph.customtagHashes.append(
+                            #                             customer)
 
-                                                commandSuccess = True
-                                            elif a[1] == 'remove':
-                                                if customer in gph.customtagHashes:
-                                                    gph.customtagHashes.remove(
-                                                        customer)
-                                                    commandSuccess = True
-                                                if customer in gph.customlist:
-                                                    gph.customlist.pop(
-                                                        customer)
-                                                    commandSuccess = True
-                                                if attributes > 2:
-                                                    if a[2] == 'permanent':
-                                                        with open(bs.getEnvironment()['systemScriptsDirectory'] + '/getPermissionsHashes.py') as (file):
-                                                            s = [
-                                                                row for row in file]
-                                                            s[5] = 'customlist = ' + \
-                                                                str(gph.customlist) + '\n'
-                                                            f = open(bs.getEnvironment()[
-                                                                     'systemScriptsDirectory'] + '/getPermissionsHashes.py', 'w')
-                                                            for i in s:
-                                                                f.write(i)
+                            #                     commandSuccess = True
+                            #                 elif a[1] == 'remove':
+                            #                     if customer in gph.customtagHashes:
+                            #                         gph.customtagHashes.remove(
+                            #                             customer)
+                            #                         commandSuccess = True
+                            #                     if customer in gph.customlist:
+                            #                         gph.customlist.pop(
+                            #                             customer)
+                            #                         commandSuccess = True
+                            #                     if attributes > 2:
+                            #                         if a[2] == 'permanent':
+                            #                             with open(bs.getEnvironment()['systemScriptsDirectory'] + '/getPermissionsHashes.py') as (file):
+                            #                                 s = [
+                            #                                     row for row in file]
+                            #                                 s[5] = 'customlist = ' + \
+                            #                                     str(gph.customlist) + '\n'
+                            #                                 f = open(bs.getEnvironment()[
+                            #                                          'systemScriptsDirectory'] + '/getPermissionsHashes.py', 'w')
+                            #                                 for i in s:
+                            #                                     f.write(i)
 
-                                                            f.close()
+                            #                                 f.close()
 
-                                except:
-                                    pass
+                            #     except:
+                            #         pass
 
                             elif m == '/whois':
                                 try:

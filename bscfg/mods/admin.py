@@ -9,7 +9,6 @@ import base64
 import os
 import json
 import bsInternal
-import getPermissionsHashes as gph
 from thread import start_new_thread
 # from VirtualHost import DB_Handler,Language,MainSettings,_execSimpleExpression
 import bsSpaz
@@ -263,7 +262,7 @@ class Enhancement(bs.Actor):
 
         try:
             if cl_str in effectCustomers:
-                effect = effectCustomers[cl_str]
+                effect = effectCustomers[cl_str]['effects']
                 if 'ice' in effect:
                     self.snowTimer = bs.Timer(
                         500, bs.WeakCall(self.emitIce), repeat=True)
