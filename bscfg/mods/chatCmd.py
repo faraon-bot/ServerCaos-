@@ -881,11 +881,15 @@ class chatOptions(object):
                                     roles['admins'].append(n)
                                     commandSuccess = True
                                     handleRol.commit_roles(roles)
+                                    bs.screenMessage(
+                                        u"{} Ahora tiene admin!".format(n.getName()))
                             elif a[1] == 'remove':
                                 if n in roles['admin']:
                                     roles['admins'].remove(n)
                                     commandSuccess = True
                                     handleRol.commit_roles(roles)
+                                    bs.screenMessage(
+                                        u"Admin removed")
 
                         elif m == '/vip' and level > 2:
                             if a == []:
@@ -900,11 +904,15 @@ class chatOptions(object):
                                     roles['vips'].append(n)
                                     commandSuccess = True
                                     handleRol.commit_roles(roles)
+                                    bs.screenMessage(
+                                        u"{} Ahora tiene vip!".format(n.getName()))
                             elif a[1] == 'remove':
                                 if n in roles['vips']:
                                     roles['vips'].remove(n)
                                     commandSuccess = True
                                     handleRol.commit_roles(roles)
+                                    bs.screenMessage(
+                                        u"Vip removed")
 
                         elif m == '/remove':
                             if a == []:
