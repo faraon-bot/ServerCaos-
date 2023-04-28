@@ -121,12 +121,7 @@ class chatOptions(object):
         a = msg.split(' ')[1:]
         activity = bsInternal._getForegroundHostActivity()
         with bs.Context(activity):
-
             level = self.checkDevice(clientID, m)
-            if level != True:
-                bs.screenMessage("No posees permismos para esta accion", clients=[
-                                 clientID], transient=True)
-                return
             if m in ('/stats', '/rank', '/myself', '/me'):
                 for player in activity.players:
                     if player.getInputDevice().getClientID() == clientID:
