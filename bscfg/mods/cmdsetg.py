@@ -1,7 +1,6 @@
 import bs
 from bsSpaz import *
 import bsInternal
-import getPermissionsHashes as gph
 import perkid
 import setchat
 
