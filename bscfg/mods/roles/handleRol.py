@@ -3,21 +3,23 @@ import os
 import json
 import random
 import logger
-roles = logger.roles
+from logger import storage
+
+
+_roles = logger.roles
 
 
 def ver_roles():
-    if os.path.exists(roles):
-        with open(roles) as f:
-            rol = json.loads(f.read())
+    if os.path.exists(_roles):
+        with open(_roles) as f:
+            role = json.loads(f.read())
             f.close()
-    return rol
+            storage.roles = role
+    return storage.roles
 
 
-def commit_roles(d):
-    if os.path.exists(roles):
-        with open(roles) as f:
-            f.write(json.dumps(d, indent=4))
+def commit_roles():
+    if os.path.exists(_roles):
+        with open(_roles, 'w') as f:
+            f.write(json.dumps(storage.roles, indent=4))
             f.close()
-    return
-

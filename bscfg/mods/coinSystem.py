@@ -9,6 +9,7 @@ from random import randrange
 from datetime import datetime
 from settings import *
 import logger
+from logger import storage
 correctAnswer = None
 answeredBy = None
 bankfile = logger.bank
@@ -18,37 +19,45 @@ customer = logger.customers
 def _customer():
     if os.path.exists(customer):
         with open(customer) as f:
-            custom = json.loads(f.read())
-            return custom
-    else:
-        return
+            _customer = json.loads(f.read())
+            f.close()
+            storage.customers = _customer
+    return storage.customers
 
 
-def commit_custom(e):
+def commit_custom():
     if os.path.exists(customer):
         with open(customer, 'w') as f:
-            f.write(json.dumps(e, indent=4))
+            f.write(json.dumps(storage.customers, indent=4))
             f.close()
 
 
+# items = _customer()
+# for item in items:
+#     for i, e in items[item]["effects"].items():
+#         now = datetime.now()
+#         expiry = datetime.strptime(e, '%d-%m-%Y %H:%M:%S')
+#         if expiry < now:
+#             print 'expired item found'
+#             items[item]['tag'] = ""
+#             items.pop(i)
+
+
 def checkExpiredItems():
-    customers = _customer()
+    items = storage.customers
     flag = 0
-    for i in bsInternal._getForegroundHostActivity().players:
-        accountID = i.get_account_id()
-        if accountID in customers:
-            for k, v in customers[accountID]["effects"].items():
-                now = datetime.now()
-                expiry = datetime.strptime(v, '%d-%m-%Y %H:%M:%S')
-                if expiry < now:
-                    print 'expired item found'
-                    flag = 1
-                    customers.pop(k)
-                    break
-        else:
-            continue
+    for item in items:
+        for i, e in items[item]["effects"].items():
+            now = datetime.now()
+            expiry = datetime.strptime(e, '%d-%m-%Y %H:%M:%S')
+            if expiry < now:
+                print 'expired item found'
+                flag = 1
+                if i == "tag":
+                    items[item]['tag'] = ""
+                items[item]['effects'].pop(i)
     if flag == 1:
-        commit_custom(customers)
+        commit_custom()
 
 
 def askQuestion():

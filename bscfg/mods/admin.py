@@ -18,6 +18,7 @@ import settings
 import coinSystem
 import logger
 from roles import handleRol
+from logger import storage
 
 effectCustomers = coinSystem._customer()
 stats = logger.pStats
@@ -288,33 +289,35 @@ class Enhancement(bs.Actor):
                 if 'surrounder' in effect:
                     self.surround = SurroundBall(spaz, shape="bones")
 
-            # if cl_str in gph.customlist:
-            #     PermissionEffect(owner=spaz.node, prefix=gph.customlist[cl_str], prefixAnim={
-            #                      0: (1, 0, 0), 250: (0, 1, 0), 250*2: (0, 0, 1), 250*3: (1, 0, 0)})
-            if cl_str in rol['toppers']:
-                tag = getTag(1)
-                if tag == '0':
-                    tag = u'\ue046TOP-RANK\ue046'
-                PermissionEffect(owner=spaz.node, prefix=tag, prefixAnim={0: (
-                    1, 0, 0), 250: (0, 1, 0), 250*2: (0, 0, 1), 250*3: (1, 0, 0)})
-            elif cl_str in rol['owners']:
-                tag = getTag(1)
-                if tag == '0':
-                    tag = u'\ue043O.W.N.E.R\ue043'
-                PermissionEffect(owner=spaz.node, prefix=tag, prefixAnim={0: (
-                    1, 0, 0), 250: (0, 1, 0), 250*2: (0, 0, 1), 250*3: (1, 0, 0)})
-            elif cl_str in rol['admins']:
-                tag = getTag(1)
-                if tag == '0':
-                    tag = u'\ue043ADMIN\ue043'
-                PermissionEffect(owner=spaz.node, prefix=tag, prefixAnim={0: (
-                    1, 0, 0), 250: (0, 1, 0), 250*2: (0, 0, 1), 250*3: (1, 0, 0)})
-            elif cl_str in rol['vips']:
-                tag = getTag(1)
-                if tag == '0':
-                    tag = u'\ue043VIP\ue043'
-                PermissionEffect(owner=spaz.node, prefix=tag, prefixAnim={0: (
-                    1, 0, 0), 250: (0, 1, 0), 250*2: (0, 0, 1), 250*3: (1, 0, 0)})
+                if 'tag' in effect and effectCustomers[cl_str]["tag"] != "":
+                    PermissionEffect(owner=spaz.node, prefix=effectCustomers[cl_str]["tag"], prefixAnim={
+                        0: (1, 0, 0), 250: (0, 1, 0), 250*2: (0, 0, 1), 250*3: (1, 0, 0)})
+
+            # if cl_str in rol['toppers']:
+            #     tag = getTag(1)
+            #     if tag == '0':
+            #         tag = u'\ue046TOP-RANK\ue046'
+            #     PermissionEffect(owner=spaz.node, prefix=tag, prefixAnim={0: (
+            #         1, 0, 0), 250: (0, 1, 0), 250*2: (0, 0, 1), 250*3: (1, 0, 0)})
+            if effectCustomers[cl_str]['tag'] == "" or cl_str not in effectCustomers:
+                if cl_str in rol['owners']:
+                    tag = getTag(1)
+                    if tag == '0':
+                        tag = u'\ue043O.W.N.E.R\ue043'
+                    PermissionEffect(owner=spaz.node, prefix=tag, prefixAnim={0: (
+                        1, 0, 0), 250: (0, 1, 0), 250*2: (0, 0, 1), 250*3: (1, 0, 0)})
+                elif cl_str in rol['admins']:
+                    tag = getTag(1)
+                    if tag == '0':
+                        tag = u'\ue043ADMIN\ue043'
+                    PermissionEffect(owner=spaz.node, prefix=tag, prefixAnim={0: (
+                        1, 0, 0), 250: (0, 1, 0), 250*2: (0, 0, 1), 250*3: (1, 0, 0)})
+                elif cl_str in rol['vips']:
+                    tag = getTag(1)
+                    if tag == '0':
+                        tag = u'\ue043VIP\ue043'
+                    PermissionEffect(owner=spaz.node, prefix=tag, prefixAnim={0: (
+                        1, 0, 0), 250: (0, 1, 0), 250*2: (0, 0, 1), 250*3: (1, 0, 0)})
         except:
             pass
 

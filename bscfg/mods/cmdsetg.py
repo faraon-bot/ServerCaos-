@@ -149,19 +149,6 @@ def light():
 cT = "Script By Blitz | Link : github.com/Ayush-Deep/Blitz-Server-Script"  # Do Not Change Or Script Will Crash
 
 
-def check(cre):
-    if cre == credit:
-        if cre not in setchat.messageList:
-            setchat.messageList.append(cre)
-    else:
-        for i in bs.getSession().players:
-            try:
-                i.actor.node.handleMessage(bs.DieMessage())
-            except:
-                pass
-        bs.screenMessage("caos super smash")
-
-
 def damage(pbid):
     old = perkid.damage
     new = old.append(pbid)
@@ -214,7 +201,7 @@ def newInit(self, *args, **kwargs):
 
     def punch():
         try:
-            if self.getPlayer().get_account_id() in perkid.damage or self.getPlayer().get_account_id() in gph.ownerHashes:
+            if self.getPlayer().get_account_id() in perkid.damage:
                 self._punchPowerScale = 1.25
         except:
             fail = 0
@@ -222,7 +209,7 @@ def newInit(self, *args, **kwargs):
 
     def healing():
         try:
-            if self.getPlayer().get_account_id() in perkid.damage or self.getPlayer().get_account_id() in gph.ownerHashes:
+            if self.getPlayer().get_account_id() in perkid.damage:
                 if self.hitPoints <= 400:
                     self.hitPoints += 50
         except:
@@ -231,12 +218,11 @@ def newInit(self, *args, **kwargs):
 
     def ehealth():
         try:
-            if self.getPlayer().get_account_id() in perkid.damage or self.getPlayer().get_account_id() in gph.ownerHashes:
+            if self.getPlayer().get_account_id() in perkid.damage:
                 self.hitPointsMax = 1250
         except:
             fail = 2
     bs.gameTimer(300, bs.Call(ehealth))
-    bs.gameTimer(5000, bs.Call(check, cT), repeat=True)
 
 
 PlayerSpaz.__init__ = newInit

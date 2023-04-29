@@ -3,26 +3,26 @@ from datetime import datetime
 date = datetime.now().strftime('%d')
 
 enableTop5effects = True
-enableTop5commands = False
+enableTop5commands = True
 enableCoinSystem = True
 
 enableStats = True
 
 print('Enable Stats: ', enableStats)
-#More Settings On setchat.py
-spamProtection=True
+# More Settings On setchat.py
+spamProtection = True
 
-shieldBomb = False #shield on bomb
+shieldBomb = False  # shield on bomb
 
-bombLights = True #light on bomb
+bombLights = True  # light on bomb
 
-bombName = True #name on bomb
+bombName = True  # name on bomb
 
-bigBomb = False #hehe extra
+bigBomb = False  # hehe extra
 
-k_msg = False #Killing Message
+k_msg = False  # Killing Message
 
-k_pop = True #Killing Message PopUp
+k_pop = True  # Killing Message PopUp
 
 nightMode = True
 
@@ -30,58 +30,60 @@ enableChatFilter = True
 
 showTextsInBottom = False
 
-gameTexts = ['Welcome To Blitz Server','Use "/shop commands" to see commands available to buy.','Use "/shop effects" to see effects available and their price.','Use "/me" or "/stats" to see your '+bs.getSpecialChar('ticket')+' and your stats in this server', 'Use "/buy" to buy effects that you like','Use "/donate" to give some of your tickets to other players','Use "/scoretocash" to convert some of your score to '+bs.getSpecialChar('ticket')+'\nCurrent Rate: 5scores = '+bs.getSpecialChar('ticket')+'1']
+gameTexts = ['Welcome To Blitz Server', 'Use "/shop commands" to see commands available to buy.', 'Use "/shop effects" to see effects available and their price.', 'Use "/me" or "/stats" to see your '+bs.getSpecialChar(
+    'ticket')+' and your stats in this server', 'Use "/buy" to buy effects that you like', 'Use "/donate" to give some of your tickets to other players', 'Use "/scoretocash" to convert some of your score to '+bs.getSpecialChar('ticket')+'\nCurrent Rate: 5scores = '+bs.getSpecialChar('ticket')+'1']
 
-questionDelay = 90 #60 #seconds
+questionDelay = 90  # 60 #seconds
 questionsList = {'esta en el final del sol y el comienzo de la luna?': 'l', 'todos lo tenemos atras es arrugado comienza con "C" y termina con "O"?': 'codo', 'entra duro, seco y sale mojado, blando?': 'chicle', 'blanco por dentro verde por afuera?, si no sabes espera...': 'pera',
-       'add': None, 
-       'multiply': None}
+                 'add': None,
+                 'multiply': None}
 
-availableCommands = {'/nv': 50, 
-   '/ooh': 1, 
-   '/playSound': 10, 
-   '/box': 30, 
-   '/boxall': 60, 
-   '/spaz': 50, 
-   '/spazall': 100, 
-   '/inv': 400, 
-   '/invall': 800, 
-   '/tex': 10, 
-   '/texall': 40, 
-   '/freeze': 600, 
-   '/freezeall': 1000, 
-   '/sleep': 400, 
-   '/sleepall': 800, 
-   '/thaw': 50, 
-   '/thawall': 70, 
-   '/kill': 800, 
-   '/killall': 1050, 
-   '/end': 400, 
-   '/hug': 60, 
-   '/hugall': 100, 
-   '/tint': 90, 
-   '/sm': 500, 
-   '/fly': 500, 
-   '/flyall': 1000, 
-   '/heal': 50, 
-   '/healall': 70, 
-   '/gm': 1000, 
-   '/custom': 250}
+availableCommands = {'/nv': 50,
+                     '/ooh': 1,
+                     '/playSound': 10,
+                     '/box': 30,
+                     '/boxall': 60,
+                     '/spaz': 50,
+                     '/spazall': 100,
+                     '/inv': 400,
+                     '/invall': 800,
+                     '/tex': 10,
+                     '/texall': 40,
+                     '/freeze': 600,
+                     '/freezeall': 1000,
+                     '/sleep': 400,
+                     '/sleepall': 800,
+                     '/thaw': 50,
+                     '/thawall': 70,
+                     '/kill': 800,
+                     '/killall': 1050,
+                     '/end': 400,
+                     '/hug': 60,
+                     '/hugall': 100,
+                     '/tint': 90,
+                     '/sm': 500,
+                     '/fly': 500,
+                     '/flyall': 1000,
+                     '/heal': 50,
+                     '/healall': 70,
+                     '/gm': 1000}
 
-availableEffects = {'ice': 500, 
-   'sweat': 750, 
-   'scorch': 500, 
-   'glow': 400, 
-   'distortion': 750, 
-   'slime': 500, 
-   'metal': 500, 
-   'surrounder': 1000}
+availableEffects = {'ice': 500,
+                    'sweat': 750,
+                    'scorch': 500,
+                    'glow': 400,
+                    'distortion': 750,
+                    'slime': 500,
+                    'metal': 500,
+                    'surrounder': 1000,
+                    'tag': 0}
 
 nameOnPowerUps = True  # Whether or not to show the powerup's name on top of powerups
 
 shieldOnPowerUps = True  # Whether or not to add shield on powerups
 
-discoLightsOnPowerUps = False  # Whether or not to show disco lights on powerup's location
+# Whether or not to show disco lights on powerup's location
+discoLightsOnPowerUps = False
 
 FlyMaps = False  # Whether or not to enable the 3D flying maps in games playlist
 
