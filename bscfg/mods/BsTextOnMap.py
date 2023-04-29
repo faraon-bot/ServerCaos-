@@ -141,14 +141,14 @@ def __init__(self, vrOverlayCenterOffset=None):
         bs.animate(t, 'opacity', {0: 0.0, 500: 1.0, 6500: 1.0, 7000: 0.0})
         bs.gameTimer(7000, t.delete)
         p = bs.newNode('text',
-                       attrs={'text': "Server Caos",
+                       attrs={'text': "",
                               'scale': 1.0,
                               'maxWidth': 0,
                               'position': (-100, 50),
                               'shadow': 0.5,
                               'flatness': 1.0,
                               'color': ((0+random.random()*1.0), (0+random.random()*1.0), (0+random.random()*1.0)),
-                              'hAlign': 'center',
+                              'hAlign': 'left',
                               'vAttach': 'bottom'})
         bs.animate(p, 'opacity', {0: 0.0, 500: 1.0, 6500: 1.0, 7000: 0.0})
         bs.gameTimer(7000, p.delete)
