@@ -33,6 +33,14 @@ def accountIDFromClientID(n):
         return None
 
 
+def getDisplayString(n):
+    for i in bsInternal._getGameRoster():
+        if i['clientID'] == int(n):
+            return i['displayString']
+    else:
+        return None
+
+
 def playerFromClientID(n):
     if n.isdigit():
         if len(n) == 3:
@@ -1526,22 +1534,28 @@ class chatOptions(object):
                                         bannedId = None
                                         aid = None
                                         try:
-                                            clID = int(a[0])
-                                            for i in bsInternal._getGameRoster():
-                                                if i['clientID'] == clID:
-                                                    aid = i['displayString']
-                                                    for i in bsInternal._getForegroundHostActivity().players:
-                                                        if i.getInputDevice().getClientID() == clID:
-                                                            bannedID = i.get_account_id()
-                                                            name = i.getName()
-
+                                            clID = a[0]
+                                            player = playerFromClientID(clID)
+                                            aid = bs.uni(
+                                                getDisplayString(clID))
+                                            bannedID = player.get_account_id()
+                                            client = player.getInputDevice().getClientID()
+                                            name = player.getName()
+                                            if bannedID is None:
+                                                return
+                                            if bannedID in roles['owners'] or bannedID in roles['admin']:
+                                                bs.screenMessage(
+                                                    "You can't kick moderators")
+                                                return
                                             if aid is not None:
                                                 roles['banned'][bannedID] = aid
                                                 handleRol.commit_roles()
+                                                bs.screenMessage("Has sido baneado por violar las reglas!", clients=[
+                                                                 client], transient=True, color=(2, 0, 0))
                                                 bsInternal._chatMessage(
                                                     'banned ' + name)
                                                 bsInternal._disconnectClient(
-                                                    clID)
+                                                    int(clID))
                                                 commandSuccess = True
                                         except Exception:
                                             bsInternal._chatMessage(
