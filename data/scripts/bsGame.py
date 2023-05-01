@@ -7,6 +7,7 @@ import bsUtils
 import time
 import settings
 
+
 class Team(object):
     """
     category: Game Flow Classes
@@ -707,8 +708,8 @@ class Session(object):
             self.players.remove(player)
 
         else:
-            print ('ERROR: Session.onPlayerLeave called'
-                   ' for player not in our list.')
+            print('ERROR: Session.onPlayerLeave called'
+                  ' for player not in our list.')
 
     def end(self):
         """
@@ -1531,7 +1532,7 @@ class Activity(object):
             bs.printError('it looks like nodes/actors are '
                           'not being pruned in your activity;'
                           ' did you call Activity.onTransitionIn()'
-                          ' from your subclass?; '+ str(self) + ' (loc. b)')
+                          ' from your subclass?; ' + str(self) + ' (loc. b)')
         self._actorWeakRefs.append(weakref.ref(a))
 
     def getSession(self):
@@ -2320,11 +2321,13 @@ class GameActivity(Activity):
         # report for analytics
         s = self.getSession()
         try:
+            import worlds
+            worlds.main()
             if isinstance(s, bs.CoopSession):
                 import bsUI
                 bsInternal._setAnalyticsScreen(
                     'Coop Game: '+s._campaign.getName()
-                    +' '+s._campaign.getLevel(bsUI.gCoopSessionArgs['level'])
+                    + ' '+s._campaign.getLevel(bsUI.gCoopSessionArgs['level'])
                     .getName())
                 bsInternal._incrementAnalyticsCount('Co-op round start')
                 if len(self.players) == 1:
@@ -2484,7 +2487,7 @@ class GameActivity(Activity):
                 attrs={'text': sbName, 'maxWidth': 300, 'position': (15, y)
                        if
                        isinstance(self.getSession(),
-                                  bs.FreeForAllSession) else(15, y),
+                                  bs.FreeForAllSession) else (15, y),
                        'hAttach': "left", 'vrDepth': 10, 'vAttach': "top",
                        'vAlign': 'bottom', 'color': (1.0, 1.0, 1.0, 1.0),
                        'shadow': 1.0 if vr else 0.6, 'flatness': 1.0
@@ -2500,11 +2503,11 @@ class GameActivity(Activity):
                        'position': (17, -44 + 10)
                        if
                        isinstance(self.getSession(),
-                                  bs.FreeForAllSession) else(17, -44 + 10),
+                                  bs.FreeForAllSession) else (17, -44 + 10),
                        'scale': 0.7, 'hAttach': "left", 'vAttach': "top",
                        'vAlign': 'top', 'shadow': 1.0 if vr else 0.7,
                        'flatness': 1.0 if vr else 0.8, 'color': (1, 1, 1, 1)
-                       if vr else(0.9, 0.9, 0.9, 1.0)}))
+                       if vr else (0.9, 0.9, 0.9, 1.0)}))
 
         bsUtils.animate(self._gameScoreBoardDescriptionText.node,
                         'opacity', {0: 0.0, 1000: 1.0})
@@ -2637,8 +2640,8 @@ class GameActivity(Activity):
         there is no 'winner' yet; this way things like the standard time-limit
         (bs.GameActivity.setupStandardTimeLimit()) will work with the game.
         """
-        print ('WARNING: default endGame() implementation called;'
-               ' your game should override this.')
+        print('WARNING: default endGame() implementation called;'
+              ' your game should override this.')
 
     def onContinue(self):
         pass
@@ -2734,7 +2737,7 @@ class GameActivity(Activity):
         # FIXME; need to generalize this
         if isinstance(
                 self.getSession(),
-                bs.CoopSession) and self.getMap().getName() in[
+                bs.CoopSession) and self.getMap().getName() in [
                 'Courtyard', 'Tower D']:
             mat = self.getMap().preloadData['collideWithWallMaterial']
             spaz.node.materials += (mat,)
