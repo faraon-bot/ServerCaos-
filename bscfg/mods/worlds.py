@@ -3,6 +3,11 @@ import bs
 import settings
 print 'Nigth Mode: ', settings.nightMode
 
+config = bs.getConfig()
+config['Coop Game Max Players'] = 999
+config['Team Game Max Players'] = 999
+config['Free-for-All Max Players'] = 999
+bs.writeConfig()
 
 def night():
     try:
