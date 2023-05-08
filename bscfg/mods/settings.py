@@ -88,6 +88,18 @@ discoLightsOnPowerUps = False
 FlyMaps = False  # Whether or not to enable the 3D flying maps in games playlist
 
 
+# Powerup distribution
+dist = (('tripleBombs', 1),
+        ('iceBombs', 0),
+        ('punch', 0),
+        ('impactBombs', 1),
+        ('landMines', 1),
+        ('stickyBombs', 1),
+        ('shield', 0),
+        ('health', 1),
+        ('curse', 0))
+
+
 def return_yielded_game_texts():
     for text in gameTexts:
         yield text
