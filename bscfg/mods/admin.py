@@ -291,7 +291,7 @@ class Enhancement(bs.Actor):
 
                 if 'tag' in effect and effectCustomers[cl_str]["tag"] != "":
                     PermissionEffect(owner=spaz.node, prefix=effectCustomers[cl_str]["tag"], prefixAnim={
-                        0: (1, 0, 0), 250: (0, 1, 0), 250*2: (0, 0, 1), 250*3: (1, 0, 0)})
+                        0: (2, 0, 0), 250: (0, 2, 0), 250*2: (0, 0, 2), 250*3: (2, 2, 0), 250*4: (0, 2, 2), 250*5: (2, 0, 2), 250*6: (2, 0, 0)})
 
             # if cl_str in rol['toppers']:
             #     tag = getTag(1)
