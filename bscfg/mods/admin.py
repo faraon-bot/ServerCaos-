@@ -299,24 +299,25 @@ class Enhancement(bs.Actor):
             #         tag = u'\ue046TOP-RANK\ue046'
             #     PermissionEffect(owner=spaz.node, prefix=tag, prefixAnim={0: (
             #         1, 0, 0), 250: (0, 1, 0), 250*2: (0, 0, 1), 250*3: (1, 0, 0)})
-            if cl_str in rol['owners']:
-                tag = getTag(1)
-                if tag == '0':
-                    tag = u'\ue043O.W.N.E.R\ue043'
-                PermissionEffect(owner=spaz.node, prefix=tag, prefixAnim={0: (
-                    1, 0, 0), 250: (0, 1, 0), 250*2: (0, 0, 1), 250*3: (1, 0, 0)})
-            elif cl_str in rol['admins']:
-                tag = getTag(1)
-                if tag == '0':
-                    tag = u'\ue043ADMIN\ue043'
-                PermissionEffect(owner=spaz.node, prefix=tag, prefixAnim={0: (
-                    1, 0, 0), 250: (0, 1, 0), 250*2: (0, 0, 1), 250*3: (1, 0, 0)})
-            elif cl_str in rol['vips']:
-                tag = getTag(1)
-                if tag == '0':
-                    tag = u'\ue043VIP\ue043'
-                PermissionEffect(owner=spaz.node, prefix=tag, prefixAnim={0: (
-                    1, 0, 0), 250: (0, 1, 0), 250*2: (0, 0, 1), 250*3: (1, 0, 0)})
+            if effectCustomers[cl_str]["tag"] == "":
+                if cl_str in rol['owners']:
+                    tag = getTag(1)
+                    if tag == '0':
+                        tag = u'\ue043O.W.N.E.R\ue043'
+                    PermissionEffect(owner=spaz.node, prefix=tag, prefixAnim={0: (
+                        1, 0, 0), 250: (0, 1, 0), 250*2: (0, 0, 1), 250*3: (1, 0, 0)})
+                elif cl_str in rol['admins']:
+                    tag = getTag(1)
+                    if tag == '0':
+                        tag = u'\ue043ADMIN\ue043'
+                    PermissionEffect(owner=spaz.node, prefix=tag, prefixAnim={0: (
+                        1, 0, 0), 250: (0, 1, 0), 250*2: (0, 0, 1), 250*3: (1, 0, 0)})
+                elif cl_str in rol['vips']:
+                    tag = getTag(1)
+                    if tag == '0':
+                        tag = u'\ue043VIP\ue043'
+                    PermissionEffect(owner=spaz.node, prefix=tag, prefixAnim={0: (
+                        1, 0, 0), 250: (0, 1, 0), 250*2: (0, 0, 1), 250*3: (1, 0, 0)})
         except:
             pass
 
