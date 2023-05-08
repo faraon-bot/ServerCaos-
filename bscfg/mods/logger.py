@@ -30,13 +30,9 @@ if not os.path.exists(path):
 
 def create(files):
     for file in files:
-        if file == roles:
-            dump = storage.roles
-        else:
-            dump = empty
         if not os.path.exists(file):
             with open(file, 'w') as f:
-                f.write(json.dumps(dump, indent=4))
+                f.write(json.dumps(empty, indent=4))
                 f.close()
 
 
