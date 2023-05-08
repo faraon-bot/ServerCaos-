@@ -4,9 +4,6 @@ import json
 from roles import handleRol
 from logger import storage
 
-
-admins = handleRol.ver_roles['admins']
-vips = handleRol.ver_roles['vips']
 stats = logger.pStats
 # Gives Admin To Rank 1
 
@@ -20,7 +17,7 @@ def admin(val):
             key1 = list(pats.keys())
             for i in key1:
                 if pats[i]["rank"] == val:
-                    admins.append(i)
+                    storage.roles['admins'].append(i)
     handleRol.commit_roles()
 
     bs.screenMessage("Admins Updated", color=(0, 1, 0))
@@ -37,7 +34,7 @@ def vip(val):
             key1 = list(pats.keys())
             for i in key1:
                 if pats[i]["rank"] == val:
-                    vips.append(i)
+                    storage.roles['vips'].append(i)
 
     handleRol.commit_roles()
     bs.screenMessage("Vips Updated", color=(0, 1, 0))
