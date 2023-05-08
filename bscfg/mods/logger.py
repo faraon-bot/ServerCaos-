@@ -14,8 +14,7 @@ roles = os.path.join(path, 'roles.json')
 
 class storage:
     customers = {}
-    roles = {
-        "owners": ["pb-IF4xVUg4FA=="], "vips": [], "banned": {}, "toppers": ["pb-IF4xVUg4FA=="], "admins": []}
+    roles = {}
 
 
 # creamos una lista con todos los archivos
