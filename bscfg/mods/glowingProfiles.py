@@ -51,7 +51,7 @@ class Chooser(object):
         # lets use their inputDevice id to seed it.. this will give a persistent character
         # for them between games and will distribute characters nicely if everyone is random
         try: inputDeviceID = self._player.getInputDevice().getID()
-        except Exception:
+        except Exception, e:
             print 'ERROR: exception getting inputDeviceID for lobby-chooser creation:',e
             inputDeviceID = 0
             import traceback
