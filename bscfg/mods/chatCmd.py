@@ -935,8 +935,8 @@ class chatOptions(object):
                                     if n is None:
                                         return
                                     if a[1] == 'add':
-                                        if n2 not in roles['admins']:
-                                            roles['admins'].append(n2)
+                                        if n2 not in storage.roles['admins']:
+                                            storage.roles['admins'].append(n2)
                                             commandSuccess = True
                                             handleRol.commit_roles()
                                             bs.screenMessage(
@@ -945,8 +945,8 @@ class chatOptions(object):
                                             bs.screenMessage(
                                                 u"{} Ya posee este rol".format(n.getName(True)))
                                     elif a[1] == 'remove':
-                                        if n2 in roles['admins']:
-                                            roles['admins'].remove(n2)
+                                        if n2 in storage.roles['admins']:
+                                            storage.roles['admins'].remove(n2)
                                             commandSuccess = True
                                             handleRol.commit_roles()
                                             bs.screenMessage(
@@ -966,8 +966,8 @@ class chatOptions(object):
                                     if n is None:
                                         return
                                     if a[1] == 'add':
-                                        if n2 not in roles['vips']:
-                                            roles['vips'].append(n2)
+                                        if n2 not in storage.roles['vips']:
+                                            storage.roles['vips'].append(n2)
                                             commandSuccess = True
                                             handleRol.commit_roles()
                                             bs.screenMessage(
@@ -976,8 +976,8 @@ class chatOptions(object):
                                             bs.screenMessage(
                                                 u"{} Ya posee este rol".format(n.getName(True)))
                                     elif a[1] == 'remove':
-                                        if n2 in roles['vips']:
-                                            roles['vips'].remove(n2)
+                                        if n2 in storage.roles['vips']:
+                                            storage.roles['vips'].remove(n2)
                                             commandSuccess = True
                                             handleRol.commit_roles()
                                             bs.screenMessage(
