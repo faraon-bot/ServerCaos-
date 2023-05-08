@@ -87,18 +87,18 @@ class chatOptions(object):
                 break
         else:
             return None
-
+        rol = handleRol.ver_roles()
         client_str = player.get_account_id()
         try:
-            if client_str in roles['owners']:
+            if client_str in rol['owners']:
                 reply = u'\ue043|\ue00cCOMMAND ACCEPTED MY LORD\ue00c|\ue043'
                 # reply = ':)'
                 return 10
-            elif client_str in roles['admins']:
+            elif client_str in rol['admins']:
                 reply = u'\ue049|\ue00cCOMMAND ACCEPTED MR:ADMIN\ue00c|\ue049'
                 # reply = ':)'
                 return 3
-            elif client_str in roles['vips']:
+            elif client_str in rol['vips']:
                 reply = u'\ue048|\ue00cVIP COMMAND ACCEPTED\ue00c|\ue048'
                 # reply = ':)'
                 return 2
@@ -111,7 +111,7 @@ class chatOptions(object):
                     return 3
                 bsInternal._chatMessage('You need ' + bs.getSpecialChar('ticket') + str(
                     costOfCommand) + ' for that. You have ' + bs.getSpecialChar('ticket') + str(haveCoins) + ' only.')
-            elif enableTop5commands and client_str in roles['toppers']:
+            elif enableTop5commands and client_str in rol['toppers']:
                 reply = 'Top 5 player, COMMAND ACCEPTED'
                 # reply = ':)'
                 return 1
@@ -369,6 +369,10 @@ class chatOptions(object):
                                         'effects': {effect: expiry.strftime('%d-%m-%Y %H:%M:%S')}}
                                 if effect == 'tag':
                                     tag = ' '.join(a[1:])
+                                    if len(tag) > 15:
+                                        bs.screenMessage(
+                                            "Elige un tag mas corto!")
+                                        return
                                     tag = bs.uni(tag)
                                     customers[client_str]["tag"] = tag
                                 customers[client_str]['effects'].update({
@@ -469,7 +473,7 @@ class chatOptions(object):
                         for player in activity.players:
                             if player.getInputDevice().getClientID() == clientID:
                                 f = open(stats, 'r')
-                                __stats = json.loads(f.read())
+                                _stats = json.loads(f.read())
                                 accountID = player.get_account_id()
                                 haveScore = _stats[accountID]['scores']
                                 f.close()
@@ -480,8 +484,8 @@ class chatOptions(object):
                                     bsInternal._chatMessage(
                                         'You can only convert more than 500scores')
                                 else:
-                                    __stats[accountID]['scores'] -= score
-                                    mystats.commit_stats(__stats)
+                                    _stats[accountID]['scores'] -= score
+                                    mystats.commit_stats(_stats)
                                     equivalentCoins = int(score / 5 * 0.9)
                                     coinSystem.addCoins(
                                         accountID, equivalentCoins)
