@@ -299,25 +299,24 @@ class Enhancement(bs.Actor):
             #         tag = u'\ue046TOP-RANK\ue046'
             #     PermissionEffect(owner=spaz.node, prefix=tag, prefixAnim={0: (
             #         1, 0, 0), 250: (0, 1, 0), 250*2: (0, 0, 1), 250*3: (1, 0, 0)})
-            if cl_str not in effectCustomers:
-                if cl_str in rol['owners']:
-                    tag = getTag(1)
-                    if tag == '0':
-                        tag = u'\ue043O.W.N.E.R\ue043'
-                    PermissionEffect(owner=spaz.node, prefix=tag, prefixAnim={0: (
-                        1, 0, 0), 250: (0, 1, 0), 250*2: (0, 0, 1), 250*3: (1, 0, 0)})
-                elif cl_str in rol['admins']:
-                    tag = getTag(1)
-                    if tag == '0':
-                        tag = u'\ue043ADMIN\ue043'
-                    PermissionEffect(owner=spaz.node, prefix=tag, prefixAnim={0: (
-                        1, 0, 0), 250: (0, 1, 0), 250*2: (0, 0, 1), 250*3: (1, 0, 0)})
-                elif cl_str in rol['vips']:
-                    tag = getTag(1)
-                    if tag == '0':
-                        tag = u'\ue043VIP\ue043'
-                    PermissionEffect(owner=spaz.node, prefix=tag, prefixAnim={0: (
-                        1, 0, 0), 250: (0, 1, 0), 250*2: (0, 0, 1), 250*3: (1, 0, 0)})
+            if cl_str in rol['owners']:
+                tag = getTag(1)
+                if tag == '0':
+                    tag = u'\ue043O.W.N.E.R\ue043'
+                PermissionEffect(owner=spaz.node, prefix=tag, prefixAnim={0: (
+                    1, 0, 0), 250: (0, 1, 0), 250*2: (0, 0, 1), 250*3: (1, 0, 0)})
+            elif cl_str in rol['admins']:
+                tag = getTag(1)
+                if tag == '0':
+                    tag = u'\ue043ADMIN\ue043'
+                PermissionEffect(owner=spaz.node, prefix=tag, prefixAnim={0: (
+                    1, 0, 0), 250: (0, 1, 0), 250*2: (0, 0, 1), 250*3: (1, 0, 0)})
+            elif cl_str in rol['vips']:
+                tag = getTag(1)
+                if tag == '0':
+                    tag = u'\ue043VIP\ue043'
+                PermissionEffect(owner=spaz.node, prefix=tag, prefixAnim={0: (
+                    1, 0, 0), 250: (0, 1, 0), 250*2: (0, 0, 1), 250*3: (1, 0, 0)})
         except:
             pass
 
@@ -352,6 +351,8 @@ class Enhancement(bs.Actor):
                                 self.addLightColor((1, 0.6, 0.4))
                                 self.scorchTimer = bs.Timer(
                                     500, bs.WeakCall(self.update_Scorch), repeat=True)
+                                self.checkDeadTimer = bs.Timer(
+                                    150, bs.WeakCall(self.checkPlayerifDead), repeat=True)
                         elif rank == '4':
                             icon = ''  # fireball
                             if flag == 0 and settings.enableTop5effects:
