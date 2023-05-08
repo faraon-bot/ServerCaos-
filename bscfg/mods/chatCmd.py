@@ -486,7 +486,7 @@ class chatOptions(object):
                         score = int(a[0])
                         for player in activity.players:
                             if player.getInputDevice().getClientID() == clientID:
-                                f = open(stats 'r')
+                                f = open(stats, 'r')
                                 s = json.loads(f.read())
                                 accountID = player.get_account_id()
                                 haveScore = s[accountID]['scores']
