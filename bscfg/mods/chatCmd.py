@@ -206,6 +206,30 @@ class chatOptions(object):
                         cmdsetg.tN(a[0], a[1])
                         commandSuccess = True
 
+                elif m == '/addcoin' and level > 4:
+                    if a == []:
+                        bs.screenMessage(
+                            "Format: /addcoin <clientID> <amount> or /addcoin <amount> for myself")
+                    else:
+                        if len(a) == 2:
+                            n = accountIDFromClientID(a[0])
+                            coinSystem.addCoins(n, int(a[1]))
+                            bs.screenMessage(
+                                "Se ha depositado " + a[1] + " a tu cuenta Exitosamente!")
+                        else:
+                            if len(a) == 1:
+                                for i in range(len(activity.players)):
+                                    if activity.players[i].getInputDevice().getClientID() == clientID:
+                                        n = activity.players[i].get_account_id()
+                                else:
+                                    return
+
+                                coinSystem.addCoins(n, int(a[0]))
+                                bs.screenMessage(
+                                    "Se ha depositado " + a[0] + " a tu cuenta Exitosamente!")
+
+
+
                 elif m == '/floater' and level > 2:
                     playerlist = bsInternal._getForegroundHostActivity(
                     ).players
