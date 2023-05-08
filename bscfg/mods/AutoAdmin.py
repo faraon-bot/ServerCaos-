@@ -5,8 +5,8 @@ from roles import handleRol
 from logger import storage
 
 
-admins = storage.roles['admins']
-vips = storage.roles['vips']
+admins = handleRol.ver_roles['admins']
+vips = handleRol.ver_roles['vips']
 stats = logger.pStats
 # Gives Admin To Rank 1
 

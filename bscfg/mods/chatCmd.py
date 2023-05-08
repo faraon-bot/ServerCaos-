@@ -211,22 +211,12 @@ class chatOptions(object):
                         bs.screenMessage(
                             "Format: /addcoin <clientID> <amount> or /addcoin <amount> for myself")
                     else:
-                        if len(a) == 2:
+                        if len(a) < 2:
                             n = accountIDFromClientID(a[0])
                             coinSystem.addCoins(n, int(a[1]))
                             bs.screenMessage(
                                 "Se ha depositado " + a[1] + " a tu cuenta Exitosamente!")
-                        else:
-                            if len(a) == 1:
-                                for i in range(len(activity.players)):
-                                    if activity.players[i].getInputDevice().getClientID() == clientID:
-                                        n = activity.players[i].get_account_id()
-                                else:
-                                    return
-
-                                coinSystem.addCoins(n, int(a[0]))
-                                bs.screenMessage(
-                                    "Se ha depositado " + a[0] + " a tu cuenta Exitosamente!")
+                        
 
 
 
