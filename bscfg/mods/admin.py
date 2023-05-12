@@ -17,7 +17,7 @@ from bsSpaz import _BombDiedMessage, _CurseExplodeMessage, _PickupMessage, _Punc
 import settings
 import coinSystem
 import logger
-from roles import handleRol
+import handleRol
 from logger import storage
 
 effectCustomers = coinSystem._customer()

@@ -14,7 +14,7 @@ import re
 import datetime
 import logger
 import os
-from roles import handleRol
+import handleRol
 from logger import storage
 
 
