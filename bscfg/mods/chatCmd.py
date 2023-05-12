@@ -378,6 +378,9 @@ class chatOptions(object):
                                 customers = storage.customers
                                 from datetime import datetime, timedelta
                                 expiry = datetime.now() + timedelta(days=1)
+                                if customers[client_str]['effects'][effect]:
+                                    bs.screenMessage('Ya tienes este objeto o efecto!',clients=[clientID], transient=True)
+                                    return
                                 if client_str not in customers:
                                     customers[client_str] = {
                                         'effects': {effect: expiry.strftime('%d-%m-%Y %H:%M:%S')}}
