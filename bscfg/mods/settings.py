@@ -1,4 +1,6 @@
 import bs
+import bsGame
+from terminal import Colors
 from datetime import datetime
 date = datetime.now().strftime('%d')
 
@@ -8,7 +10,12 @@ enableCoinSystem = True
 
 enableStats = True
 
-print('Enable Stats: ', enableStats)
+# AJUST MAX PLAYERS
+
+bsGame.Session.maxPlayers = 13
+bs.getConfig()['Free-for-All Max Players'] = 13
+
+
 # More Settings On setchat.py
 spamProtection = True
 
@@ -108,3 +115,14 @@ def return_yielded_game_texts():
 def return_players_yielded(bs):
     for player in bs.getSession().players:
         yield player
+
+# ** TERMINAL **
+
+# STATS
+print Colors.LIGHT_CYAN, 'Enable Stats : ', Colors.END, Colors.LIGHT_GREEN, 'ON', Colors.END if enableStats else Colors.RED, 'OFF', Colors.END
+# COIN SYSTEM
+print Colors.LIGHT_CYAN, 'CoinSystem : ', Colors.END, Colors.LIGHT_GREEN, 'ON', Colors.END if enableCoinSystem else Colors.RED, 'OFF', Colors.END
+# NIGHT MODE
+print Colors.LIGHT_CYAN, 'Modo Noche Activado!', Colors.END if nightMode else 'Modo Noche Desactivado'
+# TOPS
+print Colors.LIGHT_CYAN, 'Top Effects : ', Colors.END, Colors.LIGHT_GREEN, 'ON', Colors.END if enableTop5effects else Colors.RED, 'OFF', Colors.END
