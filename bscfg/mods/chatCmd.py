@@ -15,6 +15,8 @@ import datetime
 import logger
 import os
 import handleRol
+import mystats
+
 from logger import storage
 
 
@@ -378,9 +380,7 @@ class chatOptions(object):
                                 customers = storage.customers
                                 from datetime import datetime, timedelta
                                 expiry = datetime.now() + timedelta(days=1)
-                                if customers[client_str]['effects'][effect]:
-                                    bs.screenMessage('Ya tienes este objeto o efecto!',clients=[clientID], transient=True)
-                                    return
+                                
                                 if client_str not in customers:
                                     customers[client_str] = {
                                         'effects': {effect: expiry.strftime('%d-%m-%Y %H:%M:%S')}}
@@ -468,14 +468,14 @@ class chatOptions(object):
                                 _stats = json.loads(f.read())
                                 f.close()
                                 equivalentScore = int(coins * 5 * 0.9)
-                                _stats[accountID]['scores'] += equivalentScore
+                                _stats[str(accountID)]['scores'] += equivalentScore
                                 mystats.commit_stats(_stats)
                                 bs.screenMessage(
                                     'Transaction Successful', color=(0, 1, 0))
                                 f.close()
                                 bsInternal._chatMessage(str(
                                     equivalentScore) + 'score added to your account stats. [10% transaction fee deducted]')
-                                import mystats
+                                
                                 mystats.refreshStats()
                             break
 
@@ -492,23 +492,22 @@ class chatOptions(object):
                                 f = open(stats, 'r')
                                 s = json.loads(f.read())
                                 accountID = player.get_account_id()
-                                haveScore = s[accountID]['scores']
+                                haveScore = s[str(accountID)]['scores']
                                 f.close()
                                 if haveScore < score:
                                     bsInternal._chatMessage('Not enough scores to perform the transaction')
                                 elif score < 500:
                                     bsInternal._chatMessage('You can only convert more than 500scores')
                                 else:
-                                    f = open(s, 'w')
-                                    s[accountID]['scores'] -= score
-                                    mystats.commit_stats(s,1)
+                                    f = open(stats, 'w')
+                                    s[str(accountID)]['scores'] -= score
+                                    mystats.commit_stats(s)
                                     equivalentCoins = int(score / 5 * 0.9)
                                     coinSystem.addCoins(accountID, equivalentCoins)
                                     bs.screenMessage('Transaction Successful', color=(0, 1,
                                                                                 0))
                                     f.close()
                                     bsInternal._chatMessage(bs.getSpecialChar('ticket') + str(equivalentCoins) + ' added to your account. [10% transaction fee deducted]')
-                                    import mystats
                                     mystats.refreshStats()
                                 break
 
