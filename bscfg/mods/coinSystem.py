@@ -138,4 +138,3 @@ def getCoins(accountID):
 if settings.enableCoinSystem:
     timer = bs.Timer(questionDelay * 1000, askQuestion,
                      timeType='real', repeat=True)
-    print 'Coin system loaded...'
