@@ -26,4 +26,44 @@ def onPunchPress(self):
             )
 
 
+def onBombPress(self):
+    """
+    Called to 'press bomb' on this spaz;
+    used for player or AI connections.
+    """
+    if not self.node.exists():
+        return
+
+    if self._dead or self.frozen:
+        return
+    if self.node.knockout > 0.0:
+        return
+    self.node.bombPressed = True
+    if not self.node.holdNode.exists():
+        self.dropBomb()
+
+
+def onRun(self, value):
+    """
+    Called to 'press run' on this spaz;
+    used for player or AI connections.
+    """
+    if not self.node.exists():
+        return
+    self.node.run = value
+
+
+def onJumpPress(self):
+    """
+    Called to 'press jump' on this spaz;
+    used by player or AI connections.
+    """
+    if not self.node.exists():
+        return
+    self.node.jumpPressed = True
+
+
+bsSpaz.Spaz.onBombPress = onBombPress
+bsSpaz.Spaz.onRun = onRun
+bsSpaz.Spaz.onJumpPress = onJumpPress
 bsSpaz.Spaz.onPunchPress = onPunchPress
