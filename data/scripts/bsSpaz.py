@@ -1,10 +1,11 @@
 import weakref
 import random
-
+import settings
 import bs
 import bsUtils
 import bsInternal
-
+import botMod
+import bsMap
 # list of defined spazzes
 appearances = {}
 
@@ -471,6 +472,8 @@ class Spaz(bs.Actor):
         self.bombTypeDefault = self.defaultBombType
         self.bombType = self.bombTypeDefault
         self.landMineCount = 0
+        self.iceMineCount = 0
+        self.trioBombCount = 0
         self.blastRadius = 2.0
         self.powerupsExpire = powerupsExpire
         if self._demoMode: # preserve old behavior
@@ -875,7 +878,7 @@ class Spaz(bs.Actor):
         factory = self.getFactory()
         if self.shield is None: 
             self.shield = bs.newNode('shield', owner=self.node,
-                                     attrs={'color':(0.3, 0.2, 2.0),
+                                     attrs={'color':self.node.color,
                                             'radius':1.3})
             self.node.connectAttr('positionCenter', self.shield, 'position')
         self.shieldHitPoints = self.shieldHitPointsMax = 650
@@ -929,6 +932,7 @@ class Spaz(bs.Actor):
                 self.pickUpPowerupCallback(self)
 
             if (msg.powerupType == 'tripleBombs'):
+                bsUtils.PopupText(u"\ue00c Trio \ue00c",color = self.node.color,scale = 1.7, position = self.node.position).autoRetain()
                 tex = bs.Powerup.getFactory().texBomb
                 self._flashBillboard(tex)
                 self.setBombCount(3)
@@ -944,8 +948,125 @@ class Spaz(bs.Actor):
                         bs.Timer(gPowerupWearOffTime,
                                  bs.WeakCall(self._multiBombWearOff))
             elif msg.powerupType == 'landMines':
+                bsUtils.PopupText(u"\ue00c Mines \ue00c", color = self.node.color,scale = 1.7, position = self.node.position).autoRetain()
                 self.setLandMineCount(min(self.landMineCount+3, 3))
+            elif (msg.powerupType == 'iceMine'):
+                bsUtils.PopupText(u"\ue00c Ice Mine \ue00c", color = self.node.color,scale = 1.7, position = self.node.position).autoRetain()
+                self.seticeMineCount(min(self.iceMineCount+3, 3))
+            elif msg.powerupType == 'Party':
+                bsUtils.PopupText(u"\ue00c Party Time \ue00c", color = self.node.color,scale = 1.7, position = self.node.position).autoRetain()
+                bs.animateArray(self.node,'color',3,{0:(0,0,2),500:(0,2,0),1000:(2,0,0),1500:(2,2,0),2000:(2,0,2),2500:(0,1,6),3000:(1,2,0)},True)
+                self.node.handleMessage('celebrate',5000)
+            elif msg.powerupType == 'impactMess':
+                p = self.node.positionForward
+                bs.Bomb((p[0]+0.43,p[1]+4,p[2]-0.25),velocity=(0,-6,0), sourcePlayer = self.sourcePlayer,bombType = 'impact').autoRetain()
+                bs.Bomb((p[0]-0.43,p[1]+2,p[2]-0.25),velocity=(0,-6,0), sourcePlayer = self.sourcePlayer,bombType = 'impact').autoRetain()
+                bs.Bomb((p[0],p[1]+4,p[2]+0.5),velocity=(0,-6,0), sourcePlayer = self.sourcePlayer,bombType = 'impact').autoRetain()
+            elif msg.powerupType == 'Inv':
+                t = self.node
+                oldStyle1 = t.style
+                if oldStyle1 == 'spaz':
+                    oldStyle = 'neoSpaz'
+                else:
+                    oldStyle = oldStyle1
+                g = bs.getGameTime()
+                def inv(val):
+                    if val:
+                        t.headModel = None
+                        t.torsoModel = None
+                        t.pelvisModel = None
+                        t.upperArmModel = None
+                        t.foreArmModel = None
+                        t.handModel = None
+                        t.upperLegModel = None
+                        t.lowerLegModel = None
+                        t.toesModel = None
+                        t.style = 'cyborg'
+                def old():
+                    t.headModel = bs.getModel(oldStyle+'Head')
+                    t.torsoModel = bs.getModel(oldStyle+'Torso')
+                    t.pelvisModel = bs.getModel(oldStyle+'Pelvis')
+                    t.upperArmModel = bs.getModel(oldStyle+'UpperArm')
+                    t.foreArmModel = bs.getModel(oldStyle+'ForeArm')
+                    t.handModel = bs.getModel(oldStyle+'Hand')
+                    t.upperLegModel = bs.getModel(oldStyle+'UpperLeg')
+                    t.lowerLegModel = bs.getModel(oldStyle+'LowerLeg')
+                    t.toesModel = bs.getModel(oldStyle+'Toes')
+                    t.style = oldStyle
+                inv(True)
+                bsUtils.PopupText(u"\ue00c Sneaky Time \ue00c",color = self.node.color,scale = 1.7,position = self.node.position).autoRetain()
+                self._InvWearOffTimer = bs.Timer(8000,bs.Call(old))
+            elif msg.powerupType == 'Rchar':
+                t = self.node
+                lst = ['ali','wizard','cyborg','penguin','agent','pixie','bear','bunny']
+                rchars = random.choice(lst)
+                g = bs.getGameTime()
+                def charChange(val):
+                    if val:
+                        t.colorTexture = bs.getTexture(rchars+'Color')
+                        t.colorMaskTexture = bs.getTexture(rchars+'ColorMask')
+                        t.headModel = bs.getModel(rchars+'Head')
+                        t.torsoModel = bs.getModel(rchars+'Torso')
+                        t.pelvisModel = bs.getModel(rchars+'Pelvis')
+                        t.upperArmModel = bs.getModel(rchars+'UpperArm')
+                        t.foreArmModel = bs.getModel(rchars+'ForeArm')
+                        t.handModel = bs.getModel(rchars+'Hand')
+                        t.upperLegModel = bs.getModel(rchars+'LowerLeg')
+                        t.lowerLegModel = bs.getModel(rchars+'Toes')
+                        t.toesModel = bs.getModel(rchars+'Toes')
+                        t.style = rchars
+                charChange(True)
+                bsUtils.PopupText(u"\ue00c YAY! \ue00c",color = self.node.color,scale = 1.7,position = self.node.position).autoRetain()
+            elif msg.powerupType == 'Troll':
+                lst = [1,2,3,4,5,6]
+                t_no = random.choice(lst)
+                if t_no == 1:
+                    self.curse()
+                    bsUtils.PopupText(u"\ue00c Cursed \ue00c", color = self.node.color,scale = 1.7, position = self.node.position).autoRetain()
+                elif t_no == 2:
+                    self.setBombCount(2)
+                    bsUtils.PopupText(u"\ue00c Two Bombs \ue00c", color = self.node.color,scale = 1.7, position = self.node.position).autoRetain()
+                elif t_no == 3:
+                    self.equipBoxingGloves()
+                    bsUtils.PopupText(u"\ue00c Gloves \ue00c", color = self.node.color,scale = 1.7, position = self.node.position).autoRetain()
+                elif t_no == 4:
+                    self.equipShields()
+                    bsUtils.PopupText(u"\ue00c Lucky Noob! \ue00c", color = self.node.color,scale = 1.7, position = self.node.position).autoRetain()
+                elif t_no == 5:
+                    self.node.style = 'pixie'
+                    bsUtils.PopupText(u"\ue00c Pixie's Cousin \ue00c", color = self.node.color,scale = 1.7, position = self.node.position).autoRetain()
+                elif t_no == 6:
+                    self.node.handleMessage(bs.FreezeMessage())
+                    bsUtils.PopupText(u"\ue00c Freezy \ue00c", color = self.node.color,scale = 1.7, position = self.node.position).autoRetain()
+            elif msg.powerupType == 'Speed':
+                bsUtils.PopupText(u"\ue00c Speedy \ue00c", color = self.node.color,scale = 1.7, position = self.node.position).autoRetain()
+                tex = bs.Powerup.getFactory().texSpeed
+                self._flashBillboard(tex)
+                def setSpeed(val):
+                    if self.node.exists(): setattr(self.node,'hockey',val)
+                setSpeed(True)
+                if self.powerupsExpire:                
+                    self.node.miniBillboard2Texture = tex
+                    t = bs.getGameTime()
+                    self.node.miniBillboard2StartTime = t
+                    self.node.miniBillboard2EndTime = t+gPowerupWearOffTime
+                    self._speedWearOffTimer = bs.Timer(gPowerupWearOffTime,bs.Call(setSpeed,False))
+            elif msg.powerupType == 'Bot':
+                bsUtils.PopupText(u"\ue00c By PcModder \ue00c", color = self.node.color,scale = 1.7, position = self.node.position).autoRetain()
+                p = self.node.position
+                pos = (p[0], p[1] + 2, p[2])
+                botMod.Bot(pos = pos, sourcePlayer = self.sourcePlayer).autoRetain() 
+                bs.getSharedObject('globals').tint = (0.6,0.6,0.9)
+                light = bs.newNode('light',
+                               attrs={'position':self.node.position,
+                                      'radius':0.5,
+                                      'heightAttenuated':False,
+                                      'color': (0,1,6)})
+                bs.animate(light,'radius',{0:3.0,300:5,600:0})  
+                bs.emitBGDynamics(position=self.node.position,velocity=(0,0,0),count=600,spread=0.7,chunkType='spark')
+                    
             elif msg.powerupType == 'impactBombs':
+                bsUtils.PopupText(u"\ue00c Impact \ue00c", color = self.node.color,scale = 1.7, position = self.node.position).autoRetain()
                 self.bombType = 'impact'
                 tex = self._getBombTypeTex()
                 self._flashBillboard(tex)
@@ -960,7 +1081,11 @@ class Spaz(bs.Actor):
                     self._bombWearOffTimer = \
                         bs.Timer(gPowerupWearOffTime,
                                  bs.WeakCall(self._bombWearOff))
+            elif (msg.powerupType == 'trioBomb'):
+                self.settrioBombCount(min(self.trioBombCount+3, 3))
+                bsUtils.PopupText(u"\ue00c Trio Bomb \ue00c",color=(1,0.5,0),scale=1.5,position=self.node.position).autoRetain()
             elif msg.powerupType == 'stickyBombs':
+                bsUtils.PopupText(u"\ue00c Sticky \ue00c", color = self.node.color,scale = 1.7, position = self.node.position).autoRetain()
                 self.bombType = 'sticky'
                 tex = self._getBombTypeTex()
                 self._flashBillboard(tex)
@@ -976,6 +1101,7 @@ class Spaz(bs.Actor):
                         bs.Timer(gPowerupWearOffTime,
                                  bs.WeakCall(self._bombWearOff))
             elif msg.powerupType == 'punch':
+                bsUtils.PopupText(u"\ue00c Boxer \ue00c", color = self.node.color,scale = 1.7, position = self.node.position).autoRetain()
                 self._hasBoxingGloves = True
                 tex = bs.Powerup.getFactory().texPunch
                 self._flashBillboard(tex)
@@ -993,13 +1119,16 @@ class Spaz(bs.Actor):
                         bs.Timer(gPowerupWearOffTime,
                                  bs.WeakCall(self._glovesWearOff))
             elif msg.powerupType == 'shield':
+                bsUtils.PopupText(u"\ue00c Shielded Noob! \ue00c", color = self.node.color,scale = 1.7, position = self.node.position).autoRetain()
                 factory = self.getFactory()
                 # let's allow powerup-equipped shields to lose hp over time
                 self.equipShields(
                     decay=True if factory.shieldDecayRate > 0 else False)
             elif msg.powerupType == 'curse':
+                bsUtils.PopupText(u"\ue00c Oh No! \ue00c", color = self.node.color,scale = 1.7, position = self.node.position).autoRetain()
                 self.curse()
             elif (msg.powerupType == 'iceBombs'):
+                bsUtils.PopupText(u"\ue00c Icy \ue00c", color = self.node.color,scale = 1.7, position = self.node.position).autoRetain()
                 self.bombType = 'ice'
                 tex = self._getBombTypeTex()
                 self._flashBillboard(tex)
@@ -1015,6 +1144,7 @@ class Spaz(bs.Actor):
                         bs.Timer(gPowerupWearOffTime,
                                  bs.WeakCall(self._bombWearOff))
             elif (msg.powerupType == 'health'):
+                bsUtils.PopupText(u"\ue00c H.P+ \ue00c", color = self.node.color,scale = 1.7, position = self.node.position).autoRetain()
                 if self._cursed:
                     self._cursed = False
                     # remove cursed material
@@ -1157,6 +1287,28 @@ class Spaz(bs.Actor):
 
             # play punch impact sound based on damage if it was a punch
             if msg.hitType == 'punch':
+                self.onPunched(damage)
+
+                if damage > 900:
+                    bsUtils.PopupText(u"A W E S\ue00cM E !!!",color=(0.3,1,0),scale=1.6,position=self.node.position).autoRetain()
+                    def light():
+                                light = bs.newNode('light',
+                                                attrs={'position':(0,10,0),
+                                                    'color': (0.2,0.2,0.4),
+                                                    'volumeIntensityScale': 1.0,
+                                                    'radius':10})
+                                bsUtils.animate(light,"intensity",{0:1,10:10,250:5,450:0,550:10,700:5,1000:10,1250:0})
+                    light()
+                    def dark(val):
+                        if val == 1:
+                            bs.getSharedObject('globals').tint = (0.1, 0.1, 0.1)
+                        else:
+                            bs.getSharedObject('globals').tint = bsMap.Tint
+                        bs.getSharedObject('globals').slowMotion = bs.getSharedObject('globals').slowMotion == False
+                    dark(1)
+                    bs.playSound(bs.getSound("orchestraHitBig2"))
+                    bs.gameTimer(300,bs.Call(dark,2))
+
 
                 self.onPunched(damage)
 
@@ -1181,17 +1333,17 @@ class Spaz(bs.Actor):
                                   velocity=(msg.forceDirection[0]*0.5,
                                             msg.forceDirection[1]*0.5,
                                             msg.forceDirection[2]*0.5),
-                                  count=min(10, 1+int(damage*0.0025)),
-                                  scale=0.3, spread=0.03);
+                                  count=min(10, 1+int(damage*0.5)),
+                                  scale=0.8, spread=0.8);
 
                 bs.emitBGDynamics(position=msg.pos,
                                   chunkType='sweat',
                                   velocity=(msg.forceDirection[0]*1.3,
                                             msg.forceDirection[1]*1.3+5.0,
                                             msg.forceDirection[2]*1.3),
-                                  count=min(30, 1+int(damage*0.04)),
+                                  count=min(30, 1+int(damage*0.7)),
                                   scale=0.9,
-                                  spread=0.28);
+                                  spread=0.8);
                 # momentary flash
                 hurtiness = damage*0.003
                 punchPos = (msg.pos[0]+msg.forceDirection[0]*0.02,
@@ -1373,6 +1525,10 @@ class Spaz(bs.Actor):
 
         if (self.landMineCount <= 0 and self.bombCount <= 0) or self.frozen:
             return
+        elif (self.iceMineCount <= 0 and self.bombCount <= 0) or self.frozen:
+            return
+        elif (self.trioBombCount <= 0 and self.bombCount <= 0) or self.frozen:
+            return
         p = self.node.positionForward
         v = self.node.velocity
 
@@ -1380,6 +1536,14 @@ class Spaz(bs.Actor):
             droppingBomb = False
             self.setLandMineCount(self.landMineCount-1)
             bombType = 'landMine'
+        elif self.iceMineCount > 0:
+            droppingBomb = False
+            self.seticeMineCount(self.iceMineCount-1)
+            bombType = 'iceMine'
+        elif self.trioBombCount > 0:
+            droppingBomb = False
+            self.settrioBombCount(self.trioBombCount-1)
+            bombType = 'trioBomb'
         else:
             droppingBomb = True
             bombType = self.bombType
@@ -1415,6 +1579,30 @@ class Spaz(bs.Actor):
             if self.landMineCount != 0:
                 self.node.counterText = 'x'+str(self.landMineCount)
                 self.node.counterTexture = bs.Powerup.getFactory().texLandMines
+            else:
+                self.node.counterText = ''
+                
+    def seticeMineCount(self, count):
+        """
+        Set the number of land-mines this spaz is carrying.
+        """
+        self.iceMineCount = count
+        if self.node.exists():
+            if self.iceMineCount != 0:
+                self.node.counterText = 'x'+str(self.iceMineCount)
+                self.node.counterTexture = bs.Powerup.getFactory().texiceMine
+            else:
+                self.node.counterText = ''
+                
+    def settrioBombCount(self, count):
+        """
+        Set the number of land-mines this spaz is carrying.
+        """
+        self.trioBombCount = count
+        if self.node.exists():
+            if self.trioBombCount != 0:
+                self.node.counterText = 'x'+str(self.trioBombCount)
+                self.node.counterTexture = bs.Powerup.getFactory().textrioBomb
             else:
                 self.node.counterText = ''
 
@@ -1494,7 +1682,9 @@ class Spaz(bs.Actor):
         bombFactory = bs.Powerup.getFactory()
         if self.bombType == 'sticky': return bombFactory.texStickyBombs
         elif self.bombType == 'ice': return bombFactory.texIceBombs
+        elif self.bombType == 'iceMine': return bombFactory.texIceBombs
         elif self.bombType == 'impact': return bombFactory.texImpactBombs
+        elif self.bombType == 'trioBomb': return bombFactory.textrioBomb
         else: raise Exception()
         
     def _flashBillboard(self, tex):
@@ -1756,6 +1946,7 @@ class PlayerSpaz(Spaz):
 
                 # immediate-mode or left-game deaths don't count as 'kills'
                 killed = (msg.immediate==False and msg.how!='leftGame')
+                #bs.screenMessage('Noob left the Game')
 
                 activity = self._activity()
 
@@ -1768,6 +1959,12 @@ class PlayerSpaz(Spaz):
                             and self.lastPlayerHeldBy is not None
                             and self.lastPlayerHeldBy.exists()):
                         killerPlayer = self.lastPlayerHeldBy
+                        killedPlayer = self.getPlayer()
+                        kill_msg = u'\ue00c '+killerPlayer.getName()+' Killed '+killedPlayer.getName()+u' \ue00c'
+                        if killerPlayer.getName() == killedPlayer.getName():
+                            kill_msg = u'\ue00c Noob Commited Suicide \ue00c'
+                        if settings.k_msg:
+                            bs.screenMessage(kill_msg,color=killerPlayer.color)
                     else:
                         # otherwise, if they were attacked by someone in the
                         # last few seconds, that person's the killer..
@@ -1779,23 +1976,51 @@ class PlayerSpaz(Spaz):
                         if (self.lastPlayerAttackedBy is not None
                                 and self.lastPlayerAttackedBy.exists()
                                 and bs.getGameTime() - self.lastAttackedTime \
-                                < 4000):
+                                < 40000):
                             killerPlayer = self.lastPlayerAttackedBy
+                            killedPlayer = self.getPlayer()
+                            kill_msg = u'\ue00c '+killerPlayer.getName()+' Killed '+killedPlayer.getName()+u' \ue00c'
+                            if killerPlayer.getName() == killedPlayer.getName():
+                                kill_msg = u'\ue00c Noob Commited Suicide \ue00c'
+                            if settings.k_msg:
+                                bs.screenMessage(kill_msg,color=killerPlayer.color)
                         else:
                             # ok, call it a suicide unless we're in co-op
                             if (activity is not None
                                     and not isinstance(activity.getSession(),
                                                        bs.CoopSession)):
                                 killerPlayer = self.getPlayer()
+                                kill_msg = u'\ue00c '+killerPlayer.getName()+u' Commited Suicide\ue00c\nWhat A Noob!'
+                                if settings.k_msg:
+                                    bs.screenMessage(kill_msg,color=killerPlayer.color)
                             else:
                                 killerPlayer = None
+                                kill_msg = u'\ue00c Noob Commited Suicide \ue00c'
+                                if settings.k_msg:
+                                    bs.screenMessage(kill_msg)
                             
                 if killerPlayer is not None and not killerPlayer.exists():
                     killerPlayer = None
+                    kill_msg = u'\ue00c Noob Commited Suicide \ue00c'
+                    if settings.k_msg:
+                        bs.screenMessage(kill_msg)
 
                 # only report if both the player and the activity still exist
                 if (killed and activity is not None
                     and self.getPlayer().exists()):
+                    if killed and killerPlayer.isAlive() and settings.k_pop:
+                        bsUtils.PopupText(kill_msg,color=killerPlayer.color,
+                                                         scale=1.2,
+                                                         offset=(0,-5,0),
+                                                         position=killerPlayer.actor.node.position).autoRetain()
+                        
+                        self.light = bs.newNode('light',
+                        attrs={'position':killerPlayer.actor.node.position,
+                               'color':(1.2,1.2,1.4),
+                               'volumeIntensityScale': 2.35})
+                        bs.animate(self.light,'intensity',{0:0,100:0.5,500:0},loop=False)
+                        bs.gameTimer(1500,self.light.delete)
+                    
                     activity.handleMessage(
                         PlayerSpazDeathMessage(self, killed,
                                                killerPlayer, msg.how))
