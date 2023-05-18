@@ -45,7 +45,7 @@ def checkSpam(clientID):
                 bs.screenMessage("Please dont spam",
                                  transient=True, clients=[clientID])
             return False
-            if warnCount < 3:
+            """ if warnCount < 3:
 				bsInternal._chatMessage("{}, don't spam here!".format(name))
 				with bs.Context(bsInternal._getForegroundHostActivity()):bs.screenMessage("Please dont spam", transient=True, clients=[clientID])
 				
@@ -53,7 +53,7 @@ def checkSpam(clientID):
 				spammers.pop(ID)		
 				bsInternal._chatMessage("Warn limit exceeded. Kicking {} for spamming.".format(name))
 				#bsInternal._chatMessage("ChatFilter Made By Ankit")
-				bsInternal._disconnectClient(clientID)
+				bsInternal._disconnectClient(clientID)"""
     else:
         counter[ID] = 1
 
