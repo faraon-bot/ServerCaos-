@@ -12,7 +12,7 @@ import urllib2
 import bs
 import logger
 import settings
-from roles import handleRol
+import handleRol
 # where our stats file and pretty html output will go
 statsfile = logger.stats
 pStatsfile = logger.pStats
