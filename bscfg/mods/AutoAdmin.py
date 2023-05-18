@@ -1,7 +1,7 @@
 import bs
 import logger
 import json
-from roles import handleRol
+import handleRol
 from logger import storage
 
 stats = logger.pStats
