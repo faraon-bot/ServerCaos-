@@ -10,12 +10,6 @@ enableCoinSystem = True
 
 enableStats = True
 
-# AJUST MAX PLAYERS
-
-bsGame.Session.maxPlayers = 13
-bs.getConfig()['Free-for-All Max Players'] = 13
-
-
 # More Settings On setchat.py
 spamProtection = True
 
@@ -119,10 +113,10 @@ def return_players_yielded(bs):
 # ** TERMINAL **
 
 # STATS
-print Colors.LIGHT_CYAN, 'Enable Stats : ', Colors.END, Colors.LIGHT_GREEN, 'ON', Colors.END if enableStats else Colors.RED, 'OFF', Colors.END
+print Colors.LIGHT_CYAN+ 'Enable Stats : '+ Colors.END+ Colors.LIGHT_GREEN+ 'ON'+ Colors.END if enableStats else Colors.RED+ 'OFF'+ Colors.END
 # COIN SYSTEM
-print Colors.LIGHT_CYAN, 'CoinSystem : ', Colors.END, Colors.LIGHT_GREEN, 'ON', Colors.END if enableCoinSystem else Colors.RED, 'OFF', Colors.END
+print Colors.LIGHT_CYAN+ 'CoinSystem : '+ Colors.END+ Colors.LIGHT_GREEN+ 'ON'+ Colors.END if enableCoinSystem else Colors.RED+ 'OFF'+ Colors.END
 # NIGHT MODE
-print Colors.LIGHT_CYAN, 'Modo Noche Activado!', Colors.END if nightMode else 'Modo Noche Desactivado'
+print Colors.LIGHT_CYAN+ 'Modo Noche Activado!'+ Colors.END if nightMode else 'Modo Noche Desactivado'
 # TOPS
-print Colors.LIGHT_CYAN, 'Top Effects : ', Colors.END, Colors.LIGHT_GREEN, 'ON', Colors.END if enableTop5effects else Colors.RED, 'OFF', Colors.END
+print Colors.LIGHT_CYAN+ 'Top Effects : '+ Colors.END+ Colors.LIGHT_GREEN+ 'ON'+ Colors.END if enableTop5effects else Colors.RED+ 'OFF'+ Colors.END
