@@ -497,7 +497,7 @@ class Session(object):
                  teamColors=[(0.6, 0.2, 1.0)],
                  useTeamColors=True,
                  minPlayers=1,
-                 maxPlayers=8,
+                 maxPlayers=16,
                  allowMidActivityJoins=True):
         """
         Instantiate a session with the provided info about'

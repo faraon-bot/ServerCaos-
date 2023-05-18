@@ -3,7 +3,7 @@ import bsUtils
 from bsVector import Vector
 import random
 import weakref
-
+import settings
 
 class BombFactory(object):
     """
@@ -129,16 +129,19 @@ class BombFactory(object):
         self.stickyBombModel = bs.getModel('bombSticky')
         self.impactBombModel = bs.getModel('impactBomb')
         self.landMineModel = bs.getModel('landMine')
+        self.iceMineModel = bs.getModel('landMine')
         self.tntModel = bs.getModel('tnt')
+        self.trioBombModel = bs.getModel('impactBomb')
 
         self.regularTex = bs.getTexture('bombColor')
         self.iceTex = bs.getTexture('bombColorIce')
         self.stickyTex = bs.getTexture('bombStickyColor')
         self.impactTex = bs.getTexture('impactBombColor')
         self.impactLitTex = bs.getTexture('impactBombColorLit')
-        self.landMineTex = bs.getTexture('landMine')
+        self.iceMineTex = bs.getTexture('night')
         self.landMineLitTex = bs.getTexture('landMineLit')
         self.tntTex = bs.getTexture('tnt')
+        self.trioBombTex = bs.getTexture('star')
 
         self.hissSound = bs.getSound('hiss')
         self.debrisFallSound = bs.getSound('debrisFall')
@@ -340,6 +343,25 @@ class Blast(bs.Actor):
                                   count=int(6.0+random.random()*12),
                                   scale=0.8, spread=1.5,chunkType='spark');
             bs.gameTimer(50,_doEmit) # looks better if we delay a bit
+            
+        elif self.blastType == 'trioBomb':
+            def _doEmit():
+                bs.emitBGDynamics(position=position, velocity=velocity,
+                                  count=int(4.0+random.random()*8),
+                                  spread=0.7,chunkType='spark');
+                bs.emitBGDynamics(position=position, velocity=velocity,
+                                  count=int(4.0+random.random()*8), scale=0.5,
+                                  spread=0.7,chunkType='spark');
+                bs.emitBGDynamics(position=position, velocity=velocity,
+                                  count=15, scale=0.6, chunkType='spark',
+                                  emitType='stickers');
+                bs.emitBGDynamics(position=position, velocity=velocity,
+                                  count=20, scale=0.7, chunkType='spark',
+                                  emitType='stickers');
+                bs.emitBGDynamics(position=position, velocity=velocity,
+                                  count=int(6.0+random.random()*12),
+                                  scale=0.8, spread=1.5,chunkType='spark');
+            bs.gameTimer(50,_doEmit) # looks better if we delay a bit
 
         elif self.blastType == 'impact': # regular bomb shrapnel
             def _doEmit():
@@ -466,7 +488,9 @@ class Blast(bs.Actor):
                 mag = 2000.0
                 if self.blastType == 'ice': mag *= 0.5
                 elif self.blastType == 'landMine': mag *= 2.5
+                elif self.blastType == 'iceMine': mag *= 0.0
                 elif self.blastType == 'tnt': mag *= 2.0
+                elif self.blastType == 'trioBomb': mag*= 0.0
 
                 node.handleMessage(bs.HitMessage(
                     pos=t,
@@ -476,9 +500,11 @@ class Blast(bs.Actor):
                     hitSubType=self.hitSubType,
                     radius=self.radius,
                     sourcePlayer=self.sourcePlayer))
-                if self.blastType == "ice":
+                if self.blastType == "ice" or self.blastType == "iceMine":
                     bs.playSound(Bomb.getFactory().freezeSound, 10, position=t)
                     node.handleMessage(bs.FreezeMessage())
+                elif self.blastType == "trioBomb":
+                    node.handleMessage(bs.PowerupMessage(powerupType = 'impactMess'))
 
         else:
             bs.Actor.handleMessage(self, msg)
@@ -503,7 +529,7 @@ class Bomb(bs.Actor):
 
         factory = self.getFactory()
 
-        if not bombType in ('ice','impact','landMine','normal','sticky','tnt'):
+        if not bombType in ('ice','impact','landMine','normal','sticky','tnt','iceMine','trioBomb'):
             raise Exception("invalid bomb type: " + bombType)
         self.bombType = bombType
 
@@ -515,7 +541,9 @@ class Bomb(bs.Actor):
         if self.bombType == 'ice': self.blastRadius *= 1.2
         elif self.bombType == 'impact': self.blastRadius *= 0.7
         elif self.bombType == 'landMine': self.blastRadius *= 0.7
+        elif self.bombType == 'iceMine': self.blastRadius *= 0.7
         elif self.bombType == 'tnt': self.blastRadius *= 1.45
+        elif self.bombType == 'trioBomb': self.blastRadius *= 1.2
 
         self._explodeCallbacks = []
         
@@ -547,7 +575,11 @@ class Bomb(bs.Actor):
             
         if self.bombType == 'impact':
             materials = materials + (factory.impactBlastMaterial,)
+        elif self.bombType == 'trioBomb':
+            materials = materials + (factory.impactBlastMaterial,)
         elif self.bombType == 'landMine':
+            materials = materials + (factory.landMineNoExplodeMaterial,)
+        elif self.bombType == 'iceMine':
             materials = materials + (factory.landMineNoExplodeMaterial,)
 
         if self.bombType == 'sticky':
@@ -563,7 +595,20 @@ class Bomb(bs.Actor):
                 'lightModel':factory.landMineModel,
                 'body':'landMine',
                 'shadowSize':0.44,
-                'colorTexture':factory.landMineTex,
+                'colorTexture':factory.trioBombTex,
+                'reflection':'powerup',
+                'reflectionScale':[1.0],
+                'materials':materials})
+                
+        elif self.bombType == 'iceMine':
+            self.node = bs.newNode('prop', delegate=self, attrs={
+                'position':position,
+                'velocity':velocity,
+                'model':factory.iceMineModel,
+                'lightModel':factory.iceMineModel,
+                'body':'landMine',
+                'shadowSize':0.44,
+                'colorTexture':factory.iceMineTex,
                 'reflection':'powerup',
                 'reflectionScale':[1.0],
                 'materials':materials})
@@ -580,6 +625,20 @@ class Bomb(bs.Actor):
                 'reflection':'soft',
                 'reflectionScale':[0.23],
                 'materials':materials})
+                
+        elif self.bombType == 'trioBomb':
+            #print("It's works!") # Debug message
+            fuseTime = 20000
+            self.node = bs.newNode('prop', delegate=self, attrs={
+                'position':position,
+                'velocity':velocity,
+                'body':'sphere',
+                'model':factory.trioBombModel,
+                'shadowSize':0.3,
+                'colorTexture':factory.trioBombTex,
+                'reflection':'powerup',
+                'reflectionScale':[0.23],
+                'materials':materials}) # Make a bomb settings
             
         elif self.bombType == 'impact':
             fuseTime = 20000
@@ -591,7 +650,7 @@ class Bomb(bs.Actor):
                 'shadowSize':0.3,
                 'colorTexture':factory.impactTex,
                 'reflection':'powerup',
-                'reflectionScale':[1.5],
+                'reflectionScale':[0.23],
                 'materials':materials})
             self.armTimer = bs.Timer(200, bs.WeakCall(self.handleMessage,
                                                       ArmMessage()))
@@ -606,6 +665,9 @@ class Bomb(bs.Actor):
                 model = factory.stickyBombModel
                 rType = 'sharper'
                 rScale = 1.8
+            elif self.bombType == 'trioBomb':
+                sticky = False
+                model = factory.trioBombModel
             else:
                 sticky = False
                 model = factory.bombModel
@@ -613,6 +675,7 @@ class Bomb(bs.Actor):
                 rScale = 1.8
             if self.bombType == 'ice': tex = factory.iceTex
             elif self.bombType == 'sticky': tex = factory.stickyTex
+            elif self.bombType == 'trioBomb': tex = factory.trioBombTex
             else: tex = factory.regularTex
             self.node = bs.newNode('bomb', delegate=self, attrs={
                 'position':position,
@@ -633,11 +696,50 @@ class Bomb(bs.Actor):
             bsUtils.animate(self.node, 'fuseLength', {0:1.0, fuseTime:0.0})
 
         # light the fuse!!!
-        if self.bombType not in ('landMine','tnt'):
+        if self.bombType not in ('landMine','tnt','iceMine'):
             bs.gameTimer(fuseTime,
                          bs.WeakCall(self.handleMessage, ExplodeMessage()))
-
-        bsUtils.animate(self.node,"modelScale",{0:0, 200:1.3, 260:1})
+            prefixAnim = {0: (1, 0, 0), 250: (1, 1, 0), 250 * 2: (0, 1, 0), 250 * 3: (0, 1, 1), 250 * 4: (1, 0, 1),
+                          250 * 5: (0, 0, 1), 250 * 6: (1, 0, 0)}
+            if settings.shieldBomb:               
+                self.shield = bs.newNode('shield', owner=self.node,
+                attrs={'color':(0,0,1),'radius':0.9})
+                self.node.connectAttr('position', self.shield, 'position')   
+                bs.animate(self.shield,'radius',{0:0.9,200:1,400:0.9},True)
+                bsUtils.animateArray(self.shield, 'color', 3, prefixAnim, True)
+                
+            if settings.bombLights:
+                self.nodeLight = bs.newNode('light',
+                attrs={'position': self.node.position,
+                'color': (0,0,1),'radius': 0.1,'volumeIntensityScale': 0.2})
+                self.node.connectAttr('position', self.nodeLight, 'position')
+                bs.gameTimer(1000,self.nodeLight.delete)  
+                bs.animateArray(self.nodeLight,'color',3,{0:(0,0,2),500:(0,2,0),1000:(2,0,0),1500:(2,2,0),2000:(2,0,2),2500:(0,1,6),3000:(1,2,0)},True) 
+                bs.animate(self.nodeLight, "intensity", {0:1.0, 1000:1.8, 2000:1.0}, loop = True)
+                          
+            if settings.bombName:
+                m = bs.newNode('math', owner=self.node, attrs={'input1': (0, 0.7, 0), 'operation': 'add'})
+                self.node.connectAttr('position', m, 'input2')
+                self.nodeText = bs.newNode('text',
+                                           owner=self.node,
+                                           attrs={'text': bombType,
+                                                  'inWorld': True,
+                                                  'shadow': 1.0,
+                                                  'flatness': 1.0,
+                                                  'color': (0,0,1),
+                                                  'scale': 0.0,
+                                                  'hAlign': 'center'})
+                m.connectAttr('output', self.nodeText, 'position')
+                bs.animate(self.nodeText, 'scale', {0: 0, 140: 0.016, 200: 0.01})
+                bs.animateArray(self.nodeText,'color',3,{0:(2,2,0),600:(2,0,0),900:(0,2,0),1200:(0,0,2),1500:(2,0,2),
+        1800:(2,1,0),2100:(0,2,2),2400:(2,2,0)},True)
+                bs.emitBGDynamics(position=self.nodeText.position, velocity=self.node.position, count=200, scale=1.4,
+                                  spread=2.01, chunkType='spark')
+                                  
+        if settings.bigBomb:
+            curve = bsUtils.animate(self.node,"modelScale",{0:0, 200:1.3, 260:1})
+            bs.gameTimer(200,curve.delete)
+        #for blitz from pc
 
     def getSourcePlayer(self):
         """
@@ -681,11 +783,16 @@ class Bomb(bs.Actor):
                  or (isinstance(nodeDelegate, Bomb)
                      and nodeDelegate.bombType == 'impact'
                      and nodeDelegate.owner is self.owner))): return
+            elif (self.bombType == 'trioBomb' and
+                (node is self.owner
+                 or (isinstance(nodeDelegate, Bomb)
+                     and nodeDelegate.bombType == 'trioBomb'
+                     and nodeDelegate.owner is self.owner))): return      
             else:
                 self.handleMessage(ExplodeMessage())
 
     def _handleDropped(self,m):
-        if self.bombType == 'landMine':
+        if self.bombType == 'landMine' or self.bombType == 'iceMine':
             self.armTimer = \
                 bs.Timer(1250, bs.WeakCall(self.handleMessage, ArmMessage()))
 
@@ -756,11 +863,30 @@ class Bomb(bs.Actor):
                 bs.newNode('textureSequence', owner=self.node, attrs={
                     'rate':30,
                     'inputTextures':(factory.landMineLitTex,
-                                     factory.landMineTex)})
+                                     factory.trioBombTex)})
             bs.gameTimer(500,self.textureSequence.delete)
             # we now make it explodable.
             bs.gameTimer(250,bs.WeakCall(self._addMaterial,
                                          factory.landMineBlastMaterial))
+        elif self.bombType == 'iceMine':
+            self.textureSequence = \
+                bs.newNode('textureSequence', owner=self.node, attrs={
+                    'rate':30,
+                    'inputTextures':(factory.landMineLitTex,
+                                     factory.iceMineTex)})
+            bs.gameTimer(500,self.textureSequence.delete)
+            # we now make it explodable.
+            bs.gameTimer(250,bs.WeakCall(self._addMaterial,
+                                         factory.landMineBlastMaterial))
+        elif self.bombType == 'trioBomb':# Sequence of textures
+            self.textureSequence = \
+                bs.newNode('textureSequence', owner=self.node, attrs={
+                    'rate':100,
+                    'inputTextures':(factory.impactLitTex,
+                                     factory.impactTex,
+                                     factory.impactTex)})
+            bs.gameTimer(250, bs.WeakCall(self._addMaterial,
+                                          factory.landMineBlastMaterial))
         elif self.bombType == 'impact':
             self.textureSequence = \
                 bs.newNode('textureSequence', owner=self.node, attrs={
@@ -783,7 +909,7 @@ class Bomb(bs.Actor):
         # normal bombs are triggered by non-punch impacts..
         # impact-bombs by all impacts
         if (not self._exploded and not isPunch
-            or self.bombType in ['impact', 'landMine']):
+            or self.bombType in ['impact', 'landMine','iceMine','trioBomb']):
             # also lets change the owner of the bomb to whoever is setting
             # us off.. (this way points for big chain reactions go to the
             # person causing them)
