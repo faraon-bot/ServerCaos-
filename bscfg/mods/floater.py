@@ -185,7 +185,7 @@ class Floater(bs.Actor):
         except:
             np = (0, 0, 0)
         self.b = bs.Bomb(bombType=random.choice(
-            ['normal', 'ice', 'sticky', 'impact', 'landMine', 'tnt']),
+            ['tnt']),
                          sourcePlayer=self.sourcePlayer,
                          position=(np[0], np[1] - 1, np[2]),
                          velocity=(0, -1, 0)).autoRetain()
