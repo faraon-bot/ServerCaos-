@@ -214,7 +214,7 @@ def getDefaultPowerupDistribution():
             ('Speed',0),
             ('Bot',1),
             ('iceMine',0),
-            ('trioBomb',2),
+            ('trioBomb',0),
             ('Bunny',1),
             ('Rchar',0),
             ('Inv',0),

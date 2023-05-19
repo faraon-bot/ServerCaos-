@@ -27,7 +27,7 @@ def _customer():
 
 def commit_custom():
     if os.path.exists(customer):
-        with open(customer, 'w') as f:
+        with open(customer, 'a') as f:
             f.write(json.dumps(storage.customers, indent=4))
             f.close()
 
