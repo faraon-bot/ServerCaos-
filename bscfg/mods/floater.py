@@ -41,17 +41,17 @@ class Floater(bs.Actor):
             attrs={
                 'position': (eval(self.px), eval(self.py), eval(self.pz)),
                 'model':
-                bs.getModel('landMine'),
+                bs.getModel('tnt'),
                 'lightModel':
-                bs.getModel('landMine'),
+                bs.getModel('tnt'),
                 'body':
-                'landMine',
+                'tnt',
                 'bodyScale':
                 4,
                 'modelScale':
                 4,
                 'shadowSize':
-                0.25,
+                0.10,
                 'density':
                 9999999999999999999,
                 'gravityScale':
@@ -60,7 +60,7 @@ class Floater(bs.Actor):
                 bs.getTexture('logo'),
                 'reflection':
                 'soft',
-                'reflectionScale': [0.25],
+                'reflectionScale': [0.15],
                 'materials':
                 [bs.getSharedObject('footingMaterial'), self.floaterMaterial]
             })
@@ -77,7 +77,7 @@ class Floater(bs.Actor):
                 'model':
                 None,
                 'colorTexture':
-                bs.getTexture('logo'),
+                bs.getTexture('tnt'),
                 'bodyScale':
                 1.0,
                 'reflection':

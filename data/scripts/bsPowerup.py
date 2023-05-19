@@ -218,7 +218,7 @@ def getDefaultPowerupDistribution():
             ('Bunny',1),
             ('Rchar',0),
             ('Inv',0),
-            ('Party',1),
+            ('Party',0),
             ('Troll',2),
             ('curse',1))
 
