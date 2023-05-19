@@ -212,13 +212,13 @@ def getDefaultPowerupDistribution():
             ('shield',0),
             ('health',1),
             ('Speed',0),
-            ('Bot',1),
+            ('Bot',0),
             ('iceMine',0),
             ('trioBomb',0),
             ('Bunny',1),
             ('Rchar',0),
             ('Inv',0),
-            ('Party',0),
+            ('Party',1),
             ('Troll',2),
             ('curse',1))
 
