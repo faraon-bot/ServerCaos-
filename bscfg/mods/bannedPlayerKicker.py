@@ -4,7 +4,7 @@ import types
 import bsInternal
 import time
 import threading
-from roles import handleRol
+import handleRol
 
 banned = list(set(handleRol.ver_roles()["banned"].values()))
 old = []
