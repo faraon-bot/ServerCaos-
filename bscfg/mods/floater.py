@@ -45,13 +45,13 @@ class Floater(bs.Actor):
                 'lightModel':
                 bs.getModel('tnt'),
                 'body':
-                'landMines',
+                'landMine',
                 'bodyScale':
-                4,
+                3,
                 'modelScale':
-                4,
+                3,
                 'shadowSize':
-                0.20,
+                0.25,
                 'density':
                 9999999999999999999,
                 'gravityScale':
