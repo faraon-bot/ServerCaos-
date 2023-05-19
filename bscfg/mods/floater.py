@@ -51,16 +51,16 @@ class Floater(bs.Actor):
                 'modelScale':
                 4,
                 'shadowSize':
-                0.10,
+                0.20,
                 'density':
                 9999999999999999999,
                 'gravityScale':
                 0.0,
                 'colorTexture':
-                bs.getTexture('logo'),
+                bs.getTexture('tnt'),
                 'reflection':
                 'soft',
-                'reflectionScale': [0.15],
+                'reflectionScale': [0.25],
                 'materials':
                 [bs.getSharedObject('footingMaterial'), self.floaterMaterial]
             })
