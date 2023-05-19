@@ -9,7 +9,7 @@ import handleRol
 banned = list(set(handleRol.ver_roles()["banned"].values()))
 old = []
 
-
+#prueba
 class detect(threading.Thread):
     def __init__(self):
         threading.Thread.__init__(self)
