@@ -2349,7 +2349,7 @@ class GameActivity(Activity):
                     bsInternal._incrementAnalyticsCount(
                         'Teams round start ' + str(len(self.players)) +
                         ' human players')
-                elif len(self.players) >= 8:
+                elif len(self.players) >= 16:
                     bsInternal._incrementAnalyticsCount(
                         'Teams round start 8+ human players')
             elif isinstance(s, bs.FreeForAllSession):
@@ -2363,7 +2363,7 @@ class GameActivity(Activity):
                     bsInternal._incrementAnalyticsCount(
                         'Free-for-all round start ' + str(len(self.players)) +
                         ' human players')
-                elif len(self.players) >= 8:
+                elif len(self.players) >= 16:
                     bsInternal._incrementAnalyticsCount(
                         'Free-for-all round start 8+ human players')
         except Exception:
