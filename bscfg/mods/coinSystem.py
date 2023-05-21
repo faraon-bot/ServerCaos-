@@ -51,7 +51,7 @@ def checkExpiredItems():
             now = datetime.now()
             expiry = datetime.strptime(e, '%d-%m-%Y %H:%M:%S')
             if expiry < now:
-                print 'expired item found'
+                print ('expired item found')
                 flag = 1
                 if i == "tag":
                     items[item]['tag'] = ""
@@ -119,11 +119,11 @@ def addCoins(accountID, amount):
     if accountID not in bank:
         bank[accountID] = 0
     bank[accountID] += amount
-    with open(bankfile, 'w') as f:
+    with open(bankfile, 'a') as f:
         f.write(json.dumps(bank))
     if amount > 0:
         bs.playSound(bs.getSound('cashRegister'))
-    print 'Transaction successful'
+        print ('Transaction successful')
 
 
 def getCoins(accountID):
